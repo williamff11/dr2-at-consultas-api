@@ -1,11 +1,12 @@
-"""Recurso REST de consultas — autenticação, ownership (Ex. 6) e SQLModel (Ex. 11).
+"""Recurso REST de consultas — autenticação, ownership (Ex. 6), SQLModel (Ex. 11)
+e correções do Ex. 9.
 
-A regra de posse vive em app/auth/dependencies.get_consulta_autorizada; aqui as
-rotas apenas a declaram. As queries usam select().where() (parametrizadas).
-No Ex. 9, GET/PATCH/DELETE/{id} migram para um APIRouter com a dependência de
-ownership no prefixo, para que nenhuma rota nova sob /consultas/{id} a esqueça.
+Ownership impossível de esquecer (Ex. 9): as rotas de item vivem em `item_router`,
+cujo prefixo `/consultas/{consulta_id}` já carrega `Depends(get_consulta_autorizada)`.
+Qualquer rota nova sob esse prefixo herda a checagem de posse — inclusive /prontuario,
+que na V1 era vulnerável. A regra de posse continua num único lugar (dependencies.py).
 """
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlmodel import Session, select
 
 from app import database as db
@@ -16,9 +17,18 @@ from app.auth.dependencies import (
 )
 from app.database import get_session
 from app.models import ConsultaCreate, ConsultaPublic, ConsultaUpdate, StatusConsulta
+from app.models.consulta import TRANSICOES_VALIDAS
 from app.models.tables import Consulta, Paciente
 
+# Coleção: /consultas
 router = APIRouter(prefix="/consultas", tags=["consultas"])
+
+# Item: /consultas/{consulta_id} — ownership aplicado no prefixo (Ex. 9).
+item_router = APIRouter(
+    prefix="/consultas/{consulta_id}",
+    tags=["consultas"],
+    dependencies=[Depends(get_consulta_autorizada)],
+)
 
 
 @router.get("", response_model=list[ConsultaPublic])
@@ -30,33 +40,6 @@ def listar_consultas(
     if user.get("papel") == "profissional":
         stmt = stmt.where(Consulta.profissional_id == user.get("profissional_id"))
     return session.exec(stmt).all()
-
-
-@router.get("/{consulta_id}", response_model=ConsultaPublic)
-def obter_consulta(consulta: Consulta = Depends(get_consulta_autorizada)):
-    return consulta
-
-
-@router.get("/{consulta_id}/prontuario")
-def prontuario(
-    consulta_id: int,
-    session: Session = Depends(get_session),
-    user: dict = Depends(get_current_user),
-):
-    # VULN-V1 (intencional, Ex. 8): busca por id SEM get_consulta_autorizada → BOLA.
-    # Qualquer usuário autenticado lê o prontuário (dados de saúde) de qualquer paciente.
-    # Corrigido no Ex. 9 movendo a rota para o item_router (ownership no prefixo).
-    consulta = session.get(Consulta, consulta_id)
-    if consulta is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Consulta não encontrada")
-    paciente = session.get(Paciente, consulta.paciente_id)
-    return {
-        "consulta_id": consulta.id,
-        "paciente": paciente.nome if paciente else None,
-        "cpf": paciente.cpf if paciente else None,
-        "profissional_id": consulta.profissional_id,
-        "observacoes": consulta.observacoes,
-    }
 
 
 @router.post("", response_model=ConsultaPublic, status_code=status.HTTP_201_CREATED)
@@ -96,33 +79,68 @@ def criar_consulta(
     return consulta
 
 
-@router.patch("/{consulta_id}", response_model=ConsultaPublic)
+@item_router.get("", response_model=ConsultaPublic)
+def obter_consulta(consulta: Consulta = Depends(get_consulta_autorizada)):
+    return consulta
+
+
+@item_router.get("/prontuario")
+def prontuario(
+    consulta: Consulta = Depends(get_consulta_autorizada),
+    session: Session = Depends(get_session),
+):
+    # Corrigido (V1): a rota herda o ownership do item_router; só o dono/admin/recepção
+    # chega aqui. A busca por id sem checagem foi eliminada.
+    paciente = session.get(Paciente, consulta.paciente_id)
+    return {
+        "consulta_id": consulta.id,
+        "paciente": paciente.nome if paciente else None,
+        "cpf": paciente.cpf if paciente else None,
+        "profissional_id": consulta.profissional_id,
+        "observacoes": consulta.observacoes,
+    }
+
+
+@item_router.patch("", response_model=ConsultaPublic)
 def atualizar_consulta(
     payload: ConsultaUpdate,
     consulta: Consulta = Depends(get_consulta_autorizada),
     session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
+    # extra="forbid" no modelo já rejeita profissional_id/criado_por (mass assignment).
     dados = payload.model_dump(exclude_unset=True)
+
     # Recepção só pode cancelar (matriz de permissões).
     if user.get("papel") == "recepcao":
         if set(dados) - {"status"} or dados.get("status") != StatusConsulta.cancelada:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "Recepção só pode cancelar consultas")
+
+    # Transição de status por whitelist.
+    novo_status = dados.get("status")
+    if novo_status is not None:
+        atual = StatusConsulta(consulta.status)
+        if novo_status != atual and novo_status not in TRANSICOES_VALIDAS[atual]:
             raise HTTPException(
-                status.HTTP_403_FORBIDDEN,
-                "Recepção só pode cancelar consultas",
+                status.HTTP_422_UNPROCESSABLE_CONTENT,
+                f"Transição de status inválida: {atual.value} → {novo_status.value}",
             )
-    # VULN-V4 (intencional, Ex. 8): aplica TODOS os campos recebidos, inclusive extras
-    # não declarados (profissional_id, criado_por) — mass assignment. Ex. 9 usa whitelist.
-    for campo, valor in dados.items():
-        setattr(consulta, campo, valor.value if isinstance(valor, StatusConsulta) else valor)
+
+    if "data_hora" in dados:
+        consulta.data_hora = dados["data_hora"]
+    if "observacoes" in dados:
+        consulta.observacoes = dados["observacoes"]
+    if novo_status is not None:
+        consulta.status = novo_status.value
     consulta.atualizado_em = db.now_utc()
+
     session.add(consulta)
     session.commit()
     session.refresh(consulta)
     return consulta
 
 
-@router.delete("/{consulta_id}", status_code=status.HTTP_204_NO_CONTENT)
+@item_router.delete("", status_code=status.HTTP_204_NO_CONTENT)
 def remover_consulta(
     consulta: Consulta = Depends(get_consulta_autorizada),
     session: Session = Depends(get_session),

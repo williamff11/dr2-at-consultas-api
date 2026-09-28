@@ -6,7 +6,7 @@
 <p><strong>Status:</strong> {{ consulta.status }}</p>
 <p><strong>Data:</strong> {{ consulta.data_hora }}</p>
 <p><strong>Observações:</strong></p>
-{# VULN-V3 (intencional, Ex. 8): |safe desliga o auto-escape "para manter quebras de
-   linha" → XSS stored. Corrigido no Ex. 9 removendo |safe e usando white-space:pre-line. #}
-<div class="obs">{{ (consulta.observacoes or '') | replace('\n', '<br>') | safe }}</div>
+{# Corrigido (V3): sem |safe. O auto-escape trata < > etc. como texto. As quebras
+   de linha são preservadas por CSS (white-space: pre-line), não por HTML. #}
+<div class="obs" style="white-space: pre-line">{{ consulta.observacoes or '' }}</div>
 {% endblock %}

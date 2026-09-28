@@ -14,7 +14,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from sqlmodel import Session, select
 
 from app.auth import security
-from app.auth.dependencies import ESCOPOS_POR_PAPEL, get_current_user
+from app.auth.dependencies import (
+    ESCOPOS_POR_PAPEL,
+    get_consulta_autorizada,
+    get_current_user,
+)
 from app.database import get_session
 from app.models.tables import Consulta, Paciente, Profissional, Usuario
 
@@ -95,17 +99,13 @@ def agenda_do_dia(
 
 @router.get("/recepcao/consultas/{consulta_id}", response_class=HTMLResponse)
 def detalhe_consulta(
-    consulta_id: int,
     request: Request,
+    consulta: Consulta = Depends(get_consulta_autorizada),
     session: Session = Depends(get_session),
-    user: dict = Depends(get_current_user),
 ):
-    # VULN-V1-irmão (intencional, Ex. 8): busca por id SEM ownership → mesma BOLA da V1,
-    # aqui numa página HTML acessível ao papel profissional. Não é citado no doc do Ex. 8
-    # de propósito: é o "endpoint irmão" que o Ex. 9 descobre pelo padrão e corrige.
-    consulta = session.get(Consulta, consulta_id)
-    if consulta is None:
-        return HTMLResponse("Consulta não encontrada", status_code=404)
+    # Corrigido (V1-irmão): esta página compartilhava o padrão da V1 (busca por id sem
+    # ownership). Agora usa a MESMA dependência get_consulta_autorizada — a posse é
+    # verificada no único lugar de sempre. O template não usa mais |safe (V3).
     paciente = session.get(Paciente, consulta.paciente_id)
     return templates.TemplateResponse(
         request, "detalhe_consulta.html",

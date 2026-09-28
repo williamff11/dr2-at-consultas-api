@@ -63,12 +63,17 @@ def test_sem_response_model_vazaria_campos_internos(client, auth, session):
     assert CAMPOS_INTERNOS.isdisjoint(real)
 
 
-# ---------- Ex. 2: XSS stored neutralizado pelo auto-escape ----------
-def test_agenda_html_escapa_payload_xss(client, auth, cookie):
+# ---------- Ex. 2/9: XSS stored neutralizado (entrada rejeita, saída escapa) ----------
+def test_xss_rejeitado_na_entrada(client, auth):
+    # Defesa em profundidade (Ex. 9): payload com < > é rejeitado já na entrada.
     ataque = "<script>alert('xss')</script>"
-    client.post("/consultas", json=_payload(observacoes=ataque), headers=auth("dra_carla"))
+    r = client.post("/consultas", json=_payload(observacoes=ataque), headers=auth("dra_carla"))
+    assert r.status_code == 422
 
+
+def test_agenda_html_escapa_conteudo(client, auth, cookie):
+    # Camada de saída (Ex. 2): um caractere especial permitido (&) sai escapado.
+    client.post("/consultas", json=_payload(observacoes="Pressao & arritmia"), headers=auth("dra_carla"))
     r = client.get("/recepcao/agenda", cookies=cookie("recepcao"))
     assert r.status_code == 200
-    assert ataque not in r.text
-    assert "&lt;script&gt;" in r.text
+    assert "Pressao &amp; arritmia" in r.text  # auto-escape ativo

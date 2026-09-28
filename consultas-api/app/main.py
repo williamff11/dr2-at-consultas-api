@@ -32,6 +32,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(consultas.router)
+app.include_router(consultas.item_router)
 app.include_router(admin.router)
 app.include_router(m2m.router)
 app.include_router(pacientes.router)
