@@ -1,0 +1,111 @@
+name: security
+
+# Pipeline DevSecOps (Ex. 12). O job security-gate consolida os resultados e
+# bloqueia o merge conforme o critério definido/justificado em docs/12.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"   # SCA semanal (segunda 06:00 UTC): CVEs surgem sem mudança de código
+
+defaults:
+  run:
+    working-directory: consultas-api
+
+env:
+  # Segredos de TESTE apenas (nunca reais). O gate não depende de segredo real.
+  ENV: dev
+  JWT_SECRET_KEY: ci-test-secret-nao-usar-em-producao
+  DATABASE_URL: "sqlite:///./ci.db"
+  CORS_ORIGINS: "http://localhost:5173"
+  SEED_SENHA_ADMIN: ci-admin
+  SEED_SENHA_RECEPCAO: ci-recepcao
+  SEED_SENHA_CARLA: ci-carla
+  SEED_SENHA_DIEGO: ci-diego
+  SEED_TOTP_ADMIN: JBSWY3DPEHPK3PXP
+  LAB_CLIENT_ID: lab-parceiro
+  LAB_CLIENT_SECRET: ci-lab-secret
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: pytest (inclui tests/security do threat model)
+        run: pytest -v
+
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install bandit
+      - name: Bandit (SAST) — relatório
+        run: bandit -r app -f json -o bandit.json || true
+      - name: Bandit gate — falha se achado de severidade >= MEDIUM (qualquer confiança)
+        # -ll = severidade Medium+. NÃO filtramos por confiança de propósito: nesta
+        # versão o Bandit reporta a SQLi (B608) como Medium/confiança-Low; um filtro
+        # de confiança deixaria passar a falha mais grave do Assessment (ver docs/12).
+        run: bandit -r app -ll
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: bandit, path: consultas-api/bandit.json }
+
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pip-audit
+      - name: pip-audit (SCA) — relatório
+        run: pip-audit -r requirements.txt -f json -o pip-audit.json || true
+      - name: pip-audit gate — falha se houver CVE com correção
+        run: pip-audit -r requirements.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: pip-audit, path: consultas-api/pip-audit.json }
+
+  dast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Sobe a API em background
+        run: |
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
+      - name: OWASP ZAP baseline (DAST passivo)
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: "http://127.0.0.1:8000/openapi.json"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-I"          # não falha o job por Medium/Low (só reporta)
+          allow_issue_writing: false
+
+  security-gate:
+    needs: [tests, sast, sca, dast]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Consolida e decide o bloqueio
+        run: |
+          echo "tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }} dast=${{ needs.dast.result }}"
+          # Critério de bloqueio (ver docs/12, DECISÃO DO WILLIAM):
+          # bloqueia se testes de segurança, SAST ou SCA falharem. DAST (ZAP) só
+          # bloqueia por High — configurado com -I para não travar em Medium/Low.
+          if [ "${{ needs.tests.result }}" != "success" ] || \
+             [ "${{ needs.sast.result }}"  != "success" ] || \
+             [ "${{ needs.sca.result }}"   != "success" ]; then
+            echo "::error::Security gate BLOQUEOU o merge (teste/SAST/SCA falhou)."
+            exit 1
+          fi
+          echo "Security gate: aprovado."
