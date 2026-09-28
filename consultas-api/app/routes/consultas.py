@@ -20,14 +20,19 @@ from app.models import ConsultaCreate, ConsultaPublic, ConsultaUpdate, StatusCon
 from app.models.consulta import TRANSICOES_VALIDAS
 from app.models.tables import Consulta, Paciente
 
+# Respostas de erro documentadas na OpenAPI (auditoria do Ex. 13).
+_ERRO_AUTH = {401: {"description": "Não autenticado"}, 403: {"description": "Sem permissão"}}
+_ERRO_ITEM = {**_ERRO_AUTH, 404: {"description": "Não encontrada ou sem posse"}}
+
 # Coleção: /consultas
-router = APIRouter(prefix="/consultas", tags=["consultas"])
+router = APIRouter(prefix="/consultas", tags=["consultas"], responses=_ERRO_AUTH)
 
 # Item: /consultas/{consulta_id} — ownership aplicado no prefixo (Ex. 9).
 item_router = APIRouter(
     prefix="/consultas/{consulta_id}",
     tags=["consultas"],
     dependencies=[Depends(get_consulta_autorizada)],
+    responses=_ERRO_ITEM,
 )
 
 

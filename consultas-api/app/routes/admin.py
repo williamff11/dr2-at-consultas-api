@@ -6,7 +6,8 @@ from app.auth.dependencies import require_mfa, require_roles
 from app.database import get_session
 from app.models.tables import Usuario
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(prefix="/admin", tags=["admin"],
+    responses={401: {"description": "Não autenticado"}, 403: {"description": "Requer admin+MFA"}})
 
 
 @router.get("/usuarios", dependencies=[Depends(require_roles("admin")), Depends(require_mfa)])

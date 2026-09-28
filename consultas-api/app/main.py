@@ -23,12 +23,19 @@ async def lifespan(app: FastAPI):
     yield
 
 
+# Em produção, não expõe Swagger/OpenAPI (reduz superfície de reconhecimento).
+_docs = None if settings.env == "prod" else "/docs"
+_openapi = None if settings.env == "prod" else "/openapi.json"
+
 app = FastAPI(
     title="API de Agendamento de Consultas",
     version="1.0.0",
     description="DR2 AT — API de agendamento com autenticação, validação, "
                 "hardening de rede e persistência segura.",
     lifespan=lifespan,
+    docs_url=_docs,
+    redoc_url=None,
+    openapi_url=_openapi,
 )
 
 # --- Rate limiting (Ex. 10) ---

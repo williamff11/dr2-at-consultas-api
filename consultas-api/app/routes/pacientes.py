@@ -10,7 +10,8 @@ from app.auth.dependencies import get_current_user
 from app.database import get_session
 from app.models.tables import Paciente
 
-router = APIRouter(prefix="/pacientes", tags=["pacientes"])
+router = APIRouter(prefix="/pacientes", tags=["pacientes"],
+    responses={401: {"description": "Não autenticado"}, 422: {"description": "Parâmetro inválido"}})
 
 
 @router.get("")
