@@ -73,3 +73,4 @@
 | `ex13/03_openapi.txt` | ex13 | R24 | `79a5313` | OpenAPI da aplicação (para auditoria) |
 | `ex13/04_auditoria_openapi.txt` | ex13 | R24 | `79a5313` | Auditoria da OpenAPI: apontamentos de design de segurança (o que foi corrigido e o que fica como risco residual) |
 | `ex13/05_pytest_final.txt` | ex13 | R24 | `79a5313` | pytest completo final (todos os testes + tests/security + mocking) |
+| `ex13/07_checagem_entrega.txt` | ex13 | R24 | `6be8141` | Conferências de entrega: tudo commitado, sem .env versionado, sem segredo hardcoded em app/ |
