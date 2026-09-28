@@ -53,3 +53,10 @@ def semear() -> None:
             "senha_hash": hash_senha(_senha("SEED_SENHA_DIEGO")),
         },
     })
+    # Cliente M2M do laboratório parceiro (Ex. 7): secret com bcrypt, escopo único.
+    client_id = os.environ.get("LAB_CLIENT_ID", "lab-parceiro")
+    db.clientes_m2m[client_id] = {
+        "client_id": client_id,
+        "secret_hash": hash_senha(_senha("LAB_CLIENT_SECRET")),
+        "scope": "horarios:read",
+    }

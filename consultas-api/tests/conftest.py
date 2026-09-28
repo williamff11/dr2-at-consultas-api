@@ -16,6 +16,8 @@ os.environ.setdefault("SEED_SENHA_RECEPCAO", "recepcao-dev-2026!")
 os.environ.setdefault("SEED_SENHA_CARLA", "carla-dev-2026!")
 os.environ.setdefault("SEED_SENHA_DIEGO", "diego-dev-2026!")
 os.environ.setdefault("SEED_TOTP_ADMIN", "JBSWY3DPEHPK3PXP")
+os.environ.setdefault("LAB_CLIENT_ID", "lab-parceiro")
+os.environ.setdefault("LAB_CLIENT_SECRET", "lab-secret-dev-2026!")
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

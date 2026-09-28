@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import admin, auth, consultas, pages
+from app.routes import admin, auth, consultas, m2m, pages
 from app.seed import semear
 
 
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(consultas.router)
 app.include_router(admin.router)
+app.include_router(m2m.router)
 app.include_router(pages.router)
 
 
