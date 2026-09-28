@@ -1,0 +1,24 @@
+# Evidência : Fluxo MFA do admin: senha→mfa_required→(mfa_token barrado 403)→verify TOTP→access→/admin/usuarios 200
+# Exercício : ex06   Rubrica(s): R11
+# Data      : 2026-09-28 09:17:15 -0400
+# Commit    : a8c5c32 (ex06)
+# Comando   : source scripts/dev_env.sh; set -x; R=$(curl -s -X POST localhost:8000/auth/token -d "username=admin&password=$SEED_SENHA_ADMIN"); echo "$R"; MT=$(echo "$R" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"mfa_token\"])"); curl -s -o /dev/null -w "mfa_token em /admin/usuarios -> %{http_code} (esperado 403)\n" localhost:8000/admin/usuarios -H "Authorization: Bearer $MT"; COD=$(consultas-api/.venv/bin/python -c "import pyotp,os;print(pyotp.TOTP(os.environ[\"SEED_TOTP_ADMIN\"]).now())"); AC=$(curl -s -X POST localhost:8000/auth/mfa/verify -H "content-type: application/json" -d "{\"mfa_token\":\"$MT\",\"codigo\":\"$COD\"}" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"access_token\"])"); curl -s -o /dev/null -w "access com mfa em /admin/usuarios -> %{http_code} (esperado 200)\n" localhost:8000/admin/usuarios -H "Authorization: Bearer $AC"
+# ------------------------------------------------------------------
+++ curl -s -X POST localhost:8000/auth/token -d 'username=admin&password=admin-dev-2026!'
++ R='{"mfa_required":true,"mfa_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M","token_type":"bearer"}'
++ echo '{"mfa_required":true,"mfa_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M","token_type":"bearer"}'
+{"mfa_required":true,"mfa_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M","token_type":"bearer"}
+++ echo '{"mfa_required":true,"mfa_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M","token_type":"bearer"}'
+++ consultas-api/.venv/bin/python -c 'import sys,json;print(json.load(sys.stdin)["mfa_token"])'
++ MT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M
++ curl -s -o /dev/null -w 'mfa_token em /admin/usuarios -> %{http_code} (esperado 403)\n' localhost:8000/admin/usuarios -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M'
+mfa_token em /admin/usuarios -> 403 (esperado 403)
+++ consultas-api/.venv/bin/python -c 'import pyotp,os;print(pyotp.TOTP(os.environ["SEED_TOTP_ADMIN"]).now())'
++ COD=869107
+++ curl -s -X POST localhost:8000/auth/mfa/verify -H 'content-type: application/json' -d '{"mfa_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDE3MzYsInNjb3BlIjoibWZhX3BlbmRpbmcifQ.btUvgl6KW4SHKDD0D22O78NYh-e955yptlMkzzu843M","codigo":"869107"}'
+++ consultas-api/.venv/bin/python -c 'import sys,json;print(json.load(sys.stdin)["access_token"])'
++ AC=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDIzMzYsInBhcGVsIjoiYWRtaW4iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIGNvbnN1bHRhczp3cml0ZSBhZG1pbiIsIm1mYSI6dHJ1ZSwiYW1yIjpbInB3ZCIsIm90cCJdfQ.UVLbCvZwvaKkLGo6__p7IAgsWJUDejM-adyhWcKZwvg
++ curl -s -o /dev/null -w 'access com mfa em /admin/usuarios -> %{http_code} (esperado 200)\n' localhost:8000/admin/usuarios -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDM2LCJleHAiOjE3OTA2MDIzMzYsInBhcGVsIjoiYWRtaW4iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIGNvbnN1bHRhczp3cml0ZSBhZG1pbiIsIm1mYSI6dHJ1ZSwiYW1yIjpbInB3ZCIsIm90cCJdfQ.UVLbCvZwvaKkLGo6__p7IAgsWJUDejM-adyhWcKZwvg'
+access com mfa em /admin/usuarios -> 200 (esperado 200)
+# ------------------------------------------------------------------
+# exit code : 0

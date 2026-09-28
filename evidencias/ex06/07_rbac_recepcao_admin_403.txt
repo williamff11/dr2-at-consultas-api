@@ -1,0 +1,9 @@
+# Evidência : RBAC: recepção em /admin/usuarios → 403 (teste obrigatório do enunciado)
+# Exercício : ex06   Rubrica(s): R10,R11
+# Data      : 2026-09-28 09:17:46 -0400
+# Commit    : a8c5c32 (ex06)
+# Comando   : source scripts/dev_env.sh; TR=$(scripts/token.sh recepcao); curl -s -o /dev/null -w "recepcao -> /admin/usuarios -> %{http_code}\n" localhost:8000/admin/usuarios -H "Authorization: Bearer $TR"; curl -s localhost:8000/admin/usuarios -H "Authorization: Bearer $TR"
+# ------------------------------------------------------------------
+recepcao -> /admin/usuarios -> 403
+{"detail":"Requer papel: admin"}# ------------------------------------------------------------------
+# exit code : 0

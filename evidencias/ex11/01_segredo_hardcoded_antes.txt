@@ -1,0 +1,9 @@
+# Evidência : ANTES (Ex.11): segredo hardcoded no código da aplicação (tag ex06)
+# Exercício : ex11   Rubrica(s): R18
+# Data      : 2026-09-28 09:18:24 -0400
+# Commit    : a8c5c32 (ex06)
+# Comando   : grep -rn --include='*.py' -iE 'secret_key *=|password *=' consultas-api/app || echo 'nenhum'
+# ------------------------------------------------------------------
+consultas-api/app/auth/security.py:17:SECRET_KEY = "dev-secret-nao-usar-em-producao-8f3a1c9e2b7d"  # noqa: S105
+# ------------------------------------------------------------------
+# exit code : 0

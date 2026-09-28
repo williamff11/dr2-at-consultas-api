@@ -1,0 +1,21 @@
+# Evidência : Login da Dra. Carla + claims decodificadas (sub, papel, aud, iss, exp-iat=900s)
+# Exercício : ex06   Rubrica(s): R10,R11
+# Data      : 2026-09-28 09:16:58 -0400
+# Commit    : a8c5c32 (ex06)
+# Comando   : source scripts/dev_env.sh; T=$(scripts/token.sh dra_carla); echo "access_token (trecho): ${T:0:40}..."; echo "--- claims ---"; consultas-api/.venv/bin/python -c "import sys;sys.path.insert(0,\"consultas-api\");from app.auth import security;import json;c=security.decodificar_token(\"$T\");print(json.dumps(c,indent=2,ensure_ascii=False));print(\"exp-iat =\", c[\"exp\"]-c[\"iat\"], \"segundos\")"
+# ------------------------------------------------------------------
+access_token (trecho): eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...
+--- claims ---
+{
+  "sub": "dra_carla",
+  "iss": "consultas-api",
+  "aud": "api-consultas",
+  "iat": 1790601419,
+  "exp": 1790602319,
+  "papel": "profissional",
+  "scope": "consultas:read consultas:write",
+  "profissional_id": 1
+}
+exp-iat = 900 segundos
+# ------------------------------------------------------------------
+# exit code : 0
