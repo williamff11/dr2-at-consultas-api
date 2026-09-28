@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Agenda {{ dia.strftime('%d/%m/%Y') }}{% endblock %}
+{% block heading %}Agenda do dia — {{ dia.strftime('%d/%m/%Y') }}{% endblock %}
+
+{% block content %}
+{% if consultas %}
+<table>
+  <thead>
+    <tr><th>Hora</th><th>Paciente</th><th>Profissional</th><th>Status</th><th>Observações</th></tr>
+  </thead>
+  <tbody>
+  {% for c in consultas %}
+    <tr>
+      <td>{{ c.hora }}</td>
+      <td>{{ c.paciente }}</td>
+      <td>{{ c.profissional }}</td>
+      <td>{{ c.status }}</td>
+      {# Conteúdo livre digitado por usuário: auto-escape garante que <script> vire texto.
+         Nunca usar |safe aqui. #}
+      <td>{{ c.observacoes }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Nenhuma consulta para este dia.</p>
+{% endif %}
+{% endblock %}
