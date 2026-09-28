@@ -1,0 +1,53 @@
+flowchart TB
+    classDef ext fill:#e8ecff,stroke:#334,color:#000
+    classDef edge fill:#ffe6e6,stroke:#a33,color:#000
+    classDef sec fill:#e6f6e6,stroke:#353,color:#000
+    classDef dom fill:#eef7ff,stroke:#357,color:#000
+    classDef data fill:#fff7d6,stroke:#553,color:#000
+
+    FE["Frontend / Recepção / Laboratório"]:::ext
+
+    subgraph BORDA["P1 · Borda (fronteira de rede)"]
+        CORS["CORS allowlist"]:::edge
+        HDR["Headers HSTS/XFO/XCTO/CSP"]:::edge
+        RL["Rate limit diferenciado"]:::edge
+    end
+
+    subgraph AUTHP["P2 · Autenticação"]
+        JWT["OAuth2 + JWT + bcrypt + MFA/TOTP"]:::sec
+    end
+
+    subgraph AUTHZ["P3 · Autorização"]
+        RBAC["require_roles (RBAC)"]:::sec
+        OWN["get_consulta_autorizada (ownership)"]:::sec
+        SCOPE["Security(scopes) (M2M)"]:::sec
+    end
+
+    subgraph DOMINIO["P4 · Domínio"]
+        CONS["Consultas / Pacientes / Horários"]:::dom
+        VAL["Validação Pydantic (extra=forbid, regex)"]:::dom
+    end
+
+    subgraph APRES["P6 · Apresentação"]
+        TPL["Jinja2 auto-escape"]:::dom
+    end
+
+    subgraph PERS["P5 · Persistência"]
+        SQL["SQLModel (queries parametrizadas)"]:::data
+        CFG["BaseSettings / .env"]:::data
+    end
+
+    DB[("Banco")]:::data
+
+    FE ==>|HTTPS| BORDA
+    BORDA --> AUTHP
+    AUTHP --> AUTHZ
+    AUTHZ --> DOMINIO
+    DOMINIO --> APRES
+    DOMINIO --> PERS
+    PERS --> DB
+
+    style BORDA stroke-dasharray: 6 4,stroke:#a33
+    style AUTHP stroke:#353
+    style AUTHZ stroke:#353
+    style PERS stroke-dasharray: 6 4,stroke:#553
