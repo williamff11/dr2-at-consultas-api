@@ -6,11 +6,12 @@ escopos `consultas:*` que nunca são emitidos para um cliente M2M (T07).
 """
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Security, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, Security, status
 from sqlmodel import Session, select
 
 from app.auth import security
 from app.auth.principal import require_scopes
+from app.core.rate_limit import LIMITE_LOGIN, limiter
 from app.database import get_session
 from app.models.tables import ClienteM2M, Consulta, Profissional
 
@@ -18,7 +19,9 @@ router = APIRouter(tags=["m2m"])
 
 
 @router.post("/auth/client-token")
+@limiter.limit(LIMITE_LOGIN)
 def client_token(
+    request: Request,
     grant_type: str = Form(...),
     client_id: str = Form(...),
     client_secret: str = Form(...),

@@ -6,6 +6,7 @@
 export ENV="${ENV:-dev}"
 export DATABASE_URL="${DATABASE_URL:-sqlite:///./consultas.db}"
 # Segredo JWT de DEV (fictício). Em produção: gere com secrets.token_urlsafe e use um cofre.
+export CORS_ORIGINS="${CORS_ORIGINS:-http://localhost:5173}"
 export JWT_SECRET_KEY="${JWT_SECRET_KEY:-dev-jwt-secret-3f9a1c8e2b7d4a6f-nao-usar-em-producao}"
 export SEED_SENHA_ADMIN="admin-dev-2026!"
 export SEED_SENHA_RECEPCAO="recepcao-dev-2026!"

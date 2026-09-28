@@ -20,6 +20,7 @@ os.environ.setdefault("SEED_SENHA_DIEGO", "diego-dev-2026!")
 os.environ.setdefault("SEED_TOTP_ADMIN", "JBSWY3DPEHPK3PXP")
 os.environ.setdefault("LAB_CLIENT_ID", "lab-parceiro")
 os.environ.setdefault("LAB_CLIENT_SECRET", "lab-secret-dev-2026!")
+os.environ.setdefault("CORS_ORIGINS", "http://localhost:5173")
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -28,8 +29,13 @@ from sqlmodel import Session, SQLModel, create_engine  # noqa: E402
 
 from app.auth import security  # noqa: E402
 from app.auth.dependencies import ESCOPOS_POR_PAPEL  # noqa: E402
+from app.core.rate_limit import limiter  # noqa: E402
 from app.database import get_session  # noqa: E402
 from app.main import app  # noqa: E402
+
+# Rate limiting desligado por padrão nos testes (isolamento). O teste dedicado de
+# rate limit reativa e reseta o contador explicitamente.
+limiter.enabled = False
 from app.models.tables import Consulta, Usuario  # noqa: E402
 from app.seed import semear  # noqa: E402
 

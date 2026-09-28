@@ -7,7 +7,7 @@ O fluxo M2M (client credentials) fica em routes/m2m.py (Ex. 7).
 """
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, ConfigDict
 from sqlmodel import Session
@@ -15,6 +15,7 @@ from sqlmodel import Session
 from app.auth import security
 from app.auth.dependencies import ESCOPOS_POR_PAPEL
 from app.auth.mfa import verificar_codigo
+from app.core.rate_limit import LIMITE_LOGIN, limiter
 from app.database import get_session
 from app.models.tables import ClienteM2M, Usuario
 
@@ -40,7 +41,9 @@ def _claims_de_sessao(usuario: Usuario) -> dict:
 
 
 @router.post("/token")
+@limiter.limit(LIMITE_LOGIN)
 def login(
+    request: Request,
     form: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
 ):
@@ -72,7 +75,8 @@ class MFAVerify(BaseModel):
 
 
 @router.post("/mfa/verify")
-def mfa_verify(payload: MFAVerify, session: Session = Depends(get_session)):
+@limiter.limit(LIMITE_LOGIN)
+def mfa_verify(request: Request, payload: MFAVerify, session: Session = Depends(get_session)):
     try:
         claims = security.decodificar_token(payload.mfa_token)
     except Exception:

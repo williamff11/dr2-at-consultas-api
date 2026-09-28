@@ -2,10 +2,18 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
+from app.core.config import get_settings
+from app.core.rate_limit import limiter
+from app.core.security_headers import SecurityHeadersMiddleware
 from app.database import criar_tabelas
 from app.routes import admin, auth, consultas, m2m, pacientes, pages
 from app.seed import semear
+
+settings = get_settings()
 
 
 @asynccontextmanager
@@ -17,17 +25,31 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="API de Agendamento de Consultas",
-    version="0.2.0",
-    description="DR2 AT — autenticação, autorização e ownership (Ex. 6).",
+    version="1.0.0",
+    description="DR2 AT — API de agendamento com autenticação, validação, "
+                "hardening de rede e persistência segura.",
     lifespan=lifespan,
 )
 
-# CORS provisório — revisar no Ex. 10 (allow_origins=["*"] é o "antes" da V5a).
+# --- Rate limiting (Ex. 10) ---
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
+# --- Cabeçalhos de segurança (Ex. 10) ---
+app.add_middleware(SecurityHeadersMiddleware)
+
+# --- CORS com allowlist explícita (Ex. 10) ---
+# Fail-fast: recusa subir se "*" estiver na lista (o auditor reprova wildcard).
+_origins = settings.cors_origins_list
+if "*" in _origins:
+    raise RuntimeError("CORS_ORIGINS não pode conter '*' (use uma allowlist explícita).")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.include_router(auth.router)
@@ -37,7 +59,6 @@ app.include_router(admin.router)
 app.include_router(m2m.router)
 app.include_router(pacientes.router)
 app.include_router(pages.router)
-
 
 
 @app.get("/health", tags=["infra"])

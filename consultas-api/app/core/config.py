@@ -26,8 +26,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
     access_token_expire_minutes: int = Field(default=15, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
 
-    # CORS (Ex. 10)
-    cors_origins: list[str] = Field(default_factory=list, alias="CORS_ORIGINS")
+    # CORS (Ex. 10) — string separada por vírgulas (ex.: "http://a,http://b")
+    cors_origins: str = Field(default="", alias="CORS_ORIGINS")
 
     # Seed — SEM default (senhas obrigatórias)
     seed_senha_admin: str = Field(alias="SEED_SENHA_ADMIN")
@@ -40,9 +40,7 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> list[str]:
-        if isinstance(self.cors_origins, str):
-            return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
-        return self.cors_origins
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 @lru_cache
