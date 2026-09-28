@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block heading %}Recepção — acesso interno{% endblock %}
+{% block content %}
+{% if erro %}<p style="color:#c00">{{ erro }}</p>{% endif %}
+<form method="post" action="/recepcao/login">
+  <p><label>Usuário <input name="username" autofocus></label></p>
+  <p><label>Senha <input name="password" type="password"></label></p>
+  <p><button type="submit">Entrar</button></p>
+</form>
+{% endblock %}

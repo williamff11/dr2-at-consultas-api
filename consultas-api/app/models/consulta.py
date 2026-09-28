@@ -3,8 +3,13 @@
 Separação deliberada (Ex. 2):
 - ConsultaCreate / ConsultaUpdate: o que o cliente PODE enviar.
 - ConsultaPublic: o que o cliente PODE ver (usado como response_model).
-- O registro armazenado (dict em database.py) tem campos internos de auditoria
-  — criado_por, ip_origem, criado_em, atualizado_em — que nunca saem na API.
+- O registro armazenado tem campos internos de auditoria — criado_por, ip_origem,
+  criado_em, atualizado_em — que nunca saem na API.
+
+Ownership (Ex. 6): o cliente NÃO envia profissional_id. Ele é derivado do paciente
+no servidor (paciente.profissional_id), o que impede o cliente de se apropriar de
+uma consulta atribuindo-a a outro profissional (mass assignment, T06).
+`extra='forbid'` é adicionado nos modelos de entrada no Ex. 9.
 """
 from datetime import datetime
 from enum import Enum
@@ -19,22 +24,18 @@ class StatusConsulta(str, Enum):
     realizada = "realizada"
 
 
-class ConsultaBase(BaseModel):
+class ConsultaCreate(BaseModel):
     paciente_id: int = Field(gt=0)
-    profissional_id: int = Field(gt=0)
     data_hora: datetime
     observacoes: str | None = Field(default=None, max_length=500)
-
-
-class ConsultaCreate(ConsultaBase):
-    pass
-    # TODO Ex. 9: model_config = ConfigDict(extra="forbid") + validação regex/whitelist
+    # TODO Ex. 9: model_config = ConfigDict(extra="forbid") + validação regex
 
 
 class ConsultaUpdate(BaseModel):
     data_hora: datetime | None = None
     status: StatusConsulta | None = None
     observacoes: str | None = Field(default=None, max_length=500)
+    # TODO Ex. 9: extra="forbid" (hoje campos extras são ignorados)
 
 
 class ConsultaPublic(BaseModel):

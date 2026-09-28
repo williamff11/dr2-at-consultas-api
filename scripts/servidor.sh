@@ -3,6 +3,7 @@
 # uso: scripts/servidor.sh start|stop|restart
 set -uo pipefail
 root="$(git rev-parse --show-toplevel)"; api="$root/consultas-api"
+source "$root/scripts/dev_env.sh"
 LOG=/tmp/uvicorn.log; PIDF=/tmp/uvicorn_consultas.pid
 stop() {
   [ -f "$PIDF" ] && kill "$(cat "$PIDF")" 2>/dev/null

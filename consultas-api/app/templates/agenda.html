@@ -4,6 +4,7 @@
 {% block heading %}Agenda do dia — {{ dia.strftime('%d/%m/%Y') }}{% endblock %}
 
 {% block content %}
+{% if usuario %}<p><small>Sessão: {{ usuario }}</small></p>{% endif %}
 {% if consultas %}
 <table>
   <thead>
