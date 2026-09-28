@@ -1,0 +1,14 @@
+# Evidência : uvicorn subindo a aplicação
+# Exercício : ex01   Rubrica(s): R1
+# Data      : 2026-09-28 08:42:59 -0400
+# Commit    : d996e30 (ex00)
+# Comando   : scripts/servidor.sh restart && cat /tmp/uvicorn.log
+# ------------------------------------------------------------------
+servidor no ar (pid 10317)
+INFO:     Started server process [10319]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51618 - "GET /health HTTP/1.1" 200 OK
+# ------------------------------------------------------------------
+# exit code : 0

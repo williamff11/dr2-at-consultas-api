@@ -1,0 +1,25 @@
+# Evidência : Estrutura modular: routes / models / database / templates / tests
+# Exercício : ex01   Rubrica(s): R1
+# Data      : 2026-09-28 08:42:59 -0400
+# Commit    : d996e30 (ex00)
+# Comando   : find consultas-api -path '*/.venv' -prune -o -path '*/__pycache__' -prune -o -path '*/.pytest_cache' -prune -o -type f -print | sort
+# ------------------------------------------------------------------
+consultas-api/.env.example
+consultas-api/app/__init__.py
+consultas-api/app/database.py
+consultas-api/app/main.py
+consultas-api/app/models/__init__.py
+consultas-api/app/models/consulta.py
+consultas-api/app/routes/__init__.py
+consultas-api/app/routes/consultas.py
+consultas-api/app/routes/pages.py
+consultas-api/app/templates/agenda.html
+consultas-api/app/templates/base.html
+consultas-api/pytest.ini
+consultas-api/README.md
+consultas-api/requirements.txt
+consultas-api/tests/__init__.py
+consultas-api/tests/conftest.py
+consultas-api/tests/test_consultas.py
+# ------------------------------------------------------------------
+# exit code : 0

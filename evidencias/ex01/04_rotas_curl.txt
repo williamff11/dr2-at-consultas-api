@@ -1,0 +1,74 @@
+# Evidência : Respostas reais das rotas: health, POST, GET por id, GET lista, PATCH, 404, DELETE e página HTML
+# Exercício : ex01   Rubrica(s): R1
+# Data      : 2026-09-28 08:43:49 -0400
+# Commit    : d996e30 (ex00)
+# Comando   : set -x; curl -s -i localhost:8000/health; echo; curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'; echo; curl -s -i localhost:8000/consultas/1; echo; curl -s -i localhost:8000/consultas; echo; curl -s -i -X PATCH localhost:8000/consultas/1 -H 'content-type: application/json' -d '{"status":"confirmada"}'; echo; curl -s -i localhost:8000/consultas/999; echo; curl -s -o /dev/null -w 'GET /recepcao/agenda -> HTTP %{http_code} %{content_type}\n' localhost:8000/recepcao/agenda; curl -s -i -X DELETE localhost:8000/consultas/1; echo; curl -s -o /dev/null -w 'GET /consultas/1 após DELETE -> HTTP %{http_code}\n' localhost:8000/consultas/1
+# ------------------------------------------------------------------
++ curl -s -i localhost:8000/health
+HTTP/1.1 200 OK
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 15
+content-type: application/json
+
+{"status":"ok"}+ echo
+
++ curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'
+HTTP/1.1 201 Created
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 133
+content-type: application/json
+
+{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","status":"agendada","observacoes":"Retorno pós-exame"}+ echo
+
++ curl -s -i localhost:8000/consultas/1
+HTTP/1.1 200 OK
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 133
+content-type: application/json
+
+{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","status":"agendada","observacoes":"Retorno pós-exame"}+ echo
+
++ curl -s -i localhost:8000/consultas
+HTTP/1.1 200 OK
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 135
+content-type: application/json
+
+[{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","status":"agendada","observacoes":"Retorno pós-exame"}]+ echo
+
++ curl -s -i -X PATCH localhost:8000/consultas/1 -H 'content-type: application/json' -d '{"status":"confirmada"}'
+HTTP/1.1 200 OK
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 135
+content-type: application/json
+
+{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","status":"confirmada","observacoes":"Retorno pós-exame"}+ echo
+
++ curl -s -i localhost:8000/consultas/999
+HTTP/1.1 404 Not Found
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-length: 37
+content-type: application/json
+
+{"detail":"Consulta não encontrada"}+ echo
+
++ curl -s -o /dev/null -w 'GET /recepcao/agenda -> HTTP %{http_code} %{content_type}\n' localhost:8000/recepcao/agenda
+GET /recepcao/agenda -> HTTP 200 text/html; charset=utf-8
++ curl -s -i -X DELETE localhost:8000/consultas/1
+HTTP/1.1 204 No Content
+date: Mon, 28 Sep 2026 12:43:49 GMT
+server: uvicorn
+content-type: application/json
+
++ echo
+
++ curl -s -o /dev/null -w 'GET /consultas/1 após DELETE -> HTTP %{http_code}\n' localhost:8000/consultas/1
+GET /consultas/1 após DELETE -> HTTP 404
+# ------------------------------------------------------------------
+# exit code : 0

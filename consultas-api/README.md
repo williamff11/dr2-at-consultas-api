@@ -3,7 +3,7 @@
 ## Rodar
 
 ```bash
-python -m venv .venv
+python3.12 -m venv .venv   # Python >= 3.10
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
@@ -28,7 +28,6 @@ app/
   routes/            # APIRouter por recurso + páginas HTML
   templates/         # Jinja2 com herança (base.html → agenda.html)
 tests/
-docs/                # relatórios e evidências por exercício
 ```
 
-Veja `ROADMAP.md` para o plano completo dos 13 exercícios.
+Documentação por exercício: `../docs/`. Evidências: `../evidencias/`.
