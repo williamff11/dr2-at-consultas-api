@@ -1,0 +1,30 @@
+# Evidência : Claims lado a lado: humano (papel, profissional_id, scope consultas:*) × M2M (client_type m2m, scope horarios:read, sem papel)
+# Exercício : ex07   Rubrica(s): R12
+# Data      : 2026-09-28 09:21:30 -0400
+# Commit    : 521c3d1 (ex07)
+# Comando   : source scripts/dev_env.sh; TH=$(scripts/token.sh dra_carla); TM=$(curl -s -X POST localhost:8000/auth/client-token -d "grant_type=client_credentials&client_id=$LAB_CLIENT_ID&client_secret=$LAB_CLIENT_SECRET" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"access_token\"])"); consultas-api/.venv/bin/python -c "import sys;sys.path.insert(0,\"consultas-api\");from app.auth import security;import json;print(\"=== HUMANO (dra_carla) ===\");print(json.dumps(security.decodificar_token(\"$TH\"),indent=2,ensure_ascii=False));print();print(\"=== M2M (lab-parceiro) ===\");print(json.dumps(security.decodificar_token(\"$TM\"),indent=2,ensure_ascii=False))"
+# ------------------------------------------------------------------
+=== HUMANO (dra_carla) ===
+{
+  "sub": "dra_carla",
+  "iss": "consultas-api",
+  "aud": "api-consultas",
+  "iat": 1790601690,
+  "exp": 1790602590,
+  "papel": "profissional",
+  "scope": "consultas:read consultas:write",
+  "profissional_id": 1
+}
+
+=== M2M (lab-parceiro) ===
+{
+  "sub": "lab-parceiro",
+  "iss": "consultas-api",
+  "aud": "api-consultas",
+  "iat": 1790601690,
+  "exp": 1790602290,
+  "client_type": "m2m",
+  "scope": "horarios:read"
+}
+# ------------------------------------------------------------------
+# exit code : 0

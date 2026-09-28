@@ -37,6 +37,18 @@ with sync_playwright() as p:
     page.on("dialog", on_dialog)
     resp = page.goto(a.url, wait_until="networkidle")
     page.wait_for_timeout(800)
+    # Banner com o status HTTP (verde 2xx / vermelho 4xx-5xx) — deixa o print
+    # autoexplicativo, principalmente para respostas de erro JSON (401/403/404).
+    if resp is not None:
+        cor = "#2e7d32" if resp.status < 400 else "#c62828"
+        page.evaluate(
+            """(o) => { const b = document.createElement('div');
+              b.textContent = 'HTTP ' + o.s + '  ·  ' + o.u;
+              b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:'+o.c+
+                ';color:#fff;padding:10px 14px;font:bold 16px ui-monospace,monospace;z-index:99999';
+              document.body.style.marginTop='48px'; document.body.prepend(b); }""",
+            {"s": resp.status, "u": a.url, "c": cor},
+        )
     if dialogs:
         # Banner injetado SÓ no print (não altera o HTML servido) para registrar o alert.
         page.evaluate("""m => { const b = document.createElement('div');

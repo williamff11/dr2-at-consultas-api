@@ -68,4 +68,10 @@ Adotamos **RBAC para capacidades** e **autorização por recurso (ownership) par
 | `ex06/07_rbac_recepcao_admin_403.txt` | teste obrigatório: recepção → admin → 403 |
 | `ex06/08_pytest.txt` | 13 testes verdes |
 | `ex06/09_agenda_autenticada.png` | agenda só com sessão (sem cookie → 401) |
+| `ex06/10_sem_token_401.png` | print HTTP **401**: `/consultas` sem sessão |
+| `ex06/11_rbac_recepcao_403.png` | print HTTP **403** (RBAC): recepção em `/admin/usuarios` |
+| `ex06/12_admin_sem_mfa_403.png` | print HTTP **403**: admin autenticado sem MFA em `/admin/usuarios` |
+| `ex06/13_admin_com_mfa_200.png` | print HTTP **200**: mesmo admin após verificar o TOTP |
 | `ex11/01_segredo_hardcoded_antes.txt` | segredo no código (antes do Ex. 11) |
+
+Os prints 10–13 renderizam a **resposta HTTP real** no navegador com um banner do status (verde 2xx / vermelho 4xx), gerado por `scripts/print_tela.py`. Foram capturados sobre o código já no estado do Ex. 7 (o comportamento 401/403 do Ex. 6 permanece idêntico); o commit exato consta no cabeçalho de cada `.txt` correspondente.

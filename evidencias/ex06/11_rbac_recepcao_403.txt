@@ -1,0 +1,9 @@
+# Evidência : Print HTTP 403: recepção em /admin/usuarios (RBAC) → 11_rbac_recepcao_403.png
+# Exercício : ex06   Rubrica(s): R10,R11
+# Data      : 2026-09-28 09:23:16 -0400
+# Commit    : 521c3d1 (ex07)
+# Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/admin/usuarios evidencias/ex06/11_rbac_recepcao_403.png --cookie access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyZWNlcGNhbyIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNzkzLCJleHAiOjE3OTA2MDI2OTMsInBhcGVsIjoicmVjZXBjYW8iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIn0.jPHzwDVsrCWrAnBdDw51SvWB9h_kqEuJd-X5X8V-ciM
+# ------------------------------------------------------------------
+HTTP 403 http://localhost:8000/admin/usuarios -> evidencias/ex06/11_rbac_recepcao_403.png; dialogs=0
+# ------------------------------------------------------------------
+# exit code : 0

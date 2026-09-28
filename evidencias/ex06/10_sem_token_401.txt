@@ -1,0 +1,9 @@
+# Evidência : Print HTTP 401: GET /consultas sem sessão → 10_sem_token_401.png
+# Exercício : ex06   Rubrica(s): R10
+# Data      : 2026-09-28 09:23:13 -0400
+# Commit    : 521c3d1 (ex07)
+# Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/consultas evidencias/ex06/10_sem_token_401.png
+# ------------------------------------------------------------------
+HTTP 401 http://localhost:8000/consultas -> evidencias/ex06/10_sem_token_401.png; dialogs=0
+# ------------------------------------------------------------------
+# exit code : 0

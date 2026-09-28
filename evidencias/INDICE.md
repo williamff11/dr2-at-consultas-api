@@ -24,3 +24,13 @@
 | `ex06/08_pytest.txt` | ex06 | R10,R11 | `a8c5c32` | pytest: 13 testes (autenticação, expiração, MFA, ownership, RBAC) |
 | `ex06/09_agenda_autenticada.txt` | ex06 | R10 | `a8c5c32` | Agenda da recepção acessível só com sessão (cookie); print → 09_agenda_autenticada.png |
 | `ex11/01_segredo_hardcoded_antes.txt` | ex11 | R18 | `a8c5c32` | ANTES (Ex.11): segredo hardcoded no código da aplicação (tag ex06) |
+| `ex07/01_client_credentials.txt` | ex07 | R12 | `521c3d1` | Laboratório obtém token via client_credentials (scope horarios:read) |
+| `ex07/02_claims_humano_vs_m2m.txt` | ex07 | R12 | `521c3d1` | Claims lado a lado: humano (papel, profissional_id, scope consultas:*) × M2M (client_type m2m, scope horarios:read, sem papel) |
+| `ex07/03_lab_horarios_200.txt` | ex07 | R12 | `521c3d1` | Lab acessa /horarios-disponiveis (200) — só slots livres, sem paciente |
+| `ex07/04_lab_consultas_403.txt` | ex07 | R12 | `521c3d1` | Token do laboratório NÃO alcança dados de paciente: GET e POST /consultas → 403 |
+| `ex07/05_lab_password_grant_rejeitado.txt` | ex07 | R12 | `521c3d1` | Cliente M2M rejeitado no login humano e grant_type inválido rejeitado |
+| `ex07/06_pytest.txt` | ex07 | R12 | `521c3d1` | pytest completo (20 testes, inclui 7 de M2M) |
+| `ex06/10_sem_token_401.txt` | ex06 | R10 | `521c3d1` | Print HTTP 401: GET /consultas sem sessão → 10_sem_token_401.png |
+| `ex06/11_rbac_recepcao_403.txt` | ex06 | R10,R11 | `521c3d1` | Print HTTP 403: recepção em /admin/usuarios (RBAC) → 11_rbac_recepcao_403.png |
+| `ex06/12_admin_sem_mfa_403.txt` | ex06 | R11 | `521c3d1` | Print HTTP 403: admin autenticado SEM MFA em /admin/usuarios → 12_admin_sem_mfa_403.png |
+| `ex06/13_admin_com_mfa_200.txt` | ex06 | R11 | `521c3d1` | Print HTTP 200: admin com MFA verificado em /admin/usuarios → 13_admin_com_mfa_200.png |
