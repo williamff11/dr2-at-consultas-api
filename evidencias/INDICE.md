@@ -34,3 +34,8 @@
 | `ex06/11_rbac_recepcao_403.txt` | ex06 | R10,R11 | `521c3d1` | Print HTTP 403: recepção em /admin/usuarios (RBAC) → 11_rbac_recepcao_403.png |
 | `ex06/12_admin_sem_mfa_403.txt` | ex06 | R11 | `521c3d1` | Print HTTP 403: admin autenticado SEM MFA em /admin/usuarios → 12_admin_sem_mfa_403.png |
 | `ex06/13_admin_com_mfa_200.txt` | ex06 | R11 | `521c3d1` | Print HTTP 200: admin com MFA verificado em /admin/usuarios → 13_admin_com_mfa_200.png |
+| `ex11/02_sem_credenciais_depois.txt` | ex11 | R18 | `c6f97e2` | DEPOIS: nenhum segredo hardcoded em app/; segredo vem de Settings/.env |
+| `ex11/03_env_example.txt` | ex11 | R18 | `c6f97e2` | .env.example (só placeholders) versionado; .env ignorado pelo git |
+| `ex11/05_pytest.txt` | ex11 | R18 | `c6f97e2` | pytest com banco SQLite em memória (StaticPool) e override de sessão |
+| `ex11/04_queries_parametrizadas_log.txt` | ex11 | R18 | `c6f97e2` | SQL emitido pelo SQLModel com placeholders (?) e parâmetros separados — não há concatenação |
+| `ex11/06_falha_sem_segredo.txt` | ex11 | R18 | `c6f97e2` | Fail-fast: sem JWT_SECRET_KEY a aplicação NÃO sobe (nenhum default de segredo) |

@@ -1,0 +1,19 @@
+# Evidência : DEPOIS: nenhum segredo hardcoded em app/; segredo vem de Settings/.env
+# Exercício : ex11   Rubrica(s): R18
+# Data      : 2026-09-28 09:31:19 -0400
+# Commit    : c6f97e2 (ex11)
+# Comando   : echo '=== grep por segredo hardcoded em app/ (esperado: vazio) ==='; grep -rn --include='*.py' -iE 'secret_key *= *"|password *= *"' consultas-api/app || echo '(vazio — nenhum segredo hardcoded)'; echo; echo '=== segredo vem de Settings ==='; grep -rn 'jwt_secret_key\|get_settings\|env_file' consultas-api/app/core/config.py consultas-api/app/auth/security.py
+# ------------------------------------------------------------------
+=== grep por segredo hardcoded em app/ (esperado: vazio) ===
+(vazio — nenhum segredo hardcoded)
+
+=== segredo vem de Settings ===
+consultas-api/app/core/config.py:15:        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+consultas-api/app/core/config.py:25:    jwt_secret_key: str = Field(alias="JWT_SECRET_KEY")
+consultas-api/app/core/config.py:49:def get_settings() -> Settings:
+consultas-api/app/auth/security.py:6:Ex. 11: o segredo vem de BaseSettings/.env (get_settings). Não há mais segredo
+consultas-api/app/auth/security.py:16:from app.core.config import get_settings
+consultas-api/app/auth/security.py:18:_s = get_settings()
+consultas-api/app/auth/security.py:20:SECRET_KEY = _s.jwt_secret_key
+# ------------------------------------------------------------------
+# exit code : 0

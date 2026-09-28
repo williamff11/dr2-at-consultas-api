@@ -138,7 +138,7 @@ STRIDE: S/T/R/I/D/E. As duas últimas colunas são preenchidas nas Etapas 10, 12
 | **T08** | Escalada de privilégio (recepção/prof → admin; admin sem MFA) | E | funções administrativas | `/admin/*` | RBAC (`require_roles`) + `require_mfa` | 6 | `test_auth::test_recepcionista_nao_acessa_rota_admin`, `test_admin_sem_mfa_barrado_e_com_mfa_liberado` | `ex06/07`, `ex06/11-13` |
 | **T09** | Repúdio: ação sem trilha | R | integridade/auditoria | escrita em `/consultas`, `/auth` | `criado_por`=usuário autenticado, `atualizado_em`; log centralizado = risco residual | 6, 13 | `(pendente)` | `(pendente)` |
 | **T10** | DoS por volume / CORS permissivo | D, (S) | disponibilidade | toda a API; preflight CORS | rate limit global + CORS allowlist + headers | 10 | `(pendente)` | `(pendente)` |
-| **T11** | Segredo hardcoded no código | I | `JWT_SECRET_KEY`, credenciais | código-fonte | `BaseSettings` + `.env` (fora do git); sem defaults para segredos | 11 | `(pendente)` | `(pendente)` |
+| **T11** | Segredo hardcoded no código | I | `JWT_SECRET_KEY`, credenciais | código-fonte | `BaseSettings` + `.env` (fora do git); sem defaults para segredos | 11 | `ex11/06` (fail-fast) | `ex11/01→02` |
 | **T12** | Falta de headers de segurança (clickjacking, sniffing, downgrade) | T, I | sessão da recepção | respostas HTTP | HSTS, X-Frame-Options, X-Content-Type-Options, CSP | 10 | `(pendente)` | `(pendente)` |
 
 ## Evidências
