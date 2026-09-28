@@ -1,0 +1,65 @@
+# Relatório Técnico — DR2 AT
+
+**Aluno:** William Felício Freire · **Disciplina:** Desenvolvimento Seguro de Aplicações Web
+**Aplicação:** API de Agendamento de Consultas (FastAPI + SQLModel)
+
+Este relatório resume as **decisões de segurança** de cada exercício e aponta para os documentos detalhados (`docs/NN_*.md`) e as evidências (`evidencias/exNN/`). Referências: OWASP Top 10:2021 + OWASP API Security Top 10:2023, NIST SSDF, MITRE.
+
+## Nota metodológica: antecipação do Ex. 11
+
+A migração para SQLModel (Ex. 11) foi **antecipada** e executada antes dos Ex. 8–10. Motivo: a falha de SQL injection do Ex. 8 só é realista e demonstrável sobre uma camada de persistência SQL real — com dados em memória não haveria SQL a injetar. Os documentos seguem numerados pelo exercício. Detalhes em `docs/11_persistencia.md`.
+
+## Decisões por exercício
+
+| Ex. | Decisão de segurança central | Por quê | Detalhe |
+|---|---|---|---|
+| 1 | venv isolado + módulos routes/models/database | reprodutibilidade, base para SCA, evitar rota-gigante | `docs/01` |
+| 2 | `response_model` (allowlist de saída) + Jinja2 auto-escape | não vazar auditoria (API3) e não executar conteúdo de usuário (XSS) | `docs/02` |
+| 3 | CIA com confidencialidade priorizada (dado de saúde/LGPD) + DFD | vazamento de PHI é irreversível; fronteiras guiam o threat model | `docs/03` |
+| 4 | Threat model STRIDE rastreável (T01–T12) | referência única citada por testes e correções | `docs/04` |
+| 5 | Partições + fronteiras + 3 eixos | orienta os fluxos OAuth (humano × M2M) | `docs/05` |
+| 6 | OAuth2/JWT curto + bcrypt + **ownership centralizado** + MFA; RBAC + autorização por recurso | BOLA não é resolvido por RBAC; ownership num único lugar | `docs/06` |
+| 7 | Client credentials com escopo único `horarios:read` | token do laboratório comprometido não alcança PHI | `docs/07` |
+| 11 | SQLModel parametrizado + BaseSettings sem default de segredo | queries seguras; app não sobe sem segredo (fail-fast) | `docs/11` |
+| 8 | Vulnerabilidades intencionais marcadas (`# VULN-Vn`) e identificadas lendo código | provar identificação sem scanner; 5 categorias OWASP | `docs/08` |
+| 9 | `item_router` com ownership no prefixo; `extra='forbid'`; regex/whitelist; sem `\|safe`; endpoint irmão | correção centralizada, impossível de esquecer | `docs/09` |
+| 10 | CORS allowlist (fail-fast se `*`), headers HSTS/XFO/XCTO/CSP, rate limit diferenciado | reprovação por wildcard; força bruta no login | `docs/10` |
+| 12 | Pipeline (SAST/SCA/DAST/gate); gate Bandit em severidade Medium+ **sem** filtro de confiança | a SQLi é Medium/conf-Low; filtrar confiança deixaria passar a pior falha | `docs/12` |
+| 13 | ZAP passivo interpretado + mocking + auditoria OpenAPI + risco residual | rastreabilidade completa e decisão de deploy | `docs/13`, `RELATORIO_RASTREABILIDADE_DR2_AT.md` |
+
+## Princípio transversal: nenhuma lógica de segurança duplicada
+
+Autenticação, autorização, ownership, configuração e headers vivem em `app/auth/` e `app/core/`. As rotas apenas declaram `Depends`/`Security`. A regra de posse (anti-BOLA) existe em **um único ponto** (`app/auth/dependencies.py`), comprovado por `grep` em `evidencias/ex09/08_ownership_centralizado.txt`.
+
+## Matriz rubrica → evidência principal
+
+| R | Item | Evidência |
+|---|---|---|
+| R1 | venv/uvicorn/módulos | `ex01/01–06`, `docs/01` |
+| R2 | response_model | `ex02/02`, testes |
+| R3 | justificar exposição | `ex02/01`, `docs/02` |
+| R4 | Jinja2 auto-escape | `ex02/03–05` |
+| R5 | CIA + frameworks | `docs/03` |
+| R6 | DFD trust boundaries | `docs/img/dfd.png` |
+| R7 | misuse cases | `docs/04` |
+| R8 | STRIDE rastreável | `docs/04` (T01–T12) |
+| R9 | 3 eixos | `docs/05` |
+| R10 | OAuth2+bcrypt+ownership | `ex06/01,02,06` |
+| R11 | JWT/MFA/RBAC×ABAC | `ex06/02,05,11–13`, `docs/06` |
+| R12 | M2M escopos/claims | `ex07/*`, `docs/07` |
+| R13 | identificar OWASP lendo código | `docs/08`, `ex09/*_antes` |
+| R14 | BOLA centralizada | `ex09/01,02,08` |
+| R15 | whitelist/regex/extra=forbid | `ex09/03,05,06,07` |
+| R16 | XSS auto-escape | `ex09/04` (+png) |
+| R17 | CORS/headers/rate limit | `ex10/*` |
+| R18 | SQLModel/BaseSettings | `ex11/*` |
+| R19 | fase SDLC no pipeline | `docs/12`, `security.yml` |
+| R20 | CVSS + negócio | `ex12/01`, `docs/12` |
+| R21 | security gate (critério do aluno) | `security.yml`, `ex12/05`, 👤 prints do PR |
+| R22 | testes rastreáveis ao threat model | `tests/security/`, `ex12/04` |
+| R23 | ZAP + rastreabilidade + risco residual + decisão | `ex13/02`, `RELATORIO_RASTREABILIDADE` |
+| R24 | mocking + OpenAPI | `tests/test_unitarios_mock.py`, `ex13/04,05` |
+
+## Pendências manuais (William)
+
+Ver `evidencias/PRINTS_PENDENTES.md`: criação do repositório GitHub e prints do gate bloqueando o merge (R21), validação do critério do gate (R21), decisão sobre o deploy (R23) e o vídeo (≤5 min, YouTube não listado).
