@@ -1,0 +1,11 @@
+# Evidência : pytest completo final (todos os testes + tests/security + mocking)
+# Exercício : ex13   Rubrica(s): R24
+# Data      : 2026-09-28 10:00:09 -0400
+# Commit    : 79a5313 (main)
+# Comando   : cd consultas-api && .venv/bin/pytest -q 2>&1 | tail -3
+# ------------------------------------------------------------------
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+63 passed, 9 warnings in 2.71s
+# ------------------------------------------------------------------
+# exit code : 0

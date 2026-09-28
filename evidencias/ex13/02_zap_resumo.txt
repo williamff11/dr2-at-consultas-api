@@ -1,0 +1,20 @@
+# Evidência : OWASP ZAP baseline passivo (estado final): 0 FAIL, 6 WARN (Medium/Low), 61 PASS. Relatórios em 02_zap_baseline_depois.{html,json,md}
+# Exercício : ex13   Rubrica(s): R23
+# Data      : 2026-09-28 10:00:09 -0400
+# Commit    : 79a5313 (main)
+# Comando   : echo 'Resumo do scan ZAP (ver 02_zap_baseline_depois.html/json/md):'; consultas-api/.venv/bin/python -c "import json; d=json.load(open('evidencias/ex13/02_zap_baseline_depois.json')); s=d['site'][0]; print('total de alertas:', len(s['alerts'])); [print(f\"  [{a['riskdesc']}] {a['alert']} (x{a['count']})\") for a in s['alerts']]"
+# ------------------------------------------------------------------
+Resumo do scan ZAP (ver 02_zap_baseline_depois.html/json/md):
+total de alertas: 10
+  [Medium (Low)] Absence of Anti-CSRF Tokens (x2)
+  [Medium (High)] CSP: Failure to Define Directive with No Fallback (x2)
+  [Medium (High)] CSP: style-src unsafe-inline (x2)
+  [Low (Medium)] Cross-Origin-Embedder-Policy Header Missing or Invalid (x1)
+  [Low (Medium)] Cross-Origin-Opener-Policy Header Missing or Invalid (x1)
+  [Low (Medium)] Cross-Origin-Resource-Policy Header Missing or Invalid (x3)
+  [Low (Medium)] Permissions Policy Header Not Set (x2)
+  [Informational (Low)] Authentication Request Identified (x2)
+  [Informational (Medium)] Non-Storable Content (x5)
+  [Informational (Medium)] Storable and Cacheable Content (x3)
+# ------------------------------------------------------------------
+# exit code : 0

@@ -1,0 +1,12 @@
+# Regressão final — código na tag/commit: 79a5313
+# Data: 2026-09-28 10:00:51 -0400
+# ------------------------------------------------------------------
+V1  BOLA prontuário (Diego)      -> 404 (esperado 404)
+V1i detalhe HTML (Diego)         -> 404 (esperado 404)
+V2  SQLi bypass (' OR 1=1)        -> 422 (esperado 422)
+V3  XSS na entrada (<img>)        -> 422 (esperado 422) V3  XSS na entrada (<img>)        -> 422 (esperado 422) V3  XSS na entrada (<img>)        -> 422 (esperado 422)
+V4  Mass assignment (PATCH extra)-> 422 (esperado 422)
+V5a CORS origem maliciosa         -> allow-origin: ausente (esperado ausente)
+V5c HSTS presente                 -> strict-transport-security: max-age=31536000; includeSubDomains
+# ------------------------------------------------------------------
+# Todas as correções seguem válidas no código final.

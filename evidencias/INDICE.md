@@ -69,3 +69,7 @@
 | `ex12/04_pytest_security.txt` | ex12 | R22 | `d05ddd1` | pytest tests/security: testes rastreáveis ao threat model (T0x visíveis) |
 | `ex12/05_bandit_contra_ex08.txt` | ex12 | R21 | `d05ddd1` | Prova de que o gate teria BLOQUEADO a V2: Bandit -ll no worktree da tag ex08-vulneravel acha a SQLi (B608) e falha |
 | `ex12/06_pytest_completo.txt` | ex12 | R22 | `d05ddd1` | pytest completo (todos os testes, incluindo tests/security) |
+| `ex13/02_zap_resumo.txt` | ex13 | R23 | `79a5313` | OWASP ZAP baseline passivo (estado final): 0 FAIL, 6 WARN (Medium/Low), 61 PASS. Relatórios em 02_zap_baseline_depois.{html,json,md} |
+| `ex13/03_openapi.txt` | ex13 | R24 | `79a5313` | OpenAPI da aplicação (para auditoria) |
+| `ex13/04_auditoria_openapi.txt` | ex13 | R24 | `79a5313` | Auditoria da OpenAPI: apontamentos de design de segurança (o que foi corrigido e o que fica como risco residual) |
+| `ex13/05_pytest_final.txt` | ex13 | R24 | `79a5313` | pytest completo final (todos os testes + tests/security + mocking) |

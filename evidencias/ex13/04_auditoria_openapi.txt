@@ -1,0 +1,16 @@
+# Evidência : Auditoria da OpenAPI: apontamentos de design de segurança (o que foi corrigido e o que fica como risco residual)
+# Exercício : ex13   Rubrica(s): R24
+# Data      : 2026-09-28 10:00:09 -0400
+# Commit    : 79a5313 (main)
+# Comando   : curl -s localhost:8000/openapi.json > /tmp/oa.json; consultas-api/.venv/bin/python scripts/auditar_openapi.py /tmp/oa.json
+# ------------------------------------------------------------------
+Auditoria OpenAPI — 6 apontamentos
+------------------------------------------------------------
+[medio] GET /horarios-disponiveis: não documenta 401/403
+[medio] GET /horarios-disponiveis: parâmetro 'dia' string sem maxLength/pattern
+[medio] GET /recepcao/agenda: não documenta 401/403
+[medio] GET /recepcao/consultas/{consulta_id}: não documenta 401/403
+[info] Verifique se /docs e /openapi.json ficam desabilitados em produção (a app usa docs_url=None quando ENV=prod).
+[baixo] /consultas/{consulta_id}: id inteiro sequencial (enumeração); ownership mitiga, UUID seria defesa extra — risco residual
+# ------------------------------------------------------------------
+# exit code : 0
