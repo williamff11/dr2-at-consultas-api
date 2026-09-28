@@ -48,3 +48,12 @@
 | `ex10/01_V5a_cors_antes.txt` | ex10 | R17 | `104f916` | V5a CORS (ANTES): preflight de origem maliciosa é aceito (allow-origin ecoa a origem / *) |
 | `ex10/02_V5b_bruteforce_antes.txt` | ex10 | R17 | `104f916` | V5b Força bruta (ANTES): 10 logins com senha errada — todas 401, nenhum 429 (sem rate limit) |
 | `ex10/03_V5c_headers_antes.txt` | ex10 | R17 | `104f916` | V5c Headers (ANTES): respostas sem HSTS/X-Frame-Options/X-Content-Type-Options |
+| `ex09/01_V1_bola_prontuario_depois.txt` | ex09 | R14 | `313e28c` | V1 BOLA (DEPOIS): Dr. Diego no prontuário de paciente da Carla → 404 (ownership no item_router) |
+| `ex09/02_V1irmao_detalhe_html_depois.txt` | ex09 | R14 | `313e28c` | V1-irmão (DEPOIS): Dr. Diego em /recepcao/consultas/1 → 404 (mesma dependência de ownership) |
+| `ex09/03_V2_sqli_depois.txt` | ex09 | R15 | `313e28c` | V2 SQLi (DEPOIS): mesmos vetores do antes agora bloqueados; apostrofo legitimo e tratado como literal pela query parametrizada |
+| `ex09/04_V3_xss_depois.txt` | ex09 | R16 | `313e28c` | V3 XSS (DEPOIS): payload com <img onerror> rejeitado na entrada (422); página de detalhe sem alert (dialogs=0) |
+| `ex09/05_V4_mass_assignment_depois.txt` | ex09 | R15 | `313e28c` | V4 Mass assignment (DEPOIS): PATCH com profissional_id/criado_por extras → 422 extra_forbidden |
+| `ex09/06_extra_campo_depois.txt` | ex09 | R15 | `313e28c` | extra (DEPOIS): POST com campo_inexistente → 422 extra_forbidden |
+| `ex09/07_regex_whitelist.txt` | ex09 | R15 | `313e28c` | Whitelist/regex: entradas válidas × inválidas (nome com dígito, status inexistente, transição proibida) |
+| `ex09/08_ownership_centralizado.txt` | ex09 | R14 | `313e28c` | Ownership centralizado: a decisão de posse (compara profissional_id do objeto) existe só em dependencies.py |
+| `ex09/09_pytest.txt` | ex09 | R14,R15,R16 | `313e28c` | pytest: 29 testes (correções V1-V4 + endpoint irmão) |

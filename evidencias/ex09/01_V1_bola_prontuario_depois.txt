@@ -1,0 +1,13 @@
+# Evidência : V1 BOLA (DEPOIS): Dr. Diego no prontuário de paciente da Carla → 404 (ownership no item_router)
+# Exercício : ex09   Rubrica(s): R14
+# Data      : 2026-09-28 09:41:29 -0400
+# Commit    : 313e28c (ex09)
+# Comando   : TD=$(scripts/token.sh dr_diego); echo 'Diego acessa /consultas/1/prontuario:'; curl -s -i localhost:8000/consultas/1/prontuario -H "Authorization: Bearer $TD" | tail -5
+# ------------------------------------------------------------------
+Diego acessa /consultas/1/prontuario:
+content-length: 37
+content-type: application/json
+vary: Origin
+
+{"detail":"Consulta não encontrada"}# ------------------------------------------------------------------
+# exit code : 0

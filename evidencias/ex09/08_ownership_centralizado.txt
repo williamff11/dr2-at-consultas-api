@@ -1,0 +1,24 @@
+# Evidência : Ownership centralizado: a decisão de posse (compara profissional_id do objeto) existe só em dependencies.py
+# Exercício : ex09   Rubrica(s): R14
+# Data      : 2026-09-28 09:43:06 -0400
+# Commit    : 313e28c (ex09)
+# Comando   : echo '=== decisao de posse a nivel de objeto (BOLA) ==='; grep -rn 'consulta.profissional_id == user' consultas-api/app; echo; echo '=== uso de get_consulta_autorizada (rotas so declaram a dependencia) ==='; grep -rn 'Depends(get_consulta_autorizada)' consultas-api/app; echo; echo '(os demais profissional_id == sao filtros de LISTAGEM, nao decisao de posse:)'; grep -rn 'profissional_id ==' consultas-api/app/routes
+# ------------------------------------------------------------------
+=== decisao de posse a nivel de objeto (BOLA) ===
+consultas-api/app/auth/dependencies.py:113:    if papel == "profissional" and consulta.profissional_id == user.get("profissional_id"):
+
+=== uso de get_consulta_autorizada (rotas so declaram a dependencia) ===
+Binary file consultas-api/app/routes/__pycache__/consultas.cpython-312.pyc matches
+consultas-api/app/routes/pages.py:103:    consulta: Consulta = Depends(get_consulta_autorizada),
+consultas-api/app/routes/consultas.py:5:cujo prefixo `/consultas/{consulta_id}` já carrega `Depends(get_consulta_autorizada)`.
+consultas-api/app/routes/consultas.py:30:    dependencies=[Depends(get_consulta_autorizada)],
+consultas-api/app/routes/consultas.py:83:def obter_consulta(consulta: Consulta = Depends(get_consulta_autorizada)):
+consultas-api/app/routes/consultas.py:89:    consulta: Consulta = Depends(get_consulta_autorizada),
+consultas-api/app/routes/consultas.py:107:    consulta: Consulta = Depends(get_consulta_autorizada),
+consultas-api/app/routes/consultas.py:145:    consulta: Consulta = Depends(get_consulta_autorizada),
+
+(os demais profissional_id == sao filtros de LISTAGEM, nao decisao de posse:)
+consultas-api/app/routes/consultas.py:41:        stmt = stmt.where(Consulta.profissional_id == user.get("profissional_id"))
+consultas-api/app/routes/m2m.py:60:        select(Consulta).where(Consulta.profissional_id == profissional_id)
+# ------------------------------------------------------------------
+# exit code : 0

@@ -1,0 +1,10 @@
+# Evidência : V1-irmão (DEPOIS): Dr. Diego em /recepcao/consultas/1 → 404 (mesma dependência de ownership)
+# Exercício : ex09   Rubrica(s): R14
+# Data      : 2026-09-28 09:41:29 -0400
+# Commit    : 313e28c (ex09)
+# Comando   : TD=$(scripts/token.sh dr_diego); curl -s -o /dev/null -w 'Diego GET /recepcao/consultas/1 -> HTTP %{http_code}\n' --cookie "access_token=$TD" localhost:8000/recepcao/consultas/1; TC=$(scripts/token.sh dra_carla); curl -s -o /dev/null -w 'Carla (dona) GET /recepcao/consultas/1 -> HTTP %{http_code}\n' --cookie "access_token=$TC" localhost:8000/recepcao/consultas/1
+# ------------------------------------------------------------------
+Diego GET /recepcao/consultas/1 -> HTTP 404
+Carla (dona) GET /recepcao/consultas/1 -> HTTP 200
+# ------------------------------------------------------------------
+# exit code : 0

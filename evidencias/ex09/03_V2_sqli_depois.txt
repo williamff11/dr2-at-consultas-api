@@ -1,0 +1,14 @@
+# Evidência : V2 SQLi (DEPOIS): mesmos vetores do antes agora bloqueados; apostrofo legitimo e tratado como literal pela query parametrizada
+# Exercício : ex09   Rubrica(s): R15
+# Data      : 2026-09-28 09:42:16 -0400
+# Commit    : 313e28c (ex09)
+# Comando   : TC=$(scripts/token.sh dra_carla); H="Authorization: Bearer $TC"; printf '%s ' "[caso 1] bypass com = e digitos:"; curl -s -o /dev/null -w 'HTTP %{http_code} (whitelist rejeita)\n' -G localhost:8000/pacientes --data-urlencode "nome=' OR 1=1" -H "$H"; printf '%s ' "[caso 2] UNION SELECT (longo):"; curl -s -o /dev/null -w 'HTTP %{http_code} (rejeitado)\n' -G localhost:8000/pacientes --data-urlencode "nome=' UNION SELECT username, papel, senha_hash, id FROM usuario -- " -H "$H"; printf '%s\n' "[caso 3] nome legitimo com apostrofo (O'Brien) — query parametrizada, valor e literal:"; curl -s -w ' <- HTTP %{http_code}\n' -G localhost:8000/pacientes --data-urlencode "nome=O'Brien" -H "$H"; printf '%s\n' "[caso 4] busca legitima nome=Ana:"; curl -s -w ' <- HTTP %{http_code}\n' -G localhost:8000/pacientes --data-urlencode 'nome=Ana' -H "$H"
+# ------------------------------------------------------------------
+[caso 1] bypass com = e digitos: HTTP 422 (whitelist rejeita)
+[caso 2] UNION SELECT (longo): HTTP 422 (rejeitado)
+[caso 3] nome legitimo com apostrofo (O'Brien) — query parametrizada, valor e literal:
+[] <- HTTP 200
+[caso 4] busca legitima nome=Ana:
+[{"id":1,"nome":"Ana Souza","cpf":"111.111.111-11","profissional_id":1}] <- HTTP 200
+# ------------------------------------------------------------------
+# exit code : 0

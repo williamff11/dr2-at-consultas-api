@@ -1,0 +1,10 @@
+# Evidência : extra (DEPOIS): POST com campo_inexistente → 422 extra_forbidden
+# Exercício : ex09   Rubrica(s): R15
+# Data      : 2026-09-28 09:42:43 -0400
+# Commit    : 313e28c (ex09)
+# Comando   : TC=$(scripts/token.sh dra_carla); curl -s -i -X POST localhost:8000/consultas -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"paciente_id":1,"data_hora":"2026-09-28T17:00:00","campo_inexistente":1}' | tail -3
+# ------------------------------------------------------------------
+vary: Origin
+
+{"detail":[{"type":"extra_forbidden","loc":["body","campo_inexistente"],"msg":"Extra inputs are not permitted","input":1}]}# ------------------------------------------------------------------
+# exit code : 0
