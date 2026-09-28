@@ -1,0 +1,9 @@
+# Evidência : Print da agenda: payload XSS exibido como texto, sem alert (dialogs=0) → 05_agenda_escapada.png
+# Exercício : ex02   Rubrica(s): R4
+# Data      : 2026-09-28 08:44:49 -0400
+# Commit    : 19a8ad9 (main)
+# Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/recepcao/agenda evidencias/ex02/05_agenda_escapada.png
+# ------------------------------------------------------------------
+HTTP 200 http://localhost:8000/recepcao/agenda -> evidencias/ex02/05_agenda_escapada.png; dialogs=0
+# ------------------------------------------------------------------
+# exit code : 0

@@ -1,0 +1,26 @@
+# Evidência : ANTES (branch demo, sem response_model): POST e GET vazam criado_por, ip_origem, criado_em, atualizado_em
+# Exercício : ex02   Rubrica(s): R2,R3
+# Data      : 2026-09-28 08:44:34 -0400
+# Commit    : f3b26ec (demo/ex02-sem-response-model)
+# Comando   : set -x; curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'; echo; curl -s -i localhost:8000/consultas/1; echo
+# ------------------------------------------------------------------
++ curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'
+HTTP/1.1 201 Created
+date: Mon, 28 Sep 2026 12:44:34 GMT
+server: uvicorn
+content-length: 278
+content-type: application/json
+
+{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame","status":"agendada","criado_por":"anonimo","ip_origem":"127.0.0.1","criado_em":"2026-09-28T12:44:34.846024+00:00","atualizado_em":"2026-09-28T12:44:34.846024+00:00"}+ echo
+
++ curl -s -i localhost:8000/consultas/1
+HTTP/1.1 200 OK
+date: Mon, 28 Sep 2026 12:44:34 GMT
+server: uvicorn
+content-length: 278
+content-type: application/json
+
+{"id":1,"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame","status":"agendada","criado_por":"anonimo","ip_origem":"127.0.0.1","criado_em":"2026-09-28T12:44:34.846024+00:00","atualizado_em":"2026-09-28T12:44:34.846024+00:00"}+ echo
+
+# ------------------------------------------------------------------
+# exit code : 0
