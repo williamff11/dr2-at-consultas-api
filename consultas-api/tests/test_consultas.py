@@ -53,6 +53,24 @@ def test_resposta_nao_expoe_campos_internos():
     assert all(CAMPOS_INTERNOS.isdisjoint(item) for item in lista)
 
 
+
+def test_sem_response_model_vazaria_campos_internos():
+    """R3 executável: a MESMA função de rota, registrada sem response_model,
+    serializa o registro inteiro — os campos de auditoria vazam."""
+    from fastapi import FastAPI
+
+    from app.routes.consultas import obter_consulta
+
+    criada = client.post("/consultas", json=_payload()).json()
+
+    app_sem_filtro = FastAPI()
+    app_sem_filtro.add_api_route("/consultas/{consulta_id}", obter_consulta)  # sem response_model
+    vazado = TestClient(app_sem_filtro).get(f"/consultas/{criada['id']}").json()
+
+    assert CAMPOS_INTERNOS <= vazado.keys()          # sem filtro: vaza
+    assert vazado["ip_origem"] == "testclient"
+    assert CAMPOS_INTERNOS.isdisjoint(client.get(f"/consultas/{criada['id']}").json())  # com filtro: não
+
 # ---------- Ex. 2: XSS stored neutralizado pelo auto-escape ----------
 def test_agenda_html_escapa_payload_xss():
     ataque = "<script>alert('xss')</script>"
