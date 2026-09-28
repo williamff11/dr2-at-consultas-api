@@ -128,18 +128,18 @@ STRIDE: S/T/R/I/D/E. As duas últimas colunas são preenchidas nas Etapas 10, 12
 
 | ID | Ameaça | STRIDE | Ativo | Superfície (rota) | Mitigação | Exercício | Teste que prova | Evidência |
 |---|---|---|---|---|---|---|---|---|
-| **T01** | BOLA em consulta/prontuário | I, E | dados de saúde | `GET/PATCH/DELETE /consultas/{id}`, `/prontuario`, detalhe HTML | ownership centralizado (`get_consulta_autorizada`) num único `APIRouter` | 6, 9 | `(pendente)` | `(pendente)` |
-| **T02** | SQL injection na busca | T, I | dados de saúde, hashes | `GET /pacientes?nome=` | query parametrizada SQLModel + validação regex do parâmetro | 9, 11 | `(pendente)` | `(pendente)` |
-| **T03** | XSS stored em `observacoes` | T, E | sessão da recepção | `POST /consultas` → agenda/detalhe HTML | auto-escape Jinja2 (sem `\|safe`) + rejeição de `<`/`>` na entrada | 2, 9 | `(pendente)` | `(pendente)` |
+| **T01** | BOLA em consulta/prontuário | I, E | dados de saúde | `GET/PATCH/DELETE /consultas/{id}`, `/prontuario`, detalhe HTML | ownership centralizado (`get_consulta_autorizada`) num único `APIRouter` | 6, 9 | `(Ex.12)` | `ex09/01,02 antes` |
+| **T02** | SQL injection na busca | T, I | dados de saúde, hashes | `GET /pacientes?nome=` | query parametrizada SQLModel + validação regex do parâmetro | 9, 11 | `(Ex.12)` | `ex09/03 antes` |
+| **T03** | XSS stored em `observacoes` | T, E | sessão da recepção | `POST /consultas` → agenda/detalhe HTML | auto-escape Jinja2 (sem `\|safe`) + rejeição de `<`/`>` na entrada | 2, 9 | `(Ex.12)` | `ex09/04 antes` |
 | **T04** | JWT forjado / expirado aceito | S, T | todas as sessões | qualquer rota autenticada | assinatura HS256 verificada + validação de `exp`/`iss`/`aud` | 6 | `test_auth::test_token_expirado_401`, `test_token_assinado_com_outra_chave_401` | `ex06/04` |
-| **T05** | Força bruta de senha | S, D | credenciais | `POST /auth/token` | rate limit dedicado + resposta genérica + MFA no admin | 10 | `(pendente)` | `(pendente)` |
-| **T06** | Mass assignment | T, E | integridade da consulta | `POST`/`PATCH /consultas` | `extra='forbid'` + whitelist de campos; `profissional_id` vem do token | 9 | `(pendente)` | `(pendente)` |
+| **T05** | Força bruta de senha | S, D | credenciais | `POST /auth/token` | rate limit dedicado + resposta genérica + MFA no admin | 10 | `(Ex.12)` | `ex10/02 antes` |
+| **T06** | Mass assignment | T, E | integridade da consulta | `POST`/`PATCH /consultas` | `extra='forbid'` + whitelist de campos; `profissional_id` vem do token | 9 | `(Ex.12)` | `ex09/05,06 antes` |
 | **T07** | Token M2M além do escopo | E, I | dados de saúde | `/consultas*` com token de laboratório | escopos OAuth (`horarios:read`) verificados por `Security(scopes=...)` | 7 | `test_m2m::test_lab_nao_acessa_consultas` | `ex07/04` |
 | **T08** | Escalada de privilégio (recepção/prof → admin; admin sem MFA) | E | funções administrativas | `/admin/*` | RBAC (`require_roles`) + `require_mfa` | 6 | `test_auth::test_recepcionista_nao_acessa_rota_admin`, `test_admin_sem_mfa_barrado_e_com_mfa_liberado` | `ex06/07`, `ex06/11-13` |
 | **T09** | Repúdio: ação sem trilha | R | integridade/auditoria | escrita em `/consultas`, `/auth` | `criado_por`=usuário autenticado, `atualizado_em`; log centralizado = risco residual | 6, 13 | `(pendente)` | `(pendente)` |
-| **T10** | DoS por volume / CORS permissivo | D, (S) | disponibilidade | toda a API; preflight CORS | rate limit global + CORS allowlist + headers | 10 | `(pendente)` | `(pendente)` |
+| **T10** | DoS por volume / CORS permissivo | D, (S) | disponibilidade | toda a API; preflight CORS | rate limit global + CORS allowlist + headers | 10 | `(Ex.12)` | `ex10/01 antes` |
 | **T11** | Segredo hardcoded no código | I | `JWT_SECRET_KEY`, credenciais | código-fonte | `BaseSettings` + `.env` (fora do git); sem defaults para segredos | 11 | `ex11/06` (fail-fast) | `ex11/01→02` |
-| **T12** | Falta de headers de segurança (clickjacking, sniffing, downgrade) | T, I | sessão da recepção | respostas HTTP | HSTS, X-Frame-Options, X-Content-Type-Options, CSP | 10 | `(pendente)` | `(pendente)` |
+| **T12** | Falta de headers de segurança (clickjacking, sniffing, downgrade) | T, I | sessão da recepção | respostas HTTP | HSTS, X-Frame-Options, X-Content-Type-Options, CSP | 10 | `(Ex.12)` | `ex10/03 antes` |
 
 ## Evidências
 

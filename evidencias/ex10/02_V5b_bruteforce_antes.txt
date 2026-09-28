@@ -1,0 +1,18 @@
+# Evidência : V5b Força bruta (ANTES): 10 logins com senha errada — todas 401, nenhum 429 (sem rate limit)
+# Exercício : ex10   Rubrica(s): R17
+# Data      : 2026-09-28 09:36:27 -0400
+# Commit    : 104f916 (ex08-vulneravel)
+# Comando   : for i in $(seq 1 10); do curl -s -o /dev/null -w "tentativa $i -> %{http_code}\n" -X POST localhost:8000/auth/token -d 'username=dra_carla&password=errada'; done
+# ------------------------------------------------------------------
+tentativa 1 -> 401
+tentativa 2 -> 401
+tentativa 3 -> 401
+tentativa 4 -> 401
+tentativa 5 -> 401
+tentativa 6 -> 401
+tentativa 7 -> 401
+tentativa 8 -> 401
+tentativa 9 -> 401
+tentativa 10 -> 401
+# ------------------------------------------------------------------
+# exit code : 0

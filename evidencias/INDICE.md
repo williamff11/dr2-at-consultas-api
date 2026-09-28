@@ -39,3 +39,12 @@
 | `ex11/05_pytest.txt` | ex11 | R18 | `c6f97e2` | pytest com banco SQLite em memória (StaticPool) e override de sessão |
 | `ex11/04_queries_parametrizadas_log.txt` | ex11 | R18 | `c6f97e2` | SQL emitido pelo SQLModel com placeholders (?) e parâmetros separados — não há concatenação |
 | `ex11/06_falha_sem_segredo.txt` | ex11 | R18 | `c6f97e2` | Fail-fast: sem JWT_SECRET_KEY a aplicação NÃO sobe (nenhum default de segredo) |
+| `ex09/01_V1_bola_prontuario_antes.txt` | ex09 | R14 | `104f916` | V1 BOLA (ANTES): Dr. Diego lê o prontuário de paciente da Dra. Carla trocando o id → 200 com CPF e observações clínicas |
+| `ex09/02_V1irmao_detalhe_html_antes.txt` | ex09 | R14 | `104f916` | V1-irmão (ANTES): Dr. Diego abre /recepcao/consultas/1 (paciente da Carla) via cookie → 200 com dados |
+| `ex09/03_V2_sqli_antes.txt` | ex09 | R15 | `104f916` | V2 SQLi (ANTES): parâmetro nome concatenado altera a query — retorna pacientes fora do filtro e extrai hashes via UNION |
+| `ex09/04_V3_xss_antes.txt` | ex09 | R16 | `104f916` | V3 XSS stored (ANTES): página de detalhe renderiza <img onerror> sem escape (|safe); print captura o alert com document.cookie |
+| `ex09/05_V4_mass_assignment_antes.txt` | ex09 | R15 | `104f916` | V4 Mass assignment (ANTES): Carla altera a PRÓPRIA consulta enviando profissional_id e criado_por extras → aceitos; a consulta troca de dono |
+| `ex09/06_extra_campo_antes.txt` | ex09 | R15 | `104f916` | V4/extra (ANTES): POST com campo_inexistente e status='realizada' — campos extras aceitos/ignorados em silêncio (sem extra=forbid) |
+| `ex10/01_V5a_cors_antes.txt` | ex10 | R17 | `104f916` | V5a CORS (ANTES): preflight de origem maliciosa é aceito (allow-origin ecoa a origem / *) |
+| `ex10/02_V5b_bruteforce_antes.txt` | ex10 | R17 | `104f916` | V5b Força bruta (ANTES): 10 logins com senha errada — todas 401, nenhum 429 (sem rate limit) |
+| `ex10/03_V5c_headers_antes.txt` | ex10 | R17 | `104f916` | V5c Headers (ANTES): respostas sem HSTS/X-Frame-Options/X-Content-Type-Options |

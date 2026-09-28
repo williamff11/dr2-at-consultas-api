@@ -1,0 +1,12 @@
+# Evidência : V5c Headers (ANTES): respostas sem HSTS/X-Frame-Options/X-Content-Type-Options
+# Exercício : ex10   Rubrica(s): R17
+# Data      : 2026-09-28 09:36:29 -0400
+# Commit    : 104f916 (ex08-vulneravel)
+# Comando   : echo '--- /health:'; curl -s -I localhost:8000/health | grep -iE 'strict-transport|x-frame|x-content-type|content-security' || echo '(nenhum header de segurança presente)'; echo '--- /recepcao/login:'; curl -s -I localhost:8000/recepcao/login | grep -iE 'strict-transport|x-frame|x-content-type|content-security' || echo '(nenhum header de segurança presente)'
+# ------------------------------------------------------------------
+--- /health:
+(nenhum header de segurança presente)
+--- /recepcao/login:
+(nenhum header de segurança presente)
+# ------------------------------------------------------------------
+# exit code : 0
