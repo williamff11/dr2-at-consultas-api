@@ -1,0 +1,28 @@
+# Evidência : pytest: testes de hardening (headers, CORS, rate limit)
+# Exercício : ex10   Rubrica(s): R17
+# Data      : 2026-09-28 09:49:25 -0400
+# Commit    : 57e1ca8 (ex10)
+# Comando   : cd consultas-api && .venv/bin/pytest tests/test_hardening.py -v
+# ------------------------------------------------------------------
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0 -- /Users/williamfreire/workspace/college/Desenvolvimento Seguro de Aplicações Web/William_Felicio_Freire_DR2_AT/consultas-api/.venv/bin/python3.12
+cachedir: .pytest_cache
+rootdir: /Users/williamfreire/workspace/college/Desenvolvimento Seguro de Aplicações Web/William_Felicio_Freire_DR2_AT/consultas-api
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collecting ... collected 4 items
+
+tests/test_hardening.py::test_headers_de_seguranca_presentes PASSED      [ 25%]
+tests/test_hardening.py::test_csp_nas_paginas_html PASSED                [ 50%]
+tests/test_hardening.py::test_cors_origem_fora_da_allowlist PASSED       [ 75%]
+tests/test_hardening.py::test_rate_limit_login PASSED                    [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/williamfreire/workspace/college/Desenvolvimento Seguro de Aplicações Web/William_Felicio_Freire_DR2_AT/consultas-api/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 4 passed, 1 warning in 0.04s =========================
+# ------------------------------------------------------------------
+# exit code : 0

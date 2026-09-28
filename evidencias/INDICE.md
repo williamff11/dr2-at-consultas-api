@@ -57,3 +57,9 @@
 | `ex09/07_regex_whitelist.txt` | ex09 | R15 | `313e28c` | Whitelist/regex: entradas válidas × inválidas (nome com dígito, status inexistente, transição proibida) |
 | `ex09/08_ownership_centralizado.txt` | ex09 | R14 | `313e28c` | Ownership centralizado: a decisão de posse (compara profissional_id do objeto) existe só em dependencies.py |
 | `ex09/09_pytest.txt` | ex09 | R14,R15,R16 | `313e28c` | pytest: 29 testes (correções V1-V4 + endpoint irmão) |
+| `ex10/04_cors_origem_permitida.txt` | ex10 | R17 | `57e1ca8` | CORS: origem da allowlist (http://localhost:5173) recebe Access-Control-Allow-Origin |
+| `ex10/01_V5a_cors_depois.txt` | ex10 | R17 | `57e1ca8` | V5a CORS (DEPOIS): preflight de https://evil.example NÃO recebe Access-Control-Allow-Origin (navegador bloqueia) |
+| `ex10/03_V5c_headers_depois.txt` | ex10 | R17 | `57e1ca8` | V5c Headers (DEPOIS): HSTS/XFO/XCTO em todas as respostas; CSP no GET das páginas HTML |
+| `ex10/02_V5b_bruteforce_depois.txt` | ex10 | R17 | `57e1ca8` | V5b Força bruta (DEPOIS): 7 logins com senha errada — 5 chegam a 401, a partir da 6ª → 429 (rate limit) |
+| `ex10/05_rate_limit_diferenciado.txt` | ex10 | R17 | `57e1ca8` | Rate limit diferenciado: 15 GETs numa rota comum (limite global 120/min) → todos 200/OK, sem 429 |
+| `ex10/06_pytest.txt` | ex10 | R17 | `57e1ca8` | pytest: testes de hardening (headers, CORS, rate limit) |

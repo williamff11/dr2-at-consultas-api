@@ -1,0 +1,10 @@
+# Evidência : CORS: origem da allowlist (http://localhost:5173) recebe Access-Control-Allow-Origin
+# Exercício : ex10   Rubrica(s): R17
+# Data      : 2026-09-28 09:46:54 -0400
+# Commit    : 57e1ca8 (ex10)
+# Comando   : curl -s -i -X OPTIONS localhost:8000/consultas -H 'Origin: http://localhost:5173' -H 'Access-Control-Request-Method: GET' | grep -iE 'HTTP/|access-control-allow-origin'
+# ------------------------------------------------------------------
+HTTP/1.1 200 OK
+access-control-allow-origin: http://localhost:5173
+# ------------------------------------------------------------------
+# exit code : 0
