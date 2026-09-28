@@ -1,0 +1,45 @@
+flowchart LR
+    classDef ext fill:#e8ecff,stroke:#334,color:#000
+    classDef proc fill:#e6f6e6,stroke:#353,color:#000
+    classDef store fill:#fff7d6,stroke:#553,color:#000
+
+    subgraph INTERNET["Zona não confiável — Internet / rede interna das clínicas"]
+        FE["Frontend SPA<br/>(profissional / admin)<br/>consome JSON"]:::ext
+        REC["Recepção<br/>(navegador interno)<br/>consome HTML"]:::ext
+    end
+
+    subgraph PARCEIRO["Zona não confiável — Rede do laboratório parceiro"]
+        LAB["Laboratório parceiro<br/>(cliente M2M)"]:::ext
+    end
+
+    subgraph API["Zona confiável — API FastAPI"]
+        AUTH(("1. Auth<br/>/auth/*")):::proc
+        CONS(("2. Consultas / Pacientes<br/>/consultas · /pacientes")):::proc
+        PAG(("3. Páginas<br/>/recepcao/*")):::proc
+        HOR(("4. Horários<br/>/horarios-disponiveis")):::proc
+    end
+
+    subgraph DADOS["Zona de dados — Banco"]
+        DB[("Banco relacional<br/>pacientes · profissionais · consultas<br/>usuários · clientes M2M")]:::store
+    end
+
+    FE -- "F1 credenciais (senha, TOTP)" --> AUTH
+    AUTH -- "F2 JWT 15 min" --> FE
+    FE == "F3 [PHI] consultas / prontuário (Bearer)" ==> CONS
+    CONS == "F4 [PHI] ConsultaPublic" ==> FE
+    REC -- "F5 login (form) → cookie HttpOnly" --> AUTH
+    PAG == "F6 [PHI] agenda HTML (paciente, observações)" ==> REC
+    LAB -- "F7 client_id + client_secret" --> AUTH
+    AUTH -- "F8 JWT M2M scope=horarios:read" --> LAB
+    LAB -- "F9 GET slots (Bearer M2M)" --> HOR
+    HOR -- "F10 slots livres (sem paciente)" --> LAB
+    AUTH -- "F11 hash bcrypt / segredo TOTP" --> DB
+    CONS == "F12 [PHI] SQL parametrizado" ==> DB
+    PAG == "F13 [PHI] leitura" ==> DB
+    HOR -- "F14 horários ocupados (sem paciente)" --> DB
+
+    linkStyle 2,3,5,11,12 stroke:#c00,stroke-width:3px
+    style INTERNET fill:#fafafa,stroke:#c00,stroke-width:2px,stroke-dasharray: 8 5
+    style PARCEIRO fill:#fafafa,stroke:#c00,stroke-width:2px,stroke-dasharray: 8 5
+    style API fill:#f4fff4,stroke:#070,stroke-width:2px
+    style DADOS fill:#fffdf0,stroke:#c00,stroke-width:2px,stroke-dasharray: 8 5
