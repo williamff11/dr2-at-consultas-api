@@ -44,8 +44,9 @@ def test_token_assinado_com_outra_chave_401(client):
 
 # ---------- MFA ----------
 def test_admin_sem_mfa_barrado_e_com_mfa_liberado(client):
+    import os
+
     from app.auth.mfa import gerar_codigo_atual
-    from app import database as db
 
     # login → desafio de MFA
     r = client.post("/auth/token", data={"username": "admin", "password": "admin-dev-2026!"})
@@ -57,7 +58,7 @@ def test_admin_sem_mfa_barrado_e_com_mfa_liberado(client):
     assert r.status_code == 403
 
     # verificar o 2º fator → access token com mfa=true
-    codigo = gerar_codigo_atual(db.usuarios["admin"]["totp_secret"])
+    codigo = gerar_codigo_atual(os.environ["SEED_TOTP_ADMIN"])
     r = client.post("/auth/mfa/verify", json={"mfa_token": mfa_token, "codigo": codigo})
     assert r.status_code == 200
     access = r.json()["access_token"]

@@ -3,12 +3,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.database import criar_tabelas
 from app.routes import admin, auth, consultas, m2m, pages
 from app.seed import semear
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    criar_tabelas()
     semear()
     yield
 

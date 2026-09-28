@@ -11,9 +11,11 @@ from __future__ import annotations
 import jwt
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
+from sqlmodel import Session
 
-from app import database as db
 from app.auth import security
+from app.database import get_session
+from app.models.tables import Consulta
 
 # Escopos derivados do papel (usados de forma plena no Ex. 7).
 ESCOPOS_POR_PAPEL: dict[str, str] = {
@@ -91,8 +93,9 @@ def require_mfa(user: dict = Depends(get_current_user)) -> dict:
 
 def get_consulta_autorizada(
     consulta_id: int,
+    session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
-) -> dict:
+) -> Consulta:
     """Autorização a NÍVEL DE OBJETO (anti-BOLA). Ponto único de decisão de posse.
 
     - admin e recepção: acesso a qualquer consulta (papel operacional);
@@ -100,14 +103,14 @@ def get_consulta_autorizada(
     - caso contrário: 404 (não confirmamos a existência de recurso de terceiro —
       preserva a confidencialidade, decisão registrada em docs/03 e docs/06).
     """
-    consulta = db.consultas.get(consulta_id)
+    consulta = session.get(Consulta, consulta_id)
     if consulta is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Consulta não encontrada")
 
     papel = user.get("papel")
     if papel in ("admin", "recepcao"):
         return consulta
-    if papel == "profissional" and consulta.get("profissional_id") == user.get("profissional_id"):
+    if papel == "profissional" and consulta.profissional_id == user.get("profissional_id"):
         return consulta
 
     raise HTTPException(status.HTTP_404_NOT_FOUND, "Consulta não encontrada")

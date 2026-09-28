@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app import database as db
+from app.models.tables import Consulta
 
 CAMPOS_INTERNOS = {"criado_por", "ip_origem", "criado_em", "atualizado_em"}
 
@@ -37,19 +37,20 @@ def test_criar_e_obter_consulta_sucesso(client, auth):
 
 
 # ---------- Ex. 2: response_model não vaza auditoria ----------
-def test_resposta_nao_expoe_campos_internos(client, auth):
+def test_resposta_nao_expoe_campos_internos(client, auth, session):
     criada = client.post("/consultas", json=_payload(), headers=auth("dra_carla")).json()
     assert CAMPOS_INTERNOS.isdisjoint(criada)
-    assert CAMPOS_INTERNOS <= db.consultas[criada["id"]].keys()
+    registro = session.get(Consulta, criada["id"])
+    assert CAMPOS_INTERNOS <= registro.model_dump().keys()  # o registro TEM os campos
 
     lista = client.get("/consultas", headers=auth("dra_carla")).json()
     assert all(CAMPOS_INTERNOS.isdisjoint(item) for item in lista)
 
 
 # ---------- Ex. 2/R3: sem response_model o registro inteiro vazaria ----------
-def test_sem_response_model_vazaria_campos_internos(client, auth):
+def test_sem_response_model_vazaria_campos_internos(client, auth, session):
     criada = client.post("/consultas", json=_payload(), headers=auth("dra_carla")).json()
-    registro = db.consultas[criada["id"]]
+    registro = session.get(Consulta, criada["id"]).model_dump()
 
     app_sem_filtro = FastAPI()
     app_sem_filtro.add_api_route("/raw", lambda: registro)  # sem response_model

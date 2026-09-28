@@ -11,10 +11,12 @@ from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from sqlmodel import Session, select
 
-from app import database as db
 from app.auth import security
 from app.auth.dependencies import ESCOPOS_POR_PAPEL, get_current_user
+from app.database import get_session
+from app.models.tables import Consulta, Paciente, Profissional, Usuario
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 
@@ -37,17 +39,22 @@ def login_form(request: Request):
 
 
 @router.post("/recepcao/login")
-def login_submit(request: Request, username: str = Form(...), password: str = Form(...)):
-    usuario = db.usuarios.get(username)
-    if usuario is None or not security.verificar_senha(password, usuario["senha_hash"]):
+def login_submit(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+    session: Session = Depends(get_session),
+):
+    usuario = session.get(Usuario, username)
+    if usuario is None or not security.verificar_senha(password, usuario.senha_hash):
         resp = templates.TemplateResponse(
             request, "login.html", {"erro": "Usuário ou senha inválidos"},
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
         return resp
-    claims = {"papel": usuario["papel"], "scope": ESCOPOS_POR_PAPEL.get(usuario["papel"], "")}
-    if "profissional_id" in usuario:
-        claims["profissional_id"] = usuario["profissional_id"]
+    claims = {"papel": usuario.papel, "scope": ESCOPOS_POR_PAPEL.get(usuario.papel, "")}
+    if usuario.profissional_id is not None:
+        claims["profissional_id"] = usuario.profissional_id
     token = security.criar_access_token(sub=username, claims=claims)
     resp = RedirectResponse("/recepcao/agenda", status_code=status.HTTP_303_SEE_OTHER)
     resp.set_cookie(
@@ -62,20 +69,24 @@ def login_submit(request: Request, username: str = Form(...), password: str = Fo
 def agenda_do_dia(
     request: Request,
     dia: date | None = None,
+    session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     dia = dia or date.today()
+    consultas = session.exec(select(Consulta).order_by(Consulta.data_hora)).all()
     itens = []
-    for c in sorted(db.consultas.values(), key=lambda c: c["data_hora"]):
-        if c["data_hora"].date() != dia:
+    for c in consultas:
+        if c.data_hora.date() != dia:
             continue
+        paciente = session.get(Paciente, c.paciente_id)
+        profissional = session.get(Profissional, c.profissional_id)
         # Só o necessário para a recepção — sem CPF, sem campos de auditoria.
         itens.append({
-            "hora": c["data_hora"].strftime("%H:%M"),
-            "paciente": db.pacientes[c["paciente_id"]]["nome"],
-            "profissional": db.profissionais[c["profissional_id"]]["nome"],
-            "status": c["status"].value,
-            "observacoes": c.get("observacoes") or "",
+            "hora": c.data_hora.strftime("%H:%M"),
+            "paciente": paciente.nome if paciente else "?",
+            "profissional": profissional.nome if profissional else "?",
+            "status": c.status,
+            "observacoes": c.observacoes or "",
         })
     return templates.TemplateResponse(
         request, "agenda.html", {"dia": dia, "consultas": itens, "usuario": user.get("sub")}

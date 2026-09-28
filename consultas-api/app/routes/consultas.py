@@ -1,11 +1,12 @@
-"""Recurso REST de consultas — protegido por autenticação e ownership (Ex. 6).
+"""Recurso REST de consultas — autenticação, ownership (Ex. 6) e SQLModel (Ex. 11).
 
 A regra de posse vive em app/auth/dependencies.get_consulta_autorizada; aqui as
-rotas apenas a declaram. Restrições por papel usam require_roles / o principal.
+rotas apenas a declaram. As queries usam select().where() (parametrizadas).
 No Ex. 9, GET/PATCH/DELETE/{id} migram para um APIRouter com a dependência de
 ownership no prefixo, para que nenhuma rota nova sob /consultas/{id} a esqueça.
 """
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from sqlmodel import Session, select
 
 from app import database as db
 from app.auth.dependencies import (
@@ -13,22 +14,26 @@ from app.auth.dependencies import (
     get_current_user,
     require_roles,
 )
+from app.database import get_session
 from app.models import ConsultaCreate, ConsultaPublic, ConsultaUpdate, StatusConsulta
+from app.models.tables import Consulta, Paciente
 
 router = APIRouter(prefix="/consultas", tags=["consultas"])
 
 
 @router.get("", response_model=list[ConsultaPublic])
-def listar_consultas(user: dict = Depends(get_current_user)):
-    todas = list(db.consultas.values())
+def listar_consultas(
+    session: Session = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    stmt = select(Consulta)
     if user.get("papel") == "profissional":
-        # profissional só vê as consultas dos seus pacientes
-        return [c for c in todas if c["profissional_id"] == user.get("profissional_id")]
-    return todas  # admin e recepção veem todas
+        stmt = stmt.where(Consulta.profissional_id == user.get("profissional_id"))
+    return session.exec(stmt).all()
 
 
 @router.get("/{consulta_id}", response_model=ConsultaPublic)
-def obter_consulta(consulta: dict = Depends(get_consulta_autorizada)):
+def obter_consulta(consulta: Consulta = Depends(get_consulta_autorizada)):
     return consulta
 
 
@@ -36,14 +41,15 @@ def obter_consulta(consulta: dict = Depends(get_consulta_autorizada)):
 def criar_consulta(
     payload: ConsultaCreate,
     request: Request,
+    session: Session = Depends(get_session),
     user: dict = Depends(require_roles("profissional", "admin")),
 ):
-    paciente = db.pacientes.get(payload.paciente_id)
+    paciente = session.get(Paciente, payload.paciente_id)
     if paciente is None:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "Paciente inexistente")
 
     # profissional_id NÃO vem do cliente: é o profissional dono do paciente.
-    prof_id = paciente["profissional_id"]
+    prof_id = paciente.profissional_id
     if user.get("papel") == "profissional" and prof_id != user.get("profissional_id"):
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
@@ -51,27 +57,28 @@ def criar_consulta(
         )
 
     agora = db.now_utc()
-    consulta = {
-        "id": db.next_id(),
-        "paciente_id": payload.paciente_id,
-        "profissional_id": prof_id,
-        "data_hora": payload.data_hora,
-        "observacoes": payload.observacoes,
-        "status": StatusConsulta.agendada,
-        # --- auditoria (nunca exposta) ---
-        "criado_por": user["sub"],
-        "ip_origem": request.client.host if request.client else None,
-        "criado_em": agora,
-        "atualizado_em": agora,
-    }
-    db.consultas[consulta["id"]] = consulta
+    consulta = Consulta(
+        paciente_id=payload.paciente_id,
+        profissional_id=prof_id,
+        data_hora=payload.data_hora,
+        observacoes=payload.observacoes,
+        status=StatusConsulta.agendada.value,
+        criado_por=user["sub"],
+        ip_origem=request.client.host if request.client else None,
+        criado_em=agora,
+        atualizado_em=agora,
+    )
+    session.add(consulta)
+    session.commit()
+    session.refresh(consulta)
     return consulta
 
 
 @router.patch("/{consulta_id}", response_model=ConsultaPublic)
 def atualizar_consulta(
     payload: ConsultaUpdate,
-    consulta: dict = Depends(get_consulta_autorizada),
+    consulta: Consulta = Depends(get_consulta_autorizada),
+    session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     dados = payload.model_dump(exclude_unset=True)
@@ -82,16 +89,22 @@ def atualizar_consulta(
                 status.HTTP_403_FORBIDDEN,
                 "Recepção só pode cancelar consultas",
             )
-    consulta.update(dados)
-    consulta["atualizado_em"] = db.now_utc()
+    for campo, valor in dados.items():
+        setattr(consulta, campo, valor.value if isinstance(valor, StatusConsulta) else valor)
+    consulta.atualizado_em = db.now_utc()
+    session.add(consulta)
+    session.commit()
+    session.refresh(consulta)
     return consulta
 
 
 @router.delete("/{consulta_id}", status_code=status.HTTP_204_NO_CONTENT)
 def remover_consulta(
-    consulta: dict = Depends(get_consulta_autorizada),
+    consulta: Consulta = Depends(get_consulta_autorizada),
+    session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     if user.get("papel") == "recepcao":
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Recepção não remove consultas")
-    del db.consultas[consulta["id"]]
+    session.delete(consulta)
+    session.commit()

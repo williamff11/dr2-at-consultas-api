@@ -3,8 +3,8 @@
 Centralizado aqui (nenhuma rota reimplementa hash ou decodificação de token).
 Usa `bcrypt` diretamente — o `passlib` está sem manutenção e quebra com bcrypt>=4.
 
-Nota Ex. 11: SECRET_KEY está hardcoded DE PROPÓSITO nesta etapa, para gerar o
-estado "antes" da correção de segredos (Ex. 11 move tudo para BaseSettings/.env).
+Ex. 11: o segredo vem de BaseSettings/.env (get_settings). Não há mais segredo
+hardcoded no código-fonte.
 """
 from __future__ import annotations
 
@@ -13,13 +13,16 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 import jwt
 
-# TODO Ex.11: mover para BaseSettings / .env (este é o "antes" do Ex. 11)
-SECRET_KEY = "dev-secret-nao-usar-em-producao-8f3a1c9e2b7d"  # noqa: S105
-ALGORITHM = "HS256"
+from app.core.config import get_settings
+
+_s = get_settings()
+
+SECRET_KEY = _s.jwt_secret_key
+ALGORITHM = _s.jwt_algorithm
 ISSUER = "consultas-api"
 AUDIENCE = "api-consultas"
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 15   # tokens humanos
+ACCESS_TOKEN_EXPIRE_MINUTES = _s.access_token_expire_minutes  # tokens humanos
 MFA_TOKEN_EXPIRE_MINUTES = 5       # token intermediário "mfa_pending"
 M2M_TOKEN_EXPIRE_MINUTES = 10      # tokens de máquina (Ex. 7)
 
