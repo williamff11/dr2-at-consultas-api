@@ -91,3 +91,23 @@ def agenda_do_dia(
     return templates.TemplateResponse(
         request, "agenda.html", {"dia": dia, "consultas": itens, "usuario": user.get("sub")}
     )
+
+
+@router.get("/recepcao/consultas/{consulta_id}", response_class=HTMLResponse)
+def detalhe_consulta(
+    consulta_id: int,
+    request: Request,
+    session: Session = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    # VULN-V1-irmão (intencional, Ex. 8): busca por id SEM ownership → mesma BOLA da V1,
+    # aqui numa página HTML acessível ao papel profissional. Não é citado no doc do Ex. 8
+    # de propósito: é o "endpoint irmão" que o Ex. 9 descobre pelo padrão e corrige.
+    consulta = session.get(Consulta, consulta_id)
+    if consulta is None:
+        return HTMLResponse("Consulta não encontrada", status_code=404)
+    paciente = session.get(Paciente, consulta.paciente_id)
+    return templates.TemplateResponse(
+        request, "detalhe_consulta.html",
+        {"consulta": consulta, "paciente": paciente.nome if paciente else "?"},
+    )

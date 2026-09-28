@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import criar_tabelas
-from app.routes import admin, auth, consultas, m2m, pages
+from app.routes import admin, auth, consultas, m2m, pacientes, pages
 from app.seed import semear
 
 
@@ -34,6 +34,7 @@ app.include_router(auth.router)
 app.include_router(consultas.router)
 app.include_router(admin.router)
 app.include_router(m2m.router)
+app.include_router(pacientes.router)
 app.include_router(pages.router)
 
 

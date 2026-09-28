@@ -14,7 +14,7 @@ uma consulta atribuindo-a a outro profissional (mass assignment, T06).
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class StatusConsulta(str, Enum):
@@ -32,10 +32,13 @@ class ConsultaCreate(BaseModel):
 
 
 class ConsultaUpdate(BaseModel):
+    # VULN-V4 (intencional, Ex. 8): extra="allow" deixa passar campos não declarados
+    # (profissional_id, criado_por), que a rota aplica via setattr → mass assignment.
+    # Corrigido no Ex. 9 com extra="forbid".
+    model_config = ConfigDict(extra="allow")
     data_hora: datetime | None = None
     status: StatusConsulta | None = None
     observacoes: str | None = Field(default=None, max_length=500)
-    # TODO Ex. 9: extra="forbid" (hoje campos extras são ignorados)
 
 
 class ConsultaPublic(BaseModel):

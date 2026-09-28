@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Consulta {{ consulta.id }}{% endblock %}
+{% block heading %}Detalhe da consulta #{{ consulta.id }}{% endblock %}
+{% block content %}
+<p><strong>Paciente:</strong> {{ paciente }}</p>
+<p><strong>Status:</strong> {{ consulta.status }}</p>
+<p><strong>Data:</strong> {{ consulta.data_hora }}</p>
+<p><strong>Observações:</strong></p>
+{# VULN-V3 (intencional, Ex. 8): |safe desliga o auto-escape "para manter quebras de
+   linha" → XSS stored. Corrigido no Ex. 9 removendo |safe e usando white-space:pre-line. #}
+<div class="obs">{{ (consulta.observacoes or '') | replace('\n', '<br>') | safe }}</div>
+{% endblock %}

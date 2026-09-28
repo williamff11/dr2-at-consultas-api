@@ -37,6 +37,28 @@ def obter_consulta(consulta: Consulta = Depends(get_consulta_autorizada)):
     return consulta
 
 
+@router.get("/{consulta_id}/prontuario")
+def prontuario(
+    consulta_id: int,
+    session: Session = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    # VULN-V1 (intencional, Ex. 8): busca por id SEM get_consulta_autorizada → BOLA.
+    # Qualquer usuário autenticado lê o prontuário (dados de saúde) de qualquer paciente.
+    # Corrigido no Ex. 9 movendo a rota para o item_router (ownership no prefixo).
+    consulta = session.get(Consulta, consulta_id)
+    if consulta is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Consulta não encontrada")
+    paciente = session.get(Paciente, consulta.paciente_id)
+    return {
+        "consulta_id": consulta.id,
+        "paciente": paciente.nome if paciente else None,
+        "cpf": paciente.cpf if paciente else None,
+        "profissional_id": consulta.profissional_id,
+        "observacoes": consulta.observacoes,
+    }
+
+
 @router.post("", response_model=ConsultaPublic, status_code=status.HTTP_201_CREATED)
 def criar_consulta(
     payload: ConsultaCreate,
@@ -89,6 +111,8 @@ def atualizar_consulta(
                 status.HTTP_403_FORBIDDEN,
                 "Recepção só pode cancelar consultas",
             )
+    # VULN-V4 (intencional, Ex. 8): aplica TODOS os campos recebidos, inclusive extras
+    # não declarados (profissional_id, criado_por) — mass assignment. Ex. 9 usa whitelist.
     for campo, valor in dados.items():
         setattr(consulta, campo, valor.value if isinstance(valor, StatusConsulta) else valor)
     consulta.atualizado_em = db.now_utc()
