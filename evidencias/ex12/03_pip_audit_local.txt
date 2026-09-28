@@ -1,0 +1,9 @@
+# Evidência : pip-audit (SCA) após atualizar pyjwt/python-multipart: sem vulnerabilidades
+# Exercício : ex12   Rubrica(s): R19,R21
+# Data      : 2026-09-28 09:54:06 -0400
+# Commit    : d05ddd1 (ex12)
+# Comando   : cd consultas-api && ../scripts/.venv-tools/bin/pip-audit -r requirements.txt 2>&1 | tail -5
+# ------------------------------------------------------------------
+No known vulnerabilities found
+# ------------------------------------------------------------------
+# exit code : 0

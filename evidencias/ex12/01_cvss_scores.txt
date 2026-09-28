@@ -1,0 +1,18 @@
+# Evidência : Scores CVSS 3.1 (lib cvss) e prioridade por impacto de negócio
+# Exercício : ex12   Rubrica(s): R20
+# Data      : 2026-09-28 09:54:06 -0400
+# Commit    : d05ddd1 (ex12)
+# Comando   : scripts/.venv-tools/bin/python scripts/cvss_scores.py
+# ------------------------------------------------------------------
+ID                    Vetor CVSS 3.1                         Score  Severidade Impacto de negócio / prioridade
+--------------------------------------------------------------------------------------------------------------------------------------------
+V1  BOLA prontuário   AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N      6.5  Medium     Expõe prontuário (dado de saúde/LGPD) de terceiros → PRIORIDADE CRÍTICA (sobe acima do CVSS)
+V2  SQL injection     AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H      8.8  High       Vaza pacientes + hashes de senha; base para tomada de conta → CRÍTICA
+V3  XSS stored        AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N      5.4  Medium     Sequestro de sessão da recepção; requer interação → ALTA
+V4  Mass assignment   AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N      6.5  Medium     Reatribuição indevida de consultas (integridade) → ALTA
+V5a CORS wildcard     AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N      6.1  Medium     Leitura cross-origin de respostas autenticadas → MÉDIA/ALTA
+V5b Força bruta       AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N      5.9  Medium     Adivinhação de senha sem limite → ALTA (mitigada por rate limit)
+V5c Sem headers       AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N      4.2  Medium     Clickjacking/downgrade → MÉDIA
+T11 Segredo hardcoded AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N      7.4  High       Segredo JWT no código permite forjar tokens → ALTA/CRÍTICA
+# ------------------------------------------------------------------
+# exit code : 0

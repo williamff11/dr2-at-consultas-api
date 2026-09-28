@@ -1,0 +1,11 @@
+# Evidência : pytest completo (todos os testes, incluindo tests/security)
+# Exercício : ex12   Rubrica(s): R22
+# Data      : 2026-09-28 09:54:26 -0400
+# Commit    : d05ddd1 (ex12)
+# Comando   : cd consultas-api && .venv/bin/pytest -q 2>&1 | tail -3
+# ------------------------------------------------------------------
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+56 passed, 9 warnings in 2.53s
+# ------------------------------------------------------------------
+# exit code : 0

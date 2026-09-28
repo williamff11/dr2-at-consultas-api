@@ -1,0 +1,35 @@
+# Evidência : pytest tests/security: testes rastreáveis ao threat model (T0x visíveis)
+# Exercício : ex12   Rubrica(s): R22
+# Data      : 2026-09-28 09:54:12 -0400
+# Commit    : d05ddd1 (ex12)
+# Comando   : cd consultas-api && .venv/bin/pytest tests/security -v 2>&1 | grep -E 'test_T|passed'
+# ------------------------------------------------------------------
+tests/security/test_T01_bola.py::test_T01_get_bloqueado PASSED           [  4%]
+tests/security/test_T01_bola.py::test_T01_prontuario_bloqueado PASSED    [  8%]
+tests/security/test_T01_bola.py::test_T01_patch_delete_bloqueado PASSED  [ 13%]
+tests/security/test_T01_bola.py::test_T01_detalhe_html_bloqueado PASSED  [ 17%]
+tests/security/test_T02_sqli.py::test_T02_injecao_rejeitada_na_borda PASSED [ 21%]
+tests/security/test_T02_sqli.py::test_T02_valor_tratado_como_literal PASSED [ 26%]
+tests/security/test_T03_xss.py::test_T03_entrada_com_html_rejeitada PASSED [ 30%]
+tests/security/test_T03_xss.py::test_T03_saida_escapada PASSED           [ 34%]
+tests/security/test_T04_jwt.py::test_T04_token_expirado PASSED           [ 39%]
+tests/security/test_T04_jwt.py::test_T04_assinatura_forjada PASSED       [ 43%]
+tests/security/test_T04_jwt.py::test_T04_aud_errada PASSED               [ 47%]
+tests/security/test_T05_bruteforce.py::test_T05_login_limitado PASSED    [ 52%]
+tests/security/test_T06_mass_assignment.py::test_T06_patch_rejeita_extras PASSED [ 56%]
+tests/security/test_T06_mass_assignment.py::test_T06_post_rejeita_extras PASSED [ 60%]
+tests/security/test_T07_m2m_escopo.py::test_T07_m2m_nao_acessa_consultas PASSED [ 65%]
+tests/security/test_T07_m2m_escopo.py::test_T07_humano_sem_escopo_horarios PASSED [ 69%]
+tests/security/test_T08_escalada_privilegio.py::test_T08_recepcao_nao_acessa_admin PASSED [ 73%]
+tests/security/test_T08_escalada_privilegio.py::test_T08_profissional_nao_acessa_admin PASSED [ 78%]
+tests/security/test_T08_escalada_privilegio.py::test_T08_admin_sem_mfa_barrado PASSED [ 82%]
+tests/security/test_T08_escalada_privilegio.py::test_T08_m2m_em_rota_humana PASSED [ 86%]
+tests/security/test_T10_T12_rede.py::test_T12_headers_presentes PASSED   [ 91%]
+tests/security/test_T10_T12_rede.py::test_T10_cors_origem_maliciosa PASSED [ 95%]
+tests/security/test_T11_segredo.py::test_T11_sem_jwt_secret_falha PASSED [100%]
+tests/security/test_T01_bola.py::test_T01_detalhe_html_bloqueado
+tests/security/test_T03_xss.py::test_T03_saida_escapada
+tests/security/test_T04_jwt.py::test_T04_assinatura_forjada
+======================== 23 passed, 4 warnings in 0.78s ========================
+# ------------------------------------------------------------------
+# exit code : 0

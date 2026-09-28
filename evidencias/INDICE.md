@@ -63,3 +63,9 @@
 | `ex10/02_V5b_bruteforce_depois.txt` | ex10 | R17 | `57e1ca8` | V5b Força bruta (DEPOIS): 7 logins com senha errada — 5 chegam a 401, a partir da 6ª → 429 (rate limit) |
 | `ex10/05_rate_limit_diferenciado.txt` | ex10 | R17 | `57e1ca8` | Rate limit diferenciado: 15 GETs numa rota comum (limite global 120/min) → todos 200/OK, sem 429 |
 | `ex10/06_pytest.txt` | ex10 | R17 | `57e1ca8` | pytest: testes de hardening (headers, CORS, rate limit) |
+| `ex12/01_cvss_scores.txt` | ex12 | R20 | `d05ddd1` | Scores CVSS 3.1 (lib cvss) e prioridade por impacto de negócio |
+| `ex12/02_bandit_local.txt` | ex12 | R19,R21 | `d05ddd1` | Bandit (SAST) no código atual: 0 achados de severidade Medium+ (gate passa) |
+| `ex12/03_pip_audit_local.txt` | ex12 | R19,R21 | `d05ddd1` | pip-audit (SCA) após atualizar pyjwt/python-multipart: sem vulnerabilidades |
+| `ex12/04_pytest_security.txt` | ex12 | R22 | `d05ddd1` | pytest tests/security: testes rastreáveis ao threat model (T0x visíveis) |
+| `ex12/05_bandit_contra_ex08.txt` | ex12 | R21 | `d05ddd1` | Prova de que o gate teria BLOQUEADO a V2: Bandit -ll no worktree da tag ex08-vulneravel acha a SQLi (B608) e falha |
+| `ex12/06_pytest_completo.txt` | ex12 | R22 | `d05ddd1` | pytest completo (todos os testes, incluindo tests/security) |
