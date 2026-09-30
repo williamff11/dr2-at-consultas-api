@@ -13,7 +13,7 @@ paths = spec.get("paths", {})
 achados: list[str] = []
 
 # Rotas públicas por design (não exigem token).
-PUBLICAS = {("/health", "get"), ("/auth/token", "post"), ("/auth/mfa/verify", "post"),
+PUBLICAS = {("/", "get"), ("/health", "get"), ("/auth/token", "post"), ("/auth/mfa/verify", "post"),
             ("/auth/client-token", "post"), ("/recepcao/login", "get"), ("/recepcao/login", "post")}
 
 for rota, metodos in paths.items():

@@ -74,6 +74,12 @@ jobs:
 
   dast:
     runs-on: ubuntu-latest
+    # DAST é ADVISORY: o security-gate NÃO bloqueia por ele (ver docs/12). Rodamos o
+    # ZAP direto via docker (a action zaproxy/action-baseline@v0.12.0 falha no upload
+    # por usar a API de artefatos v6.0-preview, descontinuada pelo GitHub). O upload
+    # é feito com actions/upload-artifact@v4. continue-on-error mantém o run verde
+    # mesmo se o ZAP achar um FAIL (que seria triado a partir do artefato).
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -84,28 +90,45 @@ jobs:
           nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
           for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
       - name: OWASP ZAP baseline (DAST passivo)
-        uses: zaproxy/action-baseline@v0.12.0
+        working-directory: ${{ github.workspace }}
+        run: |
+          # dir de saída world-writable (o ZAP roda como uid 1000 dentro do container)
+          mkdir -p zap-out && cp .zap/rules.tsv zap-out/rules.tsv && chmod -R 777 zap-out
+          docker run --rm --network=host -v "$PWD/zap-out:/zap/wrk:rw" \
+            ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+            -t http://127.0.0.1:8000/openapi.json \
+            -J report_json.json -w report_md.md -r report_html.html \
+            -I -c rules.tsv
+      - name: Upload relatório ZAP
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          target: "http://127.0.0.1:8000/openapi.json"
-          rules_file_name: ".zap/rules.tsv"
-          cmd_options: "-I"          # não falha o job por Medium/Low (só reporta)
-          allow_issue_writing: false
+          name: zap_scan
+          path: zap-out/report_*
+          if-no-files-found: warn
 
   security-gate:
-    needs: [tests, sast, sca, dast]
+    # DAST é advisory e NÃO entra no needs (ver docs/12): o gate bloqueia só pelos
+    # três jobs determinísticos. O ZAP roda em paralelo como job informativo.
+    needs: [tests, sast, sca]
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Consolida e decide o bloqueio
+      # Passo único e determinístico. Os resultados chegam por env (sem interpolação
+      # dentro do bash, evita armadilhas de YAML/shell). Aprova só se os TRÊS passarem.
+      - name: Consolidar e decidir
+        # Este job não faz checkout; o working-directory padrão (consultas-api) não
+        # existe aqui. Roda na raiz do workspace, que sempre existe.
+        working-directory: ${{ github.workspace }}
+        env:
+          R_TESTS: ${{ needs.tests.result }}
+          R_SAST: ${{ needs.sast.result }}
+          R_SCA: ${{ needs.sca.result }}
         run: |
-          echo "tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }} dast=${{ needs.dast.result }}"
-          # Critério de bloqueio (ver docs/12, DECISÃO DO WILLIAM):
-          # bloqueia se testes de segurança, SAST ou SCA falharem. DAST (ZAP) só
-          # bloqueia por High — configurado com -I para não travar em Medium/Low.
-          if [ "${{ needs.tests.result }}" != "success" ] || \
-             [ "${{ needs.sast.result }}"  != "success" ] || \
-             [ "${{ needs.sca.result }}"   != "success" ]; then
-            echo "::error::Security gate BLOQUEOU o merge (teste/SAST/SCA falhou)."
+          echo "tests=$R_TESTS sast=$R_SAST sca=$R_SCA"
+          if [ "$R_TESTS" = "success" ] && [ "$R_SAST" = "success" ] && [ "$R_SCA" = "success" ]; then
+            echo "Security gate aprovado."
+          else
+            echo "::error::Security gate bloqueou o merge (tests/sast/sca)."
             exit 1
           fi
-          echo "Security gate: aprovado."

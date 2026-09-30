@@ -9,18 +9,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-# Variáveis obrigatórias ANTES de importar a aplicação (config/security leem no import).
-os.environ.setdefault("ENV", "dev")
-os.environ.setdefault("JWT_SECRET_KEY", "test-secret-nao-usar-em-producao-0011")
-os.environ.setdefault("DATABASE_URL", "sqlite://")  # in-memory (engine da app; testes usam o próprio)
-os.environ.setdefault("SEED_SENHA_ADMIN", "admin-dev-2026!")
-os.environ.setdefault("SEED_SENHA_RECEPCAO", "recepcao-dev-2026!")
-os.environ.setdefault("SEED_SENHA_CARLA", "carla-dev-2026!")
-os.environ.setdefault("SEED_SENHA_DIEGO", "diego-dev-2026!")
-os.environ.setdefault("SEED_TOTP_ADMIN", "JBSWY3DPEHPK3PXP")
-os.environ.setdefault("LAB_CLIENT_ID", "lab-parceiro")
-os.environ.setdefault("LAB_CLIENT_SECRET", "lab-secret-dev-2026!")
-os.environ.setdefault("CORS_ORIGINS", "http://localhost:5173")
+# A suíte é AUTÔNOMA: fixa as credenciais de seed que os testes usam, sobrescrevendo
+# qualquer valor herdado do ambiente (ex.: variáveis do CI). Sem isto, um SEED_SENHA_*
+# diferente no CI faria os logins dos testes retornarem 401. Fixadas ANTES de importar
+# a aplicação (config/security leem o ambiente no import).
+os.environ["ENV"] = "dev"
+os.environ["JWT_SECRET_KEY"] = "test-secret-nao-usar-em-producao-0011"
+os.environ["DATABASE_URL"] = "sqlite://"  # in-memory (engine da app; testes usam o próprio)
+os.environ["SEED_SENHA_ADMIN"] = "admin-dev-2026!"
+os.environ["SEED_SENHA_RECEPCAO"] = "recepcao-dev-2026!"
+os.environ["SEED_SENHA_CARLA"] = "carla-dev-2026!"
+os.environ["SEED_SENHA_DIEGO"] = "diego-dev-2026!"
+os.environ["SEED_TOTP_ADMIN"] = "JBSWY3DPEHPK3PXP"
+os.environ["LAB_CLIENT_ID"] = "lab-parceiro"
+os.environ["LAB_CLIENT_SECRET"] = "lab-secret-dev-2026!"
+os.environ["CORS_ORIGINS"] = "http://localhost:5173"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
