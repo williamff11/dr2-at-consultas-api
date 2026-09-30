@@ -102,14 +102,18 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      # A decisão usa a EXPRESSÃO NATIVA do GitHub (não comparação de string no bash),
-      # o que evita armadilhas de interpolação. Este passo só roda — e falha o merge —
-      # se algum dos três jobs determinísticos não tiver tido sucesso.
-      - name: Bloquear se tests/sast/sca falharam
-        if: ${{ needs.tests.result != 'success' || needs.sast.result != 'success' || needs.sca.result != 'success' }}
+      # Passo único e determinístico. Os resultados chegam por env (sem interpolação
+      # dentro do bash, evita armadilhas de YAML/shell). Aprova só se os TRÊS passarem.
+      - name: Consolidar e decidir
+        env:
+          R_TESTS: ${{ needs.tests.result }}
+          R_SAST: ${{ needs.sast.result }}
+          R_SCA: ${{ needs.sca.result }}
         run: |
-          echo "::error::Security gate BLOQUEOU o merge — tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }}"
-          exit 1
-      - name: Aprovado
-        run: |
-          echo "Security gate aprovado - tests, sast e sca passaram."
+          echo "tests=$R_TESTS sast=$R_SAST sca=$R_SCA"
+          if [ "$R_TESTS" = "success" ] && [ "$R_SAST" = "success" ] && [ "$R_SCA" = "success" ]; then
+            echo "Security gate aprovado."
+          else
+            echo "::error::Security gate bloqueou o merge (tests/sast/sca)."
+            exit 1
+          fi
