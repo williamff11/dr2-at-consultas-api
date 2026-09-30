@@ -102,15 +102,13 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Consolida e decide o bloqueio
+      # A decisão usa a EXPRESSÃO NATIVA do GitHub (não comparação de string no bash),
+      # o que evita armadilhas de interpolação. Este passo só roda — e falha o merge —
+      # se algum dos três jobs determinísticos não tiver tido sucesso.
+      - name: Bloquear se tests/sast/sca falharam
+        if: ${{ needs.tests.result != 'success' || needs.sast.result != 'success' || needs.sca.result != 'success' }}
         run: |
-          echo "tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }}"
-          # Critério de bloqueio (ver docs/12, DECISÃO DO WILLIAM):
-          # bloqueia o merge se testes de segurança, SAST (Bandit) ou SCA (pip-audit) falharem.
-          if [ "${{ needs.tests.result }}" != "success" ] || \
-             [ "${{ needs.sast.result }}"  != "success" ] || \
-             [ "${{ needs.sca.result }}"   != "success" ]; then
-            echo "::error::Security gate BLOQUEOU o merge (teste/SAST/SCA falhou)."
-            exit 1
-          fi
-          echo "Security gate: aprovado."
+          echo "::error::Security gate BLOQUEOU o merge — tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }}"
+          exit 1
+      - name: Aprovado
+        run: echo "Security gate aprovado: tests, sast e sca passaram."
