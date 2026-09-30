@@ -65,7 +65,6 @@
 | `ex10/06_pytest.txt` | ex10 | R17 | `57e1ca8` | pytest: testes de hardening (headers, CORS, rate limit) |
 | `ex12/01_cvss_scores.txt` | ex12 | R20 | `d05ddd1` | Scores CVSS 3.1 (lib cvss) e prioridade por impacto de negócio |
 | `ex12/02_bandit_local.txt` | ex12 | R19,R21 | `d05ddd1` | Bandit (SAST) no código atual: 0 achados de severidade Medium+ (gate passa) |
-| `ex12/03_pip_audit_local.txt` | ex12 | R19,R21 | `d05ddd1` | pip-audit (SCA) após atualizar pyjwt/python-multipart: sem vulnerabilidades |
 | `ex12/04_pytest_security.txt` | ex12 | R22 | `d05ddd1` | pytest tests/security: testes rastreáveis ao threat model (T0x visíveis) |
 | `ex12/05_bandit_contra_ex08.txt` | ex12 | R21 | `d05ddd1` | Prova de que o gate teria BLOQUEADO a V2: Bandit -ll no worktree da tag ex08-vulneravel acha a SQLi (B608) e falha |
 | `ex12/06_pytest_completo.txt` | ex12 | R22 | `d05ddd1` | pytest completo (todos os testes, incluindo tests/security) |
@@ -74,3 +73,4 @@
 | `ex13/04_auditoria_openapi.txt` | ex13 | R24 | `79a5313` | Auditoria da OpenAPI: apontamentos de design de segurança (o que foi corrigido e o que fica como risco residual) |
 | `ex13/05_pytest_final.txt` | ex13 | R24 | `79a5313` | pytest completo final (todos os testes + tests/security + mocking) |
 | `ex13/07_checagem_entrega.txt` | ex13 | R24 | `6be8141` | Conferências de entrega: tudo commitado, sem .env versionado, sem segredo hardcoded em app/ |
+| `ex12/03_pip_audit_local.txt` | ex12 | R19,R21 | `e6cc2bd` | pip-audit (SCA): sem vulnerabilidades após pyjwt 2.14.0 (o SCA pegou CVEs em 2.10.1 e depois em 2.13.0) |
