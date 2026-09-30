@@ -105,6 +105,9 @@ jobs:
       # Passo único e determinístico. Os resultados chegam por env (sem interpolação
       # dentro do bash, evita armadilhas de YAML/shell). Aprova só se os TRÊS passarem.
       - name: Consolidar e decidir
+        # Este job não faz checkout; o working-directory padrão (consultas-api) não
+        # existe aqui. Roda na raiz do workspace, que sempre existe.
+        working-directory: ${{ github.workspace }}
         env:
           R_TESTS: ${{ needs.tests.result }}
           R_SAST: ${{ needs.sast.result }}
