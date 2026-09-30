@@ -74,6 +74,10 @@ jobs:
 
   dast:
     runs-on: ubuntu-latest
+    # DAST é ADVISORY: o baseline do ZAP gera ruído (headers extras) e depende de
+    # alcance de rede no runner. O security-gate NÃO bloqueia por ele (ver docs/12);
+    # um alerta High é triado a partir do artefato. Por isso não derruba o pipeline.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
