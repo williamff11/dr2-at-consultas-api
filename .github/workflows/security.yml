@@ -74,9 +74,11 @@ jobs:
 
   dast:
     runs-on: ubuntu-latest
-    # DAST é ADVISORY: o baseline do ZAP gera ruído (headers extras) e depende de
-    # alcance de rede no runner. O security-gate NÃO bloqueia por ele (ver docs/12);
-    # um alerta High é triado a partir do artefato. Por isso não derruba o pipeline.
+    # DAST é ADVISORY: o security-gate NÃO bloqueia por ele (ver docs/12). Rodamos o
+    # ZAP direto via docker (a action zaproxy/action-baseline@v0.12.0 falha no upload
+    # por usar a API de artefatos v6.0-preview, descontinuada pelo GitHub). O upload
+    # é feito com actions/upload-artifact@v4. continue-on-error mantém o run verde
+    # mesmo se o ZAP achar um FAIL (que seria triado a partir do artefato).
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -88,12 +90,22 @@ jobs:
           nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
           for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
       - name: OWASP ZAP baseline (DAST passivo)
-        uses: zaproxy/action-baseline@v0.12.0
+        working-directory: ${{ github.workspace }}
+        run: |
+          # dir de saída world-writable (o ZAP roda como uid 1000 dentro do container)
+          mkdir -p zap-out && cp .zap/rules.tsv zap-out/rules.tsv && chmod -R 777 zap-out
+          docker run --rm --network=host -v "$PWD/zap-out:/zap/wrk:rw" \
+            ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+            -t http://127.0.0.1:8000/openapi.json \
+            -J report_json.json -w report_md.md -r report_html.html \
+            -I -c rules.tsv
+      - name: Upload relatório ZAP
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          target: "http://127.0.0.1:8000/openapi.json"
-          rules_file_name: ".zap/rules.tsv"
-          cmd_options: "-I"          # não falha o job por Medium/Low (só reporta)
-          allow_issue_writing: false
+          name: zap_scan
+          path: zap-out/report_*
+          if-no-files-found: warn
 
   security-gate:
     # DAST é advisory e NÃO entra no needs (ver docs/12): o gate bloqueia só pelos
