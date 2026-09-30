@@ -96,16 +96,17 @@ jobs:
           allow_issue_writing: false
 
   security-gate:
-    needs: [tests, sast, sca, dast]
+    # DAST é advisory e NÃO entra no needs (ver docs/12): o gate bloqueia só pelos
+    # três jobs determinísticos. O ZAP roda em paralelo como job informativo.
+    needs: [tests, sast, sca]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Consolida e decide o bloqueio
         run: |
-          echo "tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }} dast=${{ needs.dast.result }}"
+          echo "tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }}"
           # Critério de bloqueio (ver docs/12, DECISÃO DO WILLIAM):
-          # bloqueia se testes de segurança, SAST ou SCA falharem. DAST (ZAP) só
-          # bloqueia por High — configurado com -I para não travar em Medium/Low.
+          # bloqueia o merge se testes de segurança, SAST (Bandit) ou SCA (pip-audit) falharem.
           if [ "${{ needs.tests.result }}" != "success" ] || \
              [ "${{ needs.sast.result }}"  != "success" ] || \
              [ "${{ needs.sca.result }}"   != "success" ]; then

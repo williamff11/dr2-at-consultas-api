@@ -68,6 +68,12 @@ app.include_router(pacientes.router)
 app.include_router(pages.router)
 
 
+@app.get("/", tags=["infra"])
+def root():
+    # Raiz mínima (sem dado sensível) — evita 404 do spider do ZAP no CI.
+    return {"service": "consultas-api", "status": "ok"}
+
+
 @app.get("/health", tags=["infra"])
 def health():
     return {"status": "ok"}
