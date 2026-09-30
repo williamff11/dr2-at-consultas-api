@@ -4,6 +4,7 @@ A V2 (SQL injection) foi eliminada: a query é parametrizada via SQLModel e o
 parâmetro `nome` é validado por regex (whitelist de caracteres) na borda.
 """
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import text
 from sqlmodel import Session, select
 
 from app.auth.dependencies import get_current_user
@@ -21,11 +22,8 @@ def buscar_pacientes(
     session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
-    # Corrigido (V2): query parametrizada. `nome` é um VALOR ligado, nunca vira parte
-    # do texto SQL — não há como alterar a estrutura da consulta.
-    stmt = select(Paciente).where(Paciente.nome.contains(nome))
-    pacientes = session.exec(stmt).all()
-    return [
-        {"id": p.id, "nome": p.nome, "cpf": p.cpf, "profissional_id": p.profissional_id}
-        for p in pacientes
-    ]
+    # DEMO: reintrodução da V2 (SQL por concatenação) para provar que o security-gate
+    # bloqueia o merge. NÃO deve ser mesclado (branch demo/gate-bloqueio).
+    sql = text(f"SELECT id, nome, cpf, profissional_id FROM paciente WHERE nome LIKE '%{nome}%'")  # noqa: S608
+    linhas = session.execute(sql).fetchall()
+    return [list(linha) for linha in linhas]
