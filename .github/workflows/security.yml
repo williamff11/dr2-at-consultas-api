@@ -111,4 +111,5 @@ jobs:
           echo "::error::Security gate BLOQUEOU o merge — tests=${{ needs.tests.result }} sast=${{ needs.sast.result }} sca=${{ needs.sca.result }}"
           exit 1
       - name: Aprovado
-        run: echo "Security gate aprovado: tests, sast e sca passaram."
+        run: |
+          echo "Security gate aprovado - tests, sast e sca passaram."
