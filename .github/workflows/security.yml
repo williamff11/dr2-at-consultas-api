@@ -50,7 +50,7 @@ jobs:
       - name: Bandit gate — falha se achado de severidade >= MEDIUM (qualquer confiança)
         # -ll = severidade Medium+. NÃO filtramos por confiança de propósito: nesta
         # versão o Bandit reporta a SQLi (B608) como Medium/confiança-Low; um filtro
-        # de confiança deixaria passar a falha mais grave do Assessment (ver docs/12).
+        # de confiança deixaria passar a falha mais grave do Assessment (ver README.md, Ex. 12).
         run: bandit -r app -ll
       - uses: actions/upload-artifact@v4
         if: always()

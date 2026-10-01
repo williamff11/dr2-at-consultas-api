@@ -1,4 +1,4 @@
-"""Ameaça: T06 (mass assignment) · Misuse case: MC06 · docs/04_threat_model.md."""
+"""Ameaça: T06 (mass assignment) · Misuse case: MC06 · README.md, Ex. 4."""
 from tests.security._helpers import payload
 
 

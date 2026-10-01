@@ -1,4 +1,4 @@
-"""Ameaça: T01 (BOLA) · Misuse case: MC01 · docs/04_threat_model.md.
+"""Ameaça: T01 (BOLA) · Misuse case: MC01 · README.md, Ex. 4.
 
 Cobre GET, PATCH, DELETE, /prontuario e a página HTML de detalhe: um profissional
 não acessa consulta de paciente de outro profissional (ownership centralizado).

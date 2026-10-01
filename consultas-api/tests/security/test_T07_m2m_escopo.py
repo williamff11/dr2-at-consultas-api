@@ -1,4 +1,4 @@
-"""Ameaça: T07 (token M2M além do escopo) · Misuse case: MC04 · docs/04_threat_model.md."""
+"""Ameaça: T07 (token M2M além do escopo) · Misuse case: MC04 · README.md, Ex. 4."""
 CLIENT = {"grant_type": "client_credentials", "client_id": "lab-parceiro",
           "client_secret": "lab-secret-dev-2026!"}
 

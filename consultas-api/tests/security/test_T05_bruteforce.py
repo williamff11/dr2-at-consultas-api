@@ -1,4 +1,4 @@
-"""Ameaça: T05 (força bruta no login) · Misuse case: MC05 · docs/04_threat_model.md."""
+"""Ameaça: T05 (força bruta no login) · Misuse case: MC05 · README.md, Ex. 4."""
 import pytest
 
 from app.core.rate_limit import limiter

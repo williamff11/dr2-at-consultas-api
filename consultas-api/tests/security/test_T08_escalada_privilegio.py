@@ -1,4 +1,4 @@
-"""Ameaça: T08 (escalada de privilégio) · docs/04_threat_model.md.
+"""Ameaça: T08 (escalada de privilégio) · README.md, Ex. 4.
 
 Expande o teste de autorização iniciado no Ex. 6 (test_recepcionista_nao_acessa_rota_admin),
 cobrindo os demais vetores: profissional em rota admin, admin sem MFA, token M2M em rota humana.

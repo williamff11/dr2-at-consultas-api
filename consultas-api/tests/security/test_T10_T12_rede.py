@@ -1,4 +1,4 @@
-"""Ameaças: T10 (CORS/DoS) e T12 (headers) · docs/04_threat_model.md."""
+"""Ameaças: T10 (CORS/DoS) e T12 (headers) · README.md, Ex. 4."""
 def test_T12_headers_presentes(client):
     r = client.get("/health")
     assert r.headers["x-frame-options"] == "DENY"
