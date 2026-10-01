@@ -18,6 +18,9 @@ def buscar_pacientes(
     user: dict = Depends(get_current_user),
 ):
     stmt = select(Paciente).where(Paciente.nome.contains(nome))
+    # Profissional só encontra os próprios pacientes (CPF é dado pessoal).
+    if user.get("papel") == "profissional":
+        stmt = stmt.where(Paciente.profissional_id == user.get("profissional_id"))
     pacientes = session.exec(stmt).all()
     return [
         {"id": p.id, "nome": p.nome, "cpf": p.cpf, "profissional_id": p.profissional_id}
