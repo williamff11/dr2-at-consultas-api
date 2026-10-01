@@ -74,3 +74,5 @@
 | `ex13/05_pytest_final.txt` | ex13 | R24 | `79a5313` | pytest completo final (todos os testes + tests/security + mocking) |
 | `ex13/07_checagem_entrega.txt` | ex13 | R24 | `6be8141` | Conferências de entrega: tudo commitado, sem .env versionado, sem segredo hardcoded em app/ |
 | `ex12/03_pip_audit_local.txt` | ex12 | R19,R21 | `e6cc2bd` | pip-audit (SCA): sem vulnerabilidades após pyjwt 2.14.0 (o SCA pegou CVEs em 2.10.1 e depois em 2.13.0) |
+| `ex12/11_pr_bloqueado_3_checks.png` | ex12 | R21 | `b7ba7a3` | PR #1 (demo/gate-bloqueio, reintroduz a V2): 3 checks falhando (sast, tests, security-gate Required) e 2 passando (sca, dast) — merge bloqueado |
+| `ex12/12_sast_bandit_b608_log.png` | ex12 | R19,R21 | `b7ba7a3` | Log do job sast no PR #1: Bandit acha B608 (SQLi, CWE-89, Severity Medium / Confidence Low) em app/routes/pacientes.py:27 → exit 1 |
