@@ -37,6 +37,16 @@ Nenhum alerta de risco **High** — coerente com as correções dos Ex. 9–10. 
 
 `scripts/regerar_evidencias_finais.sh` reexecuta os ataques dos Ex. 9–10 contra o **código final** e confirma que todas as correções seguem válidas (`ex13/regressao/regressao.txt`): BOLA→404, SQLi→422, XSS→422, mass assignment→422, CORS malicioso→sem allow-origin, HSTS presente.
 
+## 5. Revisão de código do estado final
+
+Uma revisão manual do código final achou 8 pontos (CR1–CR8). Os quatro de maior impacto foram corrigidos com teste:
+- **CR1:** admin contornava o MFA pelo login HTML.
+- **CR2:** login HTML sem rate limit.
+- **CR3:** agenda HTML sem ownership.
+- **CR4:** busca de pacientes expunha CPF de outros profissionais.
+
+O par antes/depois usa o mesmo comando: `ex13/08_code_review_antes.txt` (4 falham) e `ex13/09_code_review_depois.txt` (4 passam). A suíte completa tem 67 testes (`ex13/10_pytest_pos_code_review.txt`). Os demais pontos estão em aberto ou viraram risco residual (RR9, RR10). A tabela completa está em `RELATORIO_RASTREABILIDADE_DR2_AT.md` §2.1.
+
 ## Evidências
 
 | Arquivo | Prova |
@@ -46,3 +56,5 @@ Nenhum alerta de risco **High** — coerente com as correções dos Ex. 9–10. 
 | `ex13/04_auditoria_openapi.txt` | apontamentos de design |
 | `ex13/05_pytest_final.txt` | 63 testes (mocking + segurança + Ex.1) |
 | `ex13/regressao/regressao.txt` | correções válidas no código final |
+| `ex13/08_code_review_antes.txt` → `09_code_review_depois.txt` | achados CR1–CR4: 4 testes falham antes e passam depois |
+| `ex13/10_pytest_pos_code_review.txt` | 67 testes após as correções do code review |

@@ -28,7 +28,7 @@ uvicorn app.main:app --reload       # ou: ../scripts/servidor.sh start
 
 - Swagger: http://localhost:8000/docs (desabilitado quando `ENV=prod`)
 - Agenda da recepção: http://localhost:8000/recepcao/login
-- Testes: `pytest -v` (63 testes, inclui `tests/security/`)
+- Testes: `pytest -v` (67 testes, inclui `tests/security/`)
 
 > **Segredos:** nenhum segredo real é versionado. `.env` está no `.gitignore`; use `.env.example`. Em DEV, `scripts/dev_env.sh` exporta valores fictícios.
 

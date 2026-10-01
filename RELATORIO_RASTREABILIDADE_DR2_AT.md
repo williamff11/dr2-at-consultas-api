@@ -26,18 +26,37 @@ docker run --rm -v "$PWD/evidencias/ex13:/zap/wrk:rw" -t \
 
 | Ameaça (Ex.4) | Misuse | Vulnerab. (Ex.8) | Finding (ZAP/manual) | OWASP | Correção (arquivo:linha, tag) | Teste (T0x) | Evidência antes→depois | CVSS/prioridade | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| **T01** | MC01 | V1 BOLA + irmão | manual (scanner não pega lógica) | A01/API1 | `item_router` c/ `get_consulta_autorizada` — `routes/consultas.py`; regra em `auth/dependencies.py:113` (`ex09`) | `test_T01_bola` | `ex09/01,02` | 6.5 Med → **crítica** | ✅ corrigido |
+| **T01** | MC01 | V1 BOLA + irmão | manual (scanner não pega lógica) + **code review CR3/CR4** | A01/API1 | `item_router` c/ `get_consulta_autorizada` — `routes/consultas.py`; regra em `auth/dependencies.py` (`ex09`); filtro por `profissional_id` na agenda HTML e na busca de pacientes — `routes/pages.py`, `routes/pacientes.py` (`f47f33a`) | `test_T01_bola` | `ex09/01,02` · `ex13/08→09` | 6.5 Med → **crítica** | ✅ corrigido |
 | **T02** | MC02 | V2 SQLi | manual + Bandit B608 | A03 | `select().where(contains)` + regex — `routes/pacientes.py` (`ex09`) | `test_T02_sqli` | `ex09/03` | 8.8 High → crítica | ✅ corrigido |
 | **T03** | MC03 | V3 XSS stored | manual + ZAP CSP WARN | A03 | remoção de `\|safe` + regex `^[^<>]*$` — `templates/detalhe_consulta.html`, `models/consulta.py` (`ex09`) | `test_T03_xss` | `ex09/04` | 5.4 Med → alta | ✅ corrigido |
 | **T04** | — | (assinatura/exp) | manual | A02/A07 | `decodificar_token` valida exp/iss/aud — `auth/security.py:59` (`ex06`) | `test_T04_jwt` | `ex06/04` | — | ✅ mitigado |
-| **T05** | MC05 | V5b força bruta | ZAP Auth Request | A07 | rate limit 5/min — `core/rate_limit.py` (`ex10`) | `test_T05_bruteforce` | `ex10/02` | 5.9 Med → alta | ✅ corrigido |
+| **T05** | MC05 | V5b força bruta | ZAP Auth Request + **code review CR2** | A07 | rate limit 5/min — `core/rate_limit.py` (`ex10`); estendido a `/recepcao/login` — `routes/pages.py` (`f47f33a`) | `test_T05_bruteforce` | `ex10/02` · `ex13/08→09` | 5.9 Med → alta | ✅ corrigido |
 | **T06** | MC06 | V4 mass assign | manual | A08/API3 | `extra='forbid'` + whitelist — `models/consulta.py` (`ex09`) | `test_T06_mass_assignment` | `ex09/05,06` | 6.5 Med → alta | ✅ corrigido |
 | **T07** | MC04 | (escopo M2M) | manual | API5 | `Security(scopes)` + bloqueio m2m — `routes/m2m.py`, `auth/dependencies.py:66` (`ex07`) | `test_T07_m2m_escopo` | `ex07/04` | — | ✅ mitigado |
-| **T08** | — | (escalada) | manual | A01 | RBAC `require_roles` + `require_mfa` (`ex06`) | `test_T08_escalada_privilegio` | `ex06/07,11-13` | — | ✅ mitigado |
+| **T08** | — | (escalada) | manual + **code review CR1** | A01/A07 | RBAC `require_roles` + `require_mfa` (`ex06`); login HTML recusa conta com MFA — `routes/pages.py` (`f47f33a`) | `test_T08_escalada_privilegio` | `ex06/07,11-13` · `ex13/08→09` | — | ✅ corrigido |
 | **T09** | — | (repúdio) | — | A09 | `criado_por`/`atualizado_em` (`ex06`) | — | `ex06/*` | — | ⚠️ parcial (risco residual: log central) |
 | **T10** | — | V5a CORS | ZAP (headers) | A05 | CORS allowlist + fail-fast — `main.py` (`ex10`) | `test_T10_T12_rede` | `ex10/01,05` | 6.1 Med → alta | ✅ corrigido |
 | **T11** | — | segredo hardcoded | Bandit B105 (histórico) | A05/A02 | `BaseSettings`/.env, sem default — `core/config.py` (`ex11`) | `test_T11_segredo` | `ex11/01→02` | 7.4 High → crítica | ✅ corrigido |
 | **T12** | — | V5c headers | ZAP (headers) | A05 | `SecurityHeadersMiddleware` (`ex10`) | `test_T10_T12_rede` | `ex10/03` | 4.2 Med | ✅ corrigido |
+
+### 2.1 Achados do code review (estado final)
+
+Depois do ZAP, o código final passou por uma revisão de código manual. Ela achou quatro falhas de **lógica de autorização**, nenhuma visível ao scanner passivo, e todas em superfícies secundárias que repetiam o padrão do "endpoint-irmão" do Ex. 9: a proteção estava na rota principal, mas não na rota vizinha.
+
+| # | Achado | Ameaça | Antes (reproduzido) | Correção | Teste | Status |
+|---|---|---|---|---|---|---|
+| CR1 | `/recepcao/login` confere só a senha e emite cookie para o **admin sem MFA**; o cookie vale nas rotas da API (`get_current_user` aceita cookie) | T08 | admin abre `/consultas/{id}/prontuario` (CPF) sem 2º fator → 200 | contas com MFA são recusadas no login HTML (403, sem cookie) | `test_T08_login_html_nao_contorna_mfa` | ✅ corrigido |
+| CR2 | `/recepcao/login` sem o limite de login, só o global de 120/min | T05 | 7 tentativas erradas → 7×401, nenhum 429 | `@limiter.limit(LIMITE_LOGIN)` (5/min) | `test_T05_login_html_limitado` | ✅ corrigido |
+| CR3 | agenda HTML lista consultas de **todos** os profissionais | T01 | `dr_diego` vê paciente e observação clínica da Dra. Carla | filtro por `profissional_id` (o mesmo de `GET /consultas`) | `test_T01_agenda_html_so_mostra_proprias` | ✅ corrigido |
+| CR4 | `GET /pacientes` devolve nome e **CPF** de pacientes de outros profissionais | T01 | `dr_diego` busca "Ana" → recebe Ana Souza (paciente da Dra. Carla) | filtro por `profissional_id` para profissionais | `test_T01_busca_pacientes_so_retorna_proprios` | ✅ corrigido |
+| CR5 | `PATCH {"data_hora": null}` → erro 500 (NOT NULL no banco) | — | `IntegrityError` | — | — | ⚠️ aberto (baixo impacto: só o dono da consulta alcança) |
+| CR6 | `Secure` do cookie lê `os.environ`, não as settings (`.env`) | T12 | com `ENV=prod` só no `.env`, cookie sem `Secure` | — | — | ⚠️ aberto (RR6: TLS no proxy) |
+| CR7 | tempo de resposta do login revela usuário inexistente (bcrypt não roda) | T05 | — | — | — | risco residual RR9 |
+| CR8 | código TOTP reutilizável dentro da janela (~60–90 s) | T08 | — | — | — | risco residual RR10 |
+
+**Evidência:** os **mesmos** 4 testes falham no commit `9aaa3d9`, antes da correção (`ex13/08_code_review_antes.txt`), e passam no commit `f47f33a`, depois dela (`ex13/09_code_review_depois.txt`). Suíte completa: 67 testes (`ex13/10_pytest_pos_code_review.txt`).
+
+**Lição para o capstone:** o ZAP passivo não acha nenhum desses problemas, e os testes do Ex. 9 também não, porque testavam as rotas principais. A revisão manual focada em "onde mais esse dado sai?" e "onde mais existe login?" fechou a lacuna. Por isso ela passa a valer como etapa do processo, e não só o scanner.
 
 ---
 
@@ -71,6 +90,8 @@ Nenhum alerta **High**; nenhum corresponde às vulnerabilidades críticas (V1–
 | RR6 | **TLS terminado fora da app** | HSTS assume HTTPS no proxy | Baixa | HSTS já enviado | garantir terminação TLS no ingress |
 | RR7 | **Headers COEP/COOP/CORP e CSP refináveis** (ZAP WARN) | endurecimento incremental | Baixa | HSTS/XFO/XCTO/CSP-parcial presentes | completar no middleware |
 | RR8 | **IAST não implementado** | exige ambiente instrumentado | Baixa | `tests/security` cobre parte | avaliar IAST em staging |
+| RR9 | **Enumeração de usuário por tempo de resposta** (CR7) | usuário inexistente responde sem rodar bcrypt (~200 ms mais rápido) | Baixa | mensagem genérica + rate limit 5/min tornam a varredura lenta | rodar bcrypt contra um hash fixo quando o usuário não existe |
+| RR10 | **Replay do código TOTP** (CR8) | não há registro do último código usado | Baixa | `mfa_token` expira em 5 min; exige a senha antes | guardar o último *time-step* aceito por usuário e recusar repetição |
 
 ---
 

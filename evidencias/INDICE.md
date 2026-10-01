@@ -74,3 +74,6 @@
 | `ex13/05_pytest_final.txt` | ex13 | R24 | `79a5313` | pytest completo final (todos os testes + tests/security + mocking) |
 | `ex13/07_checagem_entrega.txt` | ex13 | R24 | `6be8141` | Conferências de entrega: tudo commitado, sem .env versionado, sem segredo hardcoded em app/ |
 | `ex12/03_pip_audit_local.txt` | ex12 | R19,R21 | `e6cc2bd` | pip-audit (SCA): sem vulnerabilidades após pyjwt 2.14.0 (o SCA pegou CVEs em 2.10.1 e depois em 2.13.0) |
+| `ex13/08_code_review_antes.txt` | ex13 | R23,R24 | `9aaa3d9` | Code review (ANTES): 4 testes dos achados CR1-CR4 falham no código sem correção (MFA contornável no login HTML, login HTML sem rate limit, agenda HTML e busca de pacientes sem ownership) |
+| `ex13/09_code_review_depois.txt` | ex13 | R23,R24 | `f47f33a` | Code review (DEPOIS): os mesmos 4 testes dos achados CR1-CR4 passam após a correção |
+| `ex13/10_pytest_pos_code_review.txt` | ex13 | R24 | `f47f33a` | pytest completo após as correções do code review |
