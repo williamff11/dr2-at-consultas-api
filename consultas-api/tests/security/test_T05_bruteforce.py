@@ -18,3 +18,11 @@ def test_T05_login_limitado(client, rate_limit_ativo):
                for _ in range(7)]
     assert 429 in codigos
     assert codigos.count(401) <= 5
+
+
+def test_T05_login_html_limitado(client, rate_limit_ativo):
+    codigos = [client.post("/recepcao/login", data={"username": "x", "password": "y"},
+                           follow_redirects=False).status_code
+               for _ in range(7)]
+    assert 429 in codigos
+    assert codigos.count(401) <= 5

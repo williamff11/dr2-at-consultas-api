@@ -26,3 +26,11 @@ def test_T08_admin_sem_mfa_barrado(client):
 def test_T08_m2m_em_rota_humana(client):
     tok = client.post("/auth/client-token", data=CLIENT).json()["access_token"]
     assert client.get("/consultas", headers={"Authorization": f"Bearer {tok}"}).status_code == 403
+
+
+def test_T08_login_html_nao_contorna_mfa(client):
+    import os
+    r = client.post("/recepcao/login", follow_redirects=False,
+                    data={"username": "admin", "password": os.environ["SEED_SENHA_ADMIN"]})
+    assert r.status_code == 403
+    assert "access_token" not in r.cookies
