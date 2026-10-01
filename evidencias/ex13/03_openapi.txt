@@ -1,5 +1,5 @@
 # Evidência : OpenAPI da aplicação (para auditoria)
-# Exercício : ex13   Rubrica(s): R24
+# Exercício : ex13
 # Data      : 2026-09-28 10:00:09 -0400
 # Commit    : 79a5313 (main)
 # Comando   : curl -s localhost:8000/openapi.json | consultas-api/.venv/bin/python -m json.tool | head -20; echo '... (spec completa salva)'; curl -s localhost:8000/openapi.json > evidencias/ex13/03_openapi.json; echo "bytes: $(wc -c < evidencias/ex13/03_openapi.json)"

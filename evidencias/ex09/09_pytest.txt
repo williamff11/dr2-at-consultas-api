@@ -1,5 +1,5 @@
 # Evidência : pytest: 29 testes (correções V1-V4 + endpoint irmão)
-# Exercício : ex09   Rubrica(s): R14,R15,R16
+# Exercício : ex09
 # Data      : 2026-09-28 09:43:06 -0400
 # Commit    : 313e28c (ex09)
 # Comando   : cd consultas-api && .venv/bin/pytest -q

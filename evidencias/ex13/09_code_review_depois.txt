@@ -1,5 +1,5 @@
 # Evidência : Code review (DEPOIS): os mesmos 4 testes dos achados CR1-CR4 passam após a correção
-# Exercício : ex13   Rubrica(s): R23,R24
+# Exercício : ex13
 # Data      : 2026-10-01 09:45:11 -0400
 # Commit    : f47f33a (fix/code-review)
 # Comando   : cd consultas-api && .venv/bin/pytest -v --no-header -p no:warnings tests/security/test_T01_bola.py::test_T01_agenda_html_so_mostra_proprias tests/security/test_T01_bola.py::test_T01_busca_pacientes_so_retorna_proprios tests/security/test_T05_bruteforce.py::test_T05_login_html_limitado tests/security/test_T08_escalada_privilegio.py::test_T08_login_html_nao_contorna_mfa --tb=line

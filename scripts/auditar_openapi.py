@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Auditoria da especificação OpenAPI (Ex. 13, R24).
+"""Auditoria da especificação OpenAPI (Ex. 13).
 
 Lê openapi.json e aponta falhas de design de segurança. Uso:
     curl -s localhost:8000/openapi.json > openapi.json

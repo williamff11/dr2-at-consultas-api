@@ -1,5 +1,5 @@
 # Evidência : V1 BOLA (ANTES): Dr. Diego lê o prontuário de paciente da Dra. Carla trocando o id → 200 com CPF e observações clínicas
-# Exercício : ex09   Rubrica(s): R14
+# Exercício : ex09
 # Data      : 2026-09-28 09:34:55 -0400
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : TD=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkcl9kaWVnbyIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAyNDk1LCJleHAiOjE3OTA2MDMzOTUsInBhcGVsIjoicHJvZmlzc2lvbmFsIiwic2NvcGUiOiJjb25zdWx0YXM6cmVhZCBjb25zdWx0YXM6d3JpdGUiLCJwcm9maXNzaW9uYWxfaWQiOjJ9.j4PzgrJULP2VqyI9Ax9nB8keTnuk7-IzUacCmstlHvE; echo 'Diego (profissional 2) acessa /consultas/1/prontuario (consulta da Carla):'; curl -s -i localhost:8000/consultas/1/prontuario -H "Authorization: Bearer $TD" | tail -6

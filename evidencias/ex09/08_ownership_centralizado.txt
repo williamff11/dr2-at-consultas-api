@@ -1,5 +1,5 @@
 # Evidência : Ownership centralizado: a decisão de posse (compara profissional_id do objeto) existe só em dependencies.py
-# Exercício : ex09   Rubrica(s): R14
+# Exercício : ex09
 # Data      : 2026-09-28 09:43:06 -0400
 # Commit    : 313e28c (ex09)
 # Comando   : echo '=== decisao de posse a nivel de objeto (BOLA) ==='; grep -rn 'consulta.profissional_id == user' consultas-api/app; echo; echo '=== uso de get_consulta_autorizada (rotas so declaram a dependencia) ==='; grep -rn 'Depends(get_consulta_autorizada)' consultas-api/app; echo; echo '(os demais profissional_id == sao filtros de LISTAGEM, nao decisao de posse:)'; grep -rn 'profissional_id ==' consultas-api/app/routes

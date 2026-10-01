@@ -1,5 +1,5 @@
 # Evidência : Payloads XSS gravados em observacoes (JSON devolve o texto cru, o que é correto para JSON)
-# Exercício : ex02   Rubrica(s): R4
+# Exercício : ex02
 # Data      : 2026-09-28 08:44:48 -0400
 # Commit    : 19a8ad9 (main)
 # Comando   : set -x; curl -s -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T15:00:00","observacoes":"<script>alert(\"xss\")</script>"}'; echo; curl -s -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":2,"profissional_id":2,"data_hora":"2026-09-28T16:00:00","observacoes":"<img src=x onerror=alert(1)>"}'; echo

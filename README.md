@@ -41,7 +41,7 @@ uvicorn app.main:app --reload       # ou: ../scripts/servidor.sh start
 ```
 William_Felicio_Freire_DR2_AT/
 ├── README.md                             ← este documento (como rodar + os 13 exercícios)
-├── RELATORIO_TECNICO_DR2_AT.md           ← decisões de segurança por exercício + matriz rubrica → evidência
+├── RELATORIO_TECNICO_DR2_AT.md           ← decisões de segurança por exercício + mapa de evidências por tema
 ├── RELATORIO_RASTREABILIDADE_DR2_AT.md   ← capstone (Ex. 13): ZAP, matriz T01–T12, code review, risco residual
 ├── .github/workflows/security.yml        ← pipeline DevSecOps
 ├── docs/img/                             ← DFD e partições (.mmd + .png)
@@ -54,21 +54,19 @@ William_Felicio_Freire_DR2_AT/
 
 ## Exercícios
 
-| Exercício | Rubricas |
-|---|---|
-| [Ex. 1 — Fundação da API de agendamento](#ex01) | R1 |
-| [Ex. 2 — Controle de exposição de dados e templates seguros](#ex02) | R2, R3, R4 |
-| [Ex. 3 — Tríade CIA, frameworks de referência e DFD](#ex03) | R5, R6 |
-| [Ex. 4 — Misuse cases, STRIDE e threat model consolidado](#ex04) | R7, R8 |
-| [Ex. 5 — Arquitetura de segurança, partições e vetores nos três eixos](#ex05) | R9 |
-| [Ex. 6 — Autenticação e autorização](#ex06) | R10, R11 |
-| [Ex. 7 — Integração M2M: fluxo OAuth, escopos e claims](#ex07) | R12 |
-| [Ex. 8 — Identificação de vulnerabilidades OWASP Top 10](#ex08) | R13 |
-| [Ex. 9 — Correção de vulnerabilidades de entrada e saída](#ex09) | R14, R15, R16 |
-| [Ex. 10 — Hardening de rede e proteção contra abuso](#ex10) | R17 |
-| [Ex. 11 — Persistência segura (SQLModel + BaseSettings)](#ex11) | R18 |
-| [Ex. 12 — Pipeline DevSecOps, CVSS e security gate](#ex12) | R19, R20, R21, R22 |
-| [Ex. 13 — Capstone: auditoria final, mocking e OpenAPI](#ex13) | R23, R24 |
+- [Ex. 1 — Fundação da API de agendamento](#ex01)
+- [Ex. 2 — Controle de exposição de dados e templates seguros](#ex02)
+- [Ex. 3 — Tríade CIA, frameworks de referência e DFD](#ex03)
+- [Ex. 4 — Misuse cases, STRIDE e threat model consolidado](#ex04)
+- [Ex. 5 — Arquitetura de segurança, partições e vetores nos três eixos](#ex05)
+- [Ex. 6 — Autenticação e autorização](#ex06)
+- [Ex. 7 — Integração M2M: fluxo OAuth, escopos e claims](#ex07)
+- [Ex. 8 — Identificação de vulnerabilidades OWASP Top 10](#ex08)
+- [Ex. 9 — Correção de vulnerabilidades de entrada e saída](#ex09)
+- [Ex. 10 — Hardening de rede e proteção contra abuso](#ex10)
+- [Ex. 11 — Persistência segura (SQLModel + BaseSettings)](#ex11)
+- [Ex. 12 — Pipeline DevSecOps, CVSS e security gate](#ex12)
+- [Ex. 13 — Capstone: auditoria final, mocking e OpenAPI](#ex13)
 
 > **Ordem de execução:** o Ex. 11 (persistência) foi feito antes dos Ex. 8–10, para que a SQL injection do Ex. 8 fosse real (ver [Ex. 11](#ex11)). As seções seguem a numeração do enunciado. Referências de `arquivo:linha` apontam para o código na tag do exercício correspondente.
 
@@ -121,7 +119,7 @@ pytest -v
 
 #### Teste automatizado
 
-`consultas-api/tests/test_consultas.py::test_criar_e_obter_consulta_sucesso` cobre o caminho de sucesso (POST 201 → GET 200). Esse teste é **preservado** ao longo de todo o Assessment (o R24 exige que ele continue existindo no Ex. 13).
+`consultas-api/tests/test_consultas.py::test_criar_e_obter_consulta_sucesso` cobre o caminho de sucesso (POST 201 → GET 200). Esse teste é **preservado** ao longo de todo o Assessment e continua existindo no Ex. 13.
 
 #### Evidências
 
@@ -140,9 +138,9 @@ pytest -v
 
 ### Ex. 2 — Controle de exposição de dados e templates seguros
 
-**Rubrica:** R2, R3, R4 · **Tag:** `ex02` · **Branch de demonstração:** `demo/ex02-sem-response-model` (commit `f3b26ec`)
+**Tag:** `ex02` · **Branch de demonstração:** `demo/ex02-sem-response-model` (commit `f3b26ec`)
 
-#### 1. response_model controla exatamente os campos expostos (R2)
+#### 1. response_model controla exatamente os campos expostos
 
 O registro armazenado de cada consulta tem campos internos de auditoria: `criado_por`, `ip_origem`, `criado_em`, `atualizado_em` (`consultas-api/app/routes/consultas.py`, no `criar_consulta`). O contrato público é outro modelo:
 
@@ -151,7 +149,7 @@ O registro armazenado de cada consulta tem campos internos de auditoria: `criado
 
 O FastAPI valida e **filtra** o objeto retornado pela rota através do `response_model`: um campo que não está declarado em `ConsultaPublic` não sai na resposta, mesmo que exista no registro. Também separamos os modelos de **entrada** (`ConsultaCreate`/`ConsultaUpdate`: o que o cliente pode enviar) dos de **saída** (o que ele pode ver). Assim, nenhum dos dois contratos é derivado do modelo de persistência.
 
-#### 2. Por que é arriscado não definir response_model (R3)
+#### 2. Por que é arriscado não definir response_model
 
 **Mecanismo.** Sem `response_model`, o FastAPI serializa *tudo* o que a função retorna (`jsonable_encoder` do objeto inteiro). A resposta passa a ser definida pelo **modelo de persistência**, não pelo contrato da API. Com isso:
 
@@ -168,7 +166,7 @@ O FastAPI valida e **filtra** o objeto retornado pela rota através do `response
 
 **Prova executável.** `consultas-api/tests/test_consultas.py::test_sem_response_model_vazaria_campos_internos` registra a **mesma função de rota** em um app auxiliar *sem* `response_model` e verifica que os quatro campos de auditoria aparecem. No app real, eles não aparecem. A justificativa deixa de ser só texto e passa a ser um teste que falha se o comportamento mudar.
 
-#### 3. Jinja2 com herança e auto-escape (R4)
+#### 3. Jinja2 com herança e auto-escape
 
 - **Herança:** `consultas-api/app/templates/base.html:5,14,15` define o layout e os blocos `title`, `heading` e `content`. `agenda.html:1` faz `{% extends "base.html" %}` e só preenche os blocos. Cabeçalho, rodapé (aviso LGPD) e, depois, a CSP ficam em um único lugar.
 - **Auto-escape explícito:** `consultas-api/app/routes/pages.py:16-19` cria o `Environment` com `autoescape=select_autoescape(["html"])`. Não dependemos do default implícito do Starlette: se alguém trocar o loader ou a forma de instanciar, o escape continua declarado no código.
@@ -195,7 +193,7 @@ O FastAPI valida e **filtra** o objeto retornado pela rota através do `response
 
 ### Ex. 3 — Tríade CIA, frameworks de referência e DFD
 
-**Rubrica:** R5, R6 · **Tag:** `ex03` · **Estado analisado:** tag `ex02` (API sem autenticação, persistência em memória)
+**Tag:** `ex03` · **Estado analisado:** tag `ex02` (API sem autenticação, persistência em memória)
 
 > Referências usadas em toda a entrega: **OWASP Top 10:2021**, **OWASP API Security Top 10:2023**, **NIST SSDF (SP 800-218)** e **MITRE CAPEC / ATT&CK / CWE**.
 
@@ -281,14 +279,14 @@ Fonte: `docs/img/dfd.mmd` (Mermaid), renderizado com `scripts/render_mermaid.py`
 
 ### Ex. 4 — Misuse cases, STRIDE e threat model consolidado
 
-**Rubrica:** R7, R8 · **Tag:** `ex04`
+**Tag:** `ex04`
 
 > Documento de referência oficial da entrega. Os IDs `MCxx` (misuse cases) e `Txx` (ameaças) são **estáveis** e citados depois:
 > - nas vulnerabilidades do Ex. 8 ([Ex. 8](#ex08));
 > - nas docstrings dos testes `consultas-api/tests/security/test_Txx_*.py` (Ex. 12);
 > - no relatório de rastreabilidade do capstone (`RELATORIO_RASTREABILIDADE_DR2_AT.md`).
 >
-> As colunas **"Teste que prova"** e **"Evidência"** da tabela da seção 4 começam como `(pendente)` e são preenchidas conforme cada mitigação é implementada. É isso que torna o modelo rastreável de ponta a ponta (R8, R22, R23).
+> As colunas **"Teste que prova"** e **"Evidência"** da tabela da seção 4 começam como `(pendente)` e são preenchidas conforme cada mitigação é implementada. É isso que torna o modelo rastreável de ponta a ponta.
 >
 > **Nota sobre payloads:** este documento descreve os vetores de forma conceitual. As strings de exploração concretas ficam apenas onde têm função de prova — nos comandos capturados por `scripts/evidencia.sh` (Ex. 8/9) e nos testes automatizados — nunca transcritas na prosa.
 
@@ -437,7 +435,7 @@ STRIDE: S/T/R/I/D/E. As duas últimas colunas são preenchidas nas Etapas 10, 12
 
 ### Ex. 5 — Arquitetura de segurança, partições e vetores nos três eixos
 
-**Rubrica:** R9 · **Tag:** `ex05`
+**Tag:** `ex05`
 
 Complementa o threat model (Ex. 4) com a visão de **partições** e **fronteiras de segurança**, e mapeia vetores nos **três eixos de segurança de APIs**: design, implementação e infraestrutura.
 
@@ -506,7 +504,7 @@ A partição de autenticação (P2) precisa atender **dois tipos de cliente com 
 
 ### Ex. 6 — Autenticação e autorização
 
-**Rubrica:** R10, R11 · **Tag:** `ex06` · Ameaças cobertas: T01, T04, T05, T08, T09
+**Tag:** `ex06` · Ameaças cobertas: T01, T04, T05, T08, T09
 
 #### 1. Autenticação OAuth2 + bcrypt + JWT
 
@@ -588,7 +586,7 @@ Os prints 10–13 renderizam a **resposta HTTP real** no navegador com um banner
 
 ### Ex. 7 — Integração M2M: fluxo OAuth, escopos e claims
 
-**Rubrica:** R12 · **Tag:** `ex07` · Ameaça coberta: T07
+**Tag:** `ex07` · Ameaça coberta: T07
 
 #### 1. Qual fluxo OAuth 2.0 e por quê
 
@@ -647,7 +645,7 @@ O enunciado exige que a limitação do parceiro seja **tecnicamente garantida**,
 
 ### Ex. 8 — Identificação de vulnerabilidades OWASP Top 10
 
-**Rubrica:** R13 · **Tag do estado vulnerável:** `ex08-vulneravel` · Referência: [Ex. 4](#ex04)
+**Tag do estado vulnerável:** `ex08-vulneravel` · Referência: [Ex. 4](#ex04)
 
 Este documento identifica padrões vulneráveis **lendo o código** (sem scanner), cobrindo mais de três categorias distintas do OWASP. Cada falha foi introduzida de propósito e marcada no código com `# VULN-Vn (intencional, Ex. 8)`. As correções são o Ex. 9 (entrada/saída) e o Ex. 10 (rede/abuso). As strings de exploração completas estão nas evidências `_antes` (capturadas sobre a tag `ex08-vulneravel`), não transcritas aqui.
 
@@ -714,11 +712,11 @@ Ameaças: **T05**, **T10**, **T12**.
 
 ### Ex. 9 — Correção de vulnerabilidades de entrada e saída
 
-**Rubrica:** R14, R15, R16 · **Tag:** `ex09` (correção) sobre `ex08-vulneravel` (falha) · Ameaças: T01, T02, T03, T06
+**Tag:** `ex09` (correção) sobre `ex08-vulneravel` (falha) · Ameaças: T01, T02, T03, T06
 
 Cada correção usa o **mesmo comando/payload** do "antes"; só o commit muda. O corretor compara `_antes` (tag `ex08-vulneravel`) com `_depois` (tag `ex09`).
 
-#### V1 — BOLA corrigida de forma centralizada (R14)
+#### V1 — BOLA corrigida de forma centralizada
 
 **Como:** as rotas de item migraram para um `item_router` cujo **prefixo** `/consultas/{consulta_id}` carrega `dependencies=[Depends(get_consulta_autorizada)]` (`app/routes/consultas.py`). `GET`, `PATCH`, `DELETE` e `/prontuario` herdam a checagem de posse. **Qualquer rota nova** sob esse prefixo é obrigada a passar pela verificação — é impossível esquecer, que era a causa da V1.
 
@@ -735,7 +733,7 @@ A regra de posse continua num **único lugar** (`app/auth/dependencies.py:113`),
 
 **Correção:** a página passou a usar a **mesma** dependência `get_consulta_autorizada` (`app/routes/pages.py`). Evidência `ex09/02`: Diego → **404**, Carla (dona) → **200**. Como as rotas de item herdam ownership do `item_router`, futuras páginas/rotas sob esse recurso não repetem a falha.
 
-#### V2 — SQL injection corrigida (R15)
+#### V2 — SQL injection corrigida
 
 **Como:** a busca virou `select(Paciente).where(Paciente.nome.contains(nome))` (query parametrizada, `app/routes/pacientes.py`) **e** o parâmetro é validado por **whitelist/regex** `^[A-Za-zÀ-ÿ' ]{2,60}$` na borda (`Query(pattern=...)`).
 
@@ -746,7 +744,7 @@ Evidência `ex09/03_V2_sqli_depois.txt` (mesmos vetores do antes):
 
 Duas camadas: a regex barra a maioria dos vetores na borda; a parametrização garante que, mesmo um valor que passe pela regex (apóstrofo é válido em nomes), seja tratado como dado.
 
-#### V3 — XSS stored corrigido (R16)
+#### V3 — XSS stored corrigido
 
 **Como:** removido o `| safe` do template (`app/templates/detalhe_consulta.html`); as quebras de linha agora vêm de CSS (`white-space: pre-line`), não de HTML. O auto-escape do Jinja2 volta a tratar `<`, `>` como texto. Camada extra: a entrada rejeita `<`/`>` (regex `^[^<>]*$` em `observacoes`).
 
@@ -755,7 +753,7 @@ Duas camadas: a regex barra a maioria dos vetores na borda; a parametrização g
 | POST `observacoes=<img onerror=...>` | aceito (200) | **422** (regex) |
 | Página de detalhe | `alert()` **executa** (`ex09/04_..._antes.png`) | conteúdo como texto, **`dialogs=0`** (`ex09/04_..._depois.png`) |
 
-#### V4 — Mass assignment corrigido (R15)
+#### V4 — Mass assignment corrigido
 
 **Como:** `model_config = ConfigDict(extra="forbid")` em `ConsultaCreate` e `ConsultaUpdate` (`app/models/consulta.py`). Campos não declarados são **rejeitados** (422 `extra_forbidden`), não mais aplicados. `profissional_id` e `criado_por` não são campos de entrada. Somado: transições de status por **whitelist** (`TRANSICOES_VALIDAS`) e `status` só pelo enum.
 
@@ -785,7 +783,7 @@ Duas camadas: a regex barra a maioria dos vetores na borda; a parametrização g
 
 ### Ex. 10 — Hardening de rede e proteção contra abuso
 
-**Rubrica:** R17 · **Tag:** `ex10` (corrige V5a/V5b/V5c) · Ameaças: T05, T10, T12
+**Tag:** `ex10` (corrige V5a/V5b/V5c) · Ameaças: T05, T10, T12
 
 #### 1. CORS com allowlist explícita (V5a)
 
@@ -843,7 +841,7 @@ Evidência `ex10/03_V5c_headers_depois.txt`: HSTS/XFO/XCTO em `/health`; CSP adi
 
 ### Ex. 11 — Persistência segura (SQLModel + BaseSettings)
 
-**Rubrica:** R18 · **Tag:** `ex11` · Ameaças cobertas: T11 (segredo), pré-requisito de T02 (SQLi) · Ameaça associada ao commit ordenado: `ex11`
+**Tag:** `ex11` · Ameaças cobertas: T11 (segredo), pré-requisito de T02 (SQLi) · Ameaça associada ao commit ordenado: `ex11`
 
 #### Por que este exercício foi antecipado (executado como Etapa 8)
 
@@ -890,15 +888,15 @@ O plano executou o Ex. 11 **antes** dos Ex. 8–10. Motivo: a vulnerabilidade de
 
 ### Ex. 12 — Pipeline DevSecOps, CVSS e security gate
 
-**Rubrica:** R19, R20, R21, R22 · **Tag:** `ex12` · Workflow: `.github/workflows/security.yml`
+**Tag:** `ex12` · Workflow: `.github/workflows/security.yml`
 
-#### 1. Testes de segurança rastreáveis ao threat model (R22)
+#### 1. Testes de segurança rastreáveis ao threat model
 
 `consultas-api/tests/security/` tem **um arquivo por ameaça** do Ex. 4 (`test_T01_bola.py` … `test_T12`). A docstring de cada arquivo cita a ameaça, o misuse case e [Ex. 4](#ex04). O teste de autorização iniciado no Ex. 6 (`test_recepcionista_nao_acessa_rota_admin`) foi **movido e expandido** para `test_T08_escalada_privilegio.py`, cobrindo: recepção→admin, profissional→admin, admin sem MFA, token M2M em rota humana. Os demais arquivos cobrem BOLA (GET/PATCH/DELETE/prontuário/HTML), SQLi, XSS, JWT forjado/expirado/aud, força bruta (429), mass assignment, escopo M2M, CORS e headers.
 
 Evidência `ex12/04_pytest_security.txt` (nomes `test_T0x` visíveis) e `ex12/06_pytest_completo.txt` (56 testes).
 
-#### 2. Priorização por CVSS + impacto de negócio (R20)
+#### 2. Priorização por CVSS + impacto de negócio
 
 `scripts/cvss_scores.py` calcula os scores com a biblioteca `cvss` (evidência `ex12/01_cvss_scores.txt`).
 
@@ -913,9 +911,9 @@ Evidência `ex12/04_pytest_security.txt` (nomes `test_T0x` visíveis) e `ex12/06
 | V3 XSS | `AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N` | 5.4 | Medium | sessão da recepção | 7 – Média |
 | V5c Headers | `AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N` | 4.2 | Medium | clickjacking/downgrade | 8 – Média |
 
-**Onde o negócio muda a ordem do CVSS:** a **V1 (BOLA)** tem CVSS **6.5 Medium**, abaixo de V4/V5a numericamente próximos, mas **sobe para prioridade crítica**: ela expõe **prontuário de saúde de terceiros**, dado sensível sob LGPD art. 11, com incidente comunicável à ANPD e dano reputacional irreversível. O CVSS não "sabe" que o `C:H` aqui é dado de saúde de outra pessoa. Esse é o exemplo pedido pela rubrica de priorização que combina CVSS **e** impacto de negócio.
+**Onde o negócio muda a ordem do CVSS:** a **V1 (BOLA)** tem CVSS **6.5 Medium**, abaixo de V4/V5a numericamente próximos, mas **sobe para prioridade crítica**: ela expõe **prontuário de saúde de terceiros**, dado sensível sob LGPD art. 11, com incidente comunicável à ANPD e dano reputacional irreversível. O CVSS não "sabe" que o `C:H` aqui é dado de saúde de outra pessoa. É uma priorização que combina CVSS **e** impacto de negócio.
 
-#### 3. Ferramentas × fase do SDLC, amarradas ao pipeline (R19)
+#### 3. Ferramentas × fase do SDLC, amarradas ao pipeline
 
 | Tipo | Ferramenta | Fase do SDLC | Job/gatilho (`security.yml`) | Justificativa | Vuln. do histórico que pegaria |
 |---|---|---|---|---|---|
@@ -926,7 +924,7 @@ Evidência `ex12/04_pytest_security.txt` (nomes `test_T0x` visíveis) e `ex12/06
 
 O `schedule:` semanal roda o SCA mesmo sem commits, porque uma dependência estável pode ganhar um CVE a qualquer momento — foi o que aconteceu com `pyjwt`/`python-multipart` neste Assessment.
 
-#### 4. ⚠️ DECISÃO DO WILLIAM — critério de bloqueio do gate (R21)
+#### 4. ⚠️ DECISÃO DO WILLIAM — critério de bloqueio do gate
 
 > **Proposta (a validar e reescrever por você, e explicar no vídeo).** O `security-gate` **bloqueia o merge** se:
 > - (a) **qualquer teste** falhar (`tests`, inclui `tests/security`);
@@ -941,7 +939,7 @@ O `schedule:` semanal roda o SCA mesmo sem commits, porque uma dependência est�
 
 O job `security-gate` tem `needs: [tests, sast, sca]` (o DAST roda em paralelo, como advisory) e consolida os resultados (`.github/workflows/security.yml`).
 
-#### 5. Demonstração no GitHub (R21)
+#### 5. Demonstração no GitHub
 
 - Repositório `williamff11/dr2-at-consultas-api` com o ruleset `protect-main`: merge na `main` só por PR com o check `security-gate` verde (`ex12/08`, `ex12/09`).
 - Pipeline verde na `main` (`ex12/10`).
@@ -968,9 +966,9 @@ O job `security-gate` tem `needs: [tests, sast, sca]` (o DAST roda em paralelo, 
 
 ### Ex. 13 — Capstone: auditoria final, mocking e OpenAPI
 
-**Rubrica:** R23, R24 · **Tag:** `ex13` · Relatório principal: `RELATORIO_RASTREABILIDADE_DR2_AT.md`
+**Tag:** `ex13` · Relatório principal: `RELATORIO_RASTREABILIDADE_DR2_AT.md`
 
-#### 1. Testes unitários com mocking (R24)
+#### 1. Testes unitários com mocking
 
 `consultas-api/tests/test_unitarios_mock.py` isola a lógica das dependências externas:
 - **`dependency_overrides[get_current_user]`**: simula papéis (recepção, profissional) sem gerar JWT real — testa RBAC/criação direto na lógica.
@@ -978,11 +976,11 @@ O job `security-gate` tem `needs: [tests, sast, sca]` (o DAST roda em paralelo, 
 - **`patch` em `verificar_codigo` (TOTP)**: fluxo MFA sem depender do relógio TOTP.
 - **controle do relógio** via `expira_em` negativo: expiração do JWT.
 - **mock da sessão** (`SimpleNamespace`): a regra de ownership (`get_consulta_autorizada`) é testada **sem tocar o banco**, provando que ela decide só pelo `profissional_id`.
-- **teste de sucesso do Ex. 1 preservado** (`test_ex1_criar_e_obter_sucesso`), como a R24 exige explicitamente.
+- **teste de sucesso do Ex. 1 preservado** (`test_ex1_criar_e_obter_sucesso`).
 
 Evidência: `ex13/05_pytest_final.txt` (63 testes).
 
-#### 2. Auditoria da especificação OpenAPI (R24)
+#### 2. Auditoria da especificação OpenAPI
 
 `scripts/auditar_openapi.py` lê o `openapi.json` e aponta falhas de design (`ex13/04_auditoria_openapi.txt`). O que foi **corrigido** e o que ficou como **risco residual**:
 
@@ -995,7 +993,7 @@ Evidência: `ex13/05_pytest_final.txt` (63 testes).
 | `dia` (string) sem `pattern` em `/horarios-disponiveis` | risco residual baixo (validação de data feita na lógica) |
 | **IDs inteiros sequenciais** | **risco residual aceito**: ownership já barra o acesso; UUID seria defesa extra contra enumeração |
 
-#### 3. OWASP ZAP baseline passivo (R23)
+#### 3. OWASP ZAP baseline passivo
 
 Executado com Docker contra o estado final (comando em `RELATORIO_RASTREABILIDADE`). Resultado: **0 FAIL, 6 WARN (Medium/Low), 61 PASS**. Cada alerta é interpretado no relatório de rastreabilidade (verdadeiro/falso positivo, categoria OWASP, correção/decisão). Relatórios: `ex13/02_zap_baseline_depois.{html,json,md}`; resumo em `ex13/02_zap_resumo.txt`.
 

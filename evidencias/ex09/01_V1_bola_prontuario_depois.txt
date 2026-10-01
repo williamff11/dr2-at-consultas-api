@@ -1,5 +1,5 @@
 # Evidência : V1 BOLA (DEPOIS): Dr. Diego no prontuário de paciente da Carla → 404 (ownership no item_router)
-# Exercício : ex09   Rubrica(s): R14
+# Exercício : ex09
 # Data      : 2026-09-28 09:41:29 -0400
 # Commit    : 313e28c (ex09)
 # Comando   : TD=$(scripts/token.sh dr_diego); echo 'Diego acessa /consultas/1/prontuario:'; curl -s -i localhost:8000/consultas/1/prontuario -H "Authorization: Bearer $TD" | tail -5

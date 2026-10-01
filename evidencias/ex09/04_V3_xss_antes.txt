@@ -1,5 +1,5 @@
 # Evidência : V3 XSS stored (ANTES): página de detalhe renderiza <img onerror> sem escape (|safe); print captura o alert com document.cookie
-# Exercício : ex09   Rubrica(s): R16
+# Exercício : ex09
 # Data      : 2026-09-28 09:35:30 -0400
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : TC=$(scripts/token.sh dra_carla); echo '--- HTML servido (tag NÃO escapada):'; curl -s --cookie "access_token=$TC" localhost:8000/recepcao/consultas/1 | grep -i 'class="obs"'; echo '--- print (o Playwright captura o evento dialog):'; scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/recepcao/consultas/1 evidencias/ex09/04_V3_xss_antes.png --cookie access_token=$TC

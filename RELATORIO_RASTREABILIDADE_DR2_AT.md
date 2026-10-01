@@ -109,4 +109,4 @@ Nenhum alerta **High**; nenhum corresponde às vulnerabilidades críticas (V1–
 >
 > Os demais (RR2, RR3, RR5, RR6, RR7, RR8) entram no backlog priorizado, sem bloquear o piloto.
 
-*(William: revise cada linha, decida se concorda, e reescreva esta seção 5 com as suas próprias palavras — a rubrica R23 exige que a decisão seja sua.)*
+*(William: revise cada linha, decida se concorda, e reescreva esta seção 5 com as suas próprias palavras.)*

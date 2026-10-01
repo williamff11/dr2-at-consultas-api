@@ -1,5 +1,5 @@
 # Evidência : V5b Força bruta (DEPOIS): 7 logins com senha errada — 5 chegam a 401, a partir da 6ª → 429 (rate limit)
-# Exercício : ex10   Rubrica(s): R17
+# Exercício : ex10
 # Data      : 2026-09-28 09:47:39 -0400
 # Commit    : 57e1ca8 (ex10)
 # Comando   : for i in $(seq 1 7); do curl -s -o /dev/null -w "tentativa $i -> %{http_code}\n" -X POST localhost:8000/auth/token -d 'username=dra_carla&password=errada'; done

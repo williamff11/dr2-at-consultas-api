@@ -1,6 +1,6 @@
 """Suíte de testes — iniciada no Ex. 1, expandida nos Ex. 6, 12 e 13.
 
-Os testes do Ex. 1/2 foram preservados (R24) e apenas passaram a autenticar via
+Os testes do Ex. 1/2 foram preservados e apenas passaram a autenticar via
 fixture, já que as rotas agora exigem sessão (Ex. 6).
 """
 from datetime import datetime, timedelta

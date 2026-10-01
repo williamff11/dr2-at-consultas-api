@@ -1,5 +1,5 @@
 # Evidência : pytest completo após as correções do code review
-# Exercício : ex13   Rubrica(s): R24
+# Exercício : ex13
 # Data      : 2026-10-01 09:45:13 -0400
 # Commit    : f47f33a (fix/code-review)
 # Comando   : cd consultas-api && .venv/bin/pytest -q -p no:warnings

@@ -1,5 +1,5 @@
 # Evidência : Ownership: Dr. Diego tenta GET/PATCH consulta da Dra. Carla → 404 (não confirma existência); a dona acessa 200
-# Exercício : ex06   Rubrica(s): R10
+# Exercício : ex06
 # Data      : 2026-09-28 09:17:45 -0400
 # Commit    : a8c5c32 (ex06)
 # Comando   : source scripts/dev_env.sh; TC=$(scripts/token.sh dra_carla); TD=$(scripts/token.sh dr_diego); ID=$(curl -s -X POST localhost:8000/consultas -H "Authorization: Bearer $TC" -H "content-type: application/json" -d "{\"paciente_id\":1,\"data_hora\":\"$(date +%F)T14:00:00\",\"observacoes\":\"prontuario da Ana\"}" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"id\"])"); echo "consulta criada id=$ID (paciente da Carla)"; curl -s -o /dev/null -w "Diego GET  /consultas/$ID -> %{http_code}\n" localhost:8000/consultas/$ID -H "Authorization: Bearer $TD"; curl -s -o /dev/null -w "Diego PATCH /consultas/$ID -> %{http_code}\n" -X PATCH localhost:8000/consultas/$ID -H "Authorization: Bearer $TD" -H "content-type: application/json" -d "{\"status\":\"cancelada\"}"; curl -s -o /dev/null -w "Carla GET  /consultas/$ID -> %{http_code}\n" localhost:8000/consultas/$ID -H "Authorization: Bearer $TC"

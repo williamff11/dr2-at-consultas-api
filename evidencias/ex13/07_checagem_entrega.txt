@@ -1,5 +1,5 @@
 # Evidência : Conferências de entrega: tudo commitado, sem .env versionado, sem segredo hardcoded em app/
-# Exercício : ex13   Rubrica(s): R24
+# Exercício : ex13
 # Data      : 2026-09-28 10:04:06 -0400
 # Commit    : 6be8141 (main)
 # Comando   : echo '=== git status (deve estar limpo) ==='; git status --short || true; echo; echo '=== .env versionado? ==='; git ls-files | grep -E '(^|/)\.env$' && echo 'ERRO: .env versionado' || echo 'OK: nenhum .env versionado'; echo; echo '=== segredo hardcoded em app/? ==='; grep -rn --include='*.py' -iE "(secret_key|password|senha)\s*=\s*['\"][^'\"]+" consultas-api/app || echo 'OK: sem segredo hardcoded em app/'; echo; echo '=== VULN- restante no código final (deve ser vazio) ==='; grep -rn 'VULN-' consultas-api/app || echo 'OK: nenhum marcador VULN- no código final'

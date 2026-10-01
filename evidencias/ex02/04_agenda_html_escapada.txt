@@ -1,5 +1,5 @@
 # Evidência : HTML da agenda: payloads aparecem codificados (&lt;script&gt;), nenhuma tag <script>/<img> ativa
-# Exercício : ex02   Rubrica(s): R4
+# Exercício : ex02
 # Data      : 2026-09-28 08:44:49 -0400
 # Commit    : 19a8ad9 (main)
 # Comando   : curl -s localhost:8000/recepcao/agenda | grep -n -E '&lt;|<script|<img'; echo '--- contagem de <script literal no HTML:'; curl -s localhost:8000/recepcao/agenda | grep -c '<script' ; true

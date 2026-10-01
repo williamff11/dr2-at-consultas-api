@@ -31,35 +31,35 @@ A migração para SQLModel (Ex. 11) foi **antecipada** e executada antes dos Ex.
 
 Autenticação, autorização, ownership, configuração e headers vivem em `app/auth/` e `app/core/`. As rotas apenas declaram `Depends`/`Security`. A regra de posse (anti-BOLA) existe em **um único ponto** (`app/auth/dependencies.py`), comprovado por `grep` em `evidencias/ex09/08_ownership_centralizado.txt`.
 
-## Matriz rubrica → evidência principal
+## Mapa de evidências por tema
 
-| R | Item | Evidência |
-|---|---|---|
-| R1 | venv/uvicorn/módulos | `ex01/01–06`, [README, Ex. 1](README.md#ex01) |
-| R2 | response_model | `ex02/02`, testes |
-| R3 | justificar exposição | `ex02/01`, [README, Ex. 2](README.md#ex02) |
-| R4 | Jinja2 auto-escape | `ex02/03–05` |
-| R5 | CIA + frameworks | [README, Ex. 3](README.md#ex03) |
-| R6 | DFD trust boundaries | `docs/img/dfd.png` |
-| R7 | misuse cases | [README, Ex. 4](README.md#ex04) |
-| R8 | STRIDE rastreável | [README, Ex. 4](README.md#ex04) (T01–T12) |
-| R9 | 3 eixos | [README, Ex. 5](README.md#ex05) |
-| R10 | OAuth2+bcrypt+ownership | `ex06/01,02,06` |
-| R11 | JWT/MFA/RBAC×ABAC | `ex06/02,05,11–13`, [README, Ex. 6](README.md#ex06) |
-| R12 | M2M escopos/claims | `ex07/*`, [README, Ex. 7](README.md#ex07) |
-| R13 | identificar OWASP lendo código | [README, Ex. 8](README.md#ex08), `ex09/*_antes` |
-| R14 | BOLA centralizada | `ex09/01,02,08` |
-| R15 | whitelist/regex/extra=forbid | `ex09/03,05,06,07` |
-| R16 | XSS auto-escape | `ex09/04` (+png) |
-| R17 | CORS/headers/rate limit | `ex10/*` |
-| R18 | SQLModel/BaseSettings | `ex11/*` |
-| R19 | fase SDLC no pipeline | [README, Ex. 12](README.md#ex12), `security.yml` |
-| R20 | CVSS + negócio | `ex12/01`, [README, Ex. 12](README.md#ex12) |
-| R21 | security gate (critério do aluno) | `security.yml`, `ex12/05`, 👤 prints do PR |
-| R22 | testes rastreáveis ao threat model | `tests/security/`, `ex12/04` |
-| R23 | ZAP + rastreabilidade + risco residual + decisão | `ex13/02`, `RELATORIO_RASTREABILIDADE` |
-| R24 | mocking + OpenAPI | `tests/test_unitarios_mock.py`, `ex13/04,05` |
+| Tema | Evidência |
+|---|---|
+| venv/uvicorn/módulos | `ex01/01–06`, [README, Ex. 1](README.md#ex01) |
+| response_model | `ex02/02`, testes |
+| justificar exposição | `ex02/01`, [README, Ex. 2](README.md#ex02) |
+| Jinja2 auto-escape | `ex02/03–05` |
+| CIA + frameworks | [README, Ex. 3](README.md#ex03) |
+| DFD trust boundaries | `docs/img/dfd.png` |
+| misuse cases | [README, Ex. 4](README.md#ex04) |
+| STRIDE rastreável | [README, Ex. 4](README.md#ex04) (T01–T12) |
+| 3 eixos | [README, Ex. 5](README.md#ex05) |
+| OAuth2+bcrypt+ownership | `ex06/01,02,06` |
+| JWT/MFA/RBAC×ABAC | `ex06/02,05,11–13`, [README, Ex. 6](README.md#ex06) |
+| M2M escopos/claims | `ex07/*`, [README, Ex. 7](README.md#ex07) |
+| identificar OWASP lendo código | [README, Ex. 8](README.md#ex08), `ex09/*_antes` |
+| BOLA centralizada | `ex09/01,02,08` |
+| whitelist/regex/extra=forbid | `ex09/03,05,06,07` |
+| XSS auto-escape | `ex09/04` (+png) |
+| CORS/headers/rate limit | `ex10/*` |
+| SQLModel/BaseSettings | `ex11/*` |
+| fase SDLC no pipeline | [README, Ex. 12](README.md#ex12), `security.yml` |
+| CVSS + negócio | `ex12/01`, [README, Ex. 12](README.md#ex12) |
+| security gate (critério de bloqueio) | `security.yml`, `ex12/05`, 👤 prints do PR |
+| testes rastreáveis ao threat model | `tests/security/`, `ex12/04` |
+| ZAP + rastreabilidade + risco residual + decisão | `ex13/02`, `RELATORIO_RASTREABILIDADE` |
+| mocking + OpenAPI | `tests/test_unitarios_mock.py`, `ex13/04,05` |
 
 ## Pendências manuais (William)
 
-Ver `evidencias/PRINTS_PENDENTES.md`: criação do repositório GitHub e prints do gate bloqueando o merge (R21), validação do critério do gate (R21), decisão sobre o deploy (R23) e o vídeo (≤5 min, YouTube não listado).
+Ver `evidencias/PRINTS_PENDENTES.md`: criação do repositório GitHub e prints do gate bloqueando o merge, validação do critério do gate, decisão sobre o deploy e o vídeo (≤5 min, YouTube não listado).

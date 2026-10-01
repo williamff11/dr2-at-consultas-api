@@ -1,5 +1,5 @@
 # Evidência : Print HTTP 403: admin autenticado SEM MFA em /admin/usuarios → 12_admin_sem_mfa_403.png
-# Exercício : ex06   Rubrica(s): R11
+# Exercício : ex06
 # Data      : 2026-09-28 09:23:18 -0400
 # Commit    : 521c3d1 (ex07)
 # Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/admin/usuarios evidencias/ex06/12_admin_sem_mfa_403.png --cookie access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNzkzLCJleHAiOjE3OTA2MDI2OTMsInBhcGVsIjoiYWRtaW4iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIGNvbnN1bHRhczp3cml0ZSBhZG1pbiJ9.6MLZfdgUTXFn5VzlkH1VUfI8Kh3Vwgz0I0u4bv5OP00

@@ -1,5 +1,5 @@
 # Evidência : pytest completo final (todos os testes + tests/security + mocking)
-# Exercício : ex13   Rubrica(s): R24
+# Exercício : ex13
 # Data      : 2026-09-28 10:00:09 -0400
 # Commit    : 79a5313 (main)
 # Comando   : cd consultas-api && .venv/bin/pytest -q 2>&1 | tail -3

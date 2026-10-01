@@ -1,5 +1,5 @@
 # Evidência : Print do Swagger (/docs) com as rotas documentadas → 06_swagger.png
-# Exercício : ex01   Rubrica(s): R1
+# Exercício : ex01
 # Data      : 2026-09-28 08:43:32 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/docs evidencias/ex01/06_swagger.png --full
