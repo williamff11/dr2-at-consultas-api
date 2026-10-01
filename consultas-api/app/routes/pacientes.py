@@ -1,8 +1,4 @@
-"""Busca de pacientes (Ex. 8/9) — corrigida no Ex. 9.
-
-A V2 (SQL injection) foi eliminada: a query é parametrizada via SQLModel e o
-parâmetro `nome` é validado por regex (whitelist de caracteres) na borda.
-"""
+"""Busca de pacientes"""
 from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session, select
 
@@ -17,12 +13,10 @@ router = APIRouter(prefix="/pacientes", tags=["pacientes"],
 @router.get("")
 def buscar_pacientes(
     # Whitelist: letras (com acento), espaço e apóstrofo; 2 a 60 caracteres.
-    nome: str = Query(pattern=r"^[A-Za-zÀ-ÿ' ]{2,60}$", min_length=2, max_length=60),
+    nome: str = Query(pattern=r"^[A-Za-zÀ-ÿ' ]{2,60}$", min_length=2, max_length=60, examples=["Ana"]),
     session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
-    # Corrigido (V2): query parametrizada. `nome` é um VALOR ligado, nunca vira parte
-    # do texto SQL — não há como alterar a estrutura da consulta.
     stmt = select(Paciente).where(Paciente.nome.contains(nome))
     pacientes = session.exec(stmt).all()
     return [

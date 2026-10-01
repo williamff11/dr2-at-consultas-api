@@ -1,8 +1,4 @@
-"""Páginas HTML internas da recepção (Ex. 2) — agora com sessão por cookie (Ex. 6).
-
-As páginas são somente leitura. A recepção autentica em /recepcao/login, que grava
-um cookie HttpOnly (não acessível a JavaScript, mitiga roubo de sessão via XSS).
-"""
+"""Páginas HTML internas da recepção"""
 import os
 from datetime import date
 from pathlib import Path
@@ -24,7 +20,6 @@ from app.models.tables import Consulta, Paciente, Profissional, Usuario
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 
-# Auto-escape explícito: qualquer {{ valor }} em .html é codificado (< vira &lt;).
 _env = Environment(
     loader=FileSystemLoader(TEMPLATES_DIR),
     autoescape=select_autoescape(["html"]),
@@ -33,7 +28,6 @@ templates = Jinja2Templates(env=_env)
 
 router = APIRouter(tags=["recepcao"])
 
-# Secure só em produção (em DEV o cookie precisa funcionar sobre http).
 _COOKIE_SECURE = os.environ.get("ENV", "dev") == "prod"
 
 
@@ -86,6 +80,7 @@ def agenda_do_dia(
         profissional = session.get(Profissional, c.profissional_id)
         # Só o necessário para a recepção — sem CPF, sem campos de auditoria.
         itens.append({
+            "id": c.id,
             "hora": c.data_hora.strftime("%H:%M"),
             "paciente": paciente.nome if paciente else "?",
             "profissional": profissional.nome if profissional else "?",
@@ -103,9 +98,6 @@ def detalhe_consulta(
     consulta: Consulta = Depends(get_consulta_autorizada),
     session: Session = Depends(get_session),
 ):
-    # Corrigido (V1-irmão): esta página compartilhava o padrão da V1 (busca por id sem
-    # ownership). Agora usa a MESMA dependência get_consulta_autorizada — a posse é
-    # verificada no único lugar de sempre. O template não usa mais |safe (V3).
     paciente = session.get(Paciente, consulta.paciente_id)
     return templates.TemplateResponse(
         request, "detalhe_consulta.html",

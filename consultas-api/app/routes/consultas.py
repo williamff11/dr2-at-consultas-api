@@ -1,11 +1,4 @@
-"""Recurso REST de consultas — autenticação, ownership (Ex. 6), SQLModel (Ex. 11)
-e correções do Ex. 9.
-
-Ownership impossível de esquecer (Ex. 9): as rotas de item vivem em `item_router`,
-cujo prefixo `/consultas/{consulta_id}` já carrega `Depends(get_consulta_autorizada)`.
-Qualquer rota nova sob esse prefixo herda a checagem de posse — inclusive /prontuario,
-que na V1 era vulnerável. A regra de posse continua num único lugar (dependencies.py).
-"""
+"""REST de consultas"""
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlmodel import Session, select
 
@@ -20,14 +13,13 @@ from app.models import ConsultaCreate, ConsultaPublic, ConsultaUpdate, StatusCon
 from app.models.consulta import TRANSICOES_VALIDAS
 from app.models.tables import Consulta, Paciente
 
-# Respostas de erro documentadas na OpenAPI (auditoria do Ex. 13).
 _ERRO_AUTH = {401: {"description": "Não autenticado"}, 403: {"description": "Sem permissão"}}
 _ERRO_ITEM = {**_ERRO_AUTH, 404: {"description": "Não encontrada ou sem posse"}}
 
 # Coleção: /consultas
 router = APIRouter(prefix="/consultas", tags=["consultas"], responses=_ERRO_AUTH)
 
-# Item: /consultas/{consulta_id} — ownership aplicado no prefixo (Ex. 9).
+# Item: /consultas/{consulta_id}
 item_router = APIRouter(
     prefix="/consultas/{consulta_id}",
     tags=["consultas"],
@@ -58,7 +50,6 @@ def criar_consulta(
     if paciente is None:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "Paciente inexistente")
 
-    # profissional_id NÃO vem do cliente: é o profissional dono do paciente.
     prof_id = paciente.profissional_id
     if user.get("papel") == "profissional" and prof_id != user.get("profissional_id"):
         raise HTTPException(
@@ -116,7 +107,7 @@ def atualizar_consulta(
     # extra="forbid" no modelo já rejeita profissional_id/criado_por (mass assignment).
     dados = payload.model_dump(exclude_unset=True)
 
-    # Recepção só pode cancelar (matriz de permissões).
+    # Recepção só pode cancelar.
     if user.get("papel") == "recepcao":
         if set(dados) - {"status"} or dados.get("status") != StatusConsulta.cancelada:
             raise HTTPException(status.HTTP_403_FORBIDDEN, "Recepção só pode cancelar consultas")

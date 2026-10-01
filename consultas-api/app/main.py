@@ -23,7 +23,6 @@ async def lifespan(app: FastAPI):
     yield
 
 
-# Em produção, não expõe Swagger/OpenAPI (reduz superfície de reconhecimento).
 _docs = None if settings.env == "prod" else "/docs"
 _openapi = None if settings.env == "prod" else "/openapi.json"
 
@@ -38,16 +37,16 @@ app = FastAPI(
     openapi_url=_openapi,
 )
 
-# --- Rate limiting (Ex. 10) ---
+# Rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-# --- Cabeçalhos de segurança (Ex. 10) ---
+# Cabeçalhos de segurança
 app.add_middleware(SecurityHeadersMiddleware)
 
-# --- CORS com allowlist explícita (Ex. 10) ---
-# Fail-fast: recusa subir se "*" estiver na lista (o auditor reprova wildcard).
+# CORS com allowlist explícita
+# Fail-fast: recusa subir se "*" estiver na lista.
 _origins = settings.cors_origins_list
 if "*" in _origins:
     raise RuntimeError("CORS_ORIGINS não pode conter '*' (use uma allowlist explícita).")
@@ -70,7 +69,6 @@ app.include_router(pages.router)
 
 @app.get("/", tags=["infra"])
 def root():
-    # Raiz mínima (sem dado sensível) — evita 404 do spider do ZAP no CI.
     return {"service": "consultas-api", "status": "ok"}
 
 
