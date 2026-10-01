@@ -78,3 +78,6 @@
 | `ex13/09_code_review_depois.txt` | ex13 | `f47f33a` | Code review (DEPOIS): os mesmos 4 testes dos achados CR1-CR4 passam após a correção |
 | `ex13/10_pytest_pos_code_review.txt` | ex13 | `f47f33a` | pytest completo após as correções do code review |
 | `ex13/11_zap_resumo_codigo_final.txt` | ex13 | `f8476f8` | OWASP ZAP baseline passivo repetido sobre o código final (após o code review): 0 FAIL, 6 WARN, 61 PASS — mesmos alertas do scan anterior. Relatórios e print em 11_zap_codigo_final.{html,json,md,png} |
+| `ex12/10_pipeline_verde_main.png` | ex12 | `479be16` | Pipeline verde na main (tests, sast, sca, dast, security-gate) |
+| `ex12/11_pr_bloqueado_3_checks.png` | ex12 | `b7ba7a3` | PR #1 (demo/gate-bloqueio, reintroduz a V2): sast, tests e security-gate (Required) falhando, sca e dast passando — merge bloqueado |
+| `ex12/12_sast_bandit_b608_log.png` | ex12 | `b7ba7a3` | Log do job sast no PR #1: Bandit acha B608 (SQLi, CWE-89, Severity Medium / Confidence Low) em app/routes/pacientes.py:27 → exit 1 |
