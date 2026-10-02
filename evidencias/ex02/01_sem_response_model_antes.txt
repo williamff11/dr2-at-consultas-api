@@ -1,6 +1,5 @@
 # Evidência : ANTES (branch demo, sem response_model): POST e GET vazam criado_por, ip_origem, criado_em, atualizado_em
 # Exercício : ex02
-# Data      : 2026-09-28 08:44:34 -0400
 # Commit    : f3b26ec (demo/ex02-sem-response-model)
 # Comando   : set -x; curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'; echo; curl -s -i localhost:8000/consultas/1; echo
 # ------------------------------------------------------------------

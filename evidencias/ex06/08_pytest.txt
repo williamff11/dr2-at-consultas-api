@@ -1,6 +1,5 @@
 # Evidência : pytest: 13 testes (autenticação, expiração, MFA, ownership, RBAC)
 # Exercício : ex06
-# Data      : 2026-09-28 09:17:46 -0400
 # Commit    : a8c5c32 (ex06)
 # Comando   : cd consultas-api && .venv/bin/pytest -v
 # ------------------------------------------------------------------

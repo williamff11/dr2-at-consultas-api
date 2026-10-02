@@ -1,6 +1,5 @@
 # Evidência : pytest com banco SQLite em memória (StaticPool) e override de sessão
 # Exercício : ex11
-# Data      : 2026-09-28 09:31:19 -0400
 # Commit    : c6f97e2 (ex11)
 # Comando   : cd consultas-api && .venv/bin/pytest -q
 # ------------------------------------------------------------------

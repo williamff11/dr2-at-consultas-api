@@ -1,6 +1,5 @@
 # Evidência : Agenda da recepção acessível só com sessão (cookie); print → 09_agenda_autenticada.png
 # Exercício : ex06
-# Data      : 2026-09-28 09:18:11 -0400
 # Commit    : a8c5c32 (ex06)
 # Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/recepcao/agenda evidencias/ex06/09_agenda_autenticada.png --cookie access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyZWNlcGNhbyIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxNDkxLCJleHAiOjE3OTA2MDIzOTEsInBhcGVsIjoicmVjZXBjYW8iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIn0.T_liSG7xyxZ73tX9UHyjGGCWrEQJ7C1xMWDrvXX2uP8; echo '--- sem cookie:'; curl -s -o /dev/null -w 'GET /recepcao/agenda sem cookie -> %{http_code}\n' localhost:8000/recepcao/agenda
 # ------------------------------------------------------------------

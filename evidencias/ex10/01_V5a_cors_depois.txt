@@ -1,6 +1,5 @@
 # Evidência : V5a CORS (DEPOIS): preflight de https://evil.example NÃO recebe Access-Control-Allow-Origin (navegador bloqueia)
 # Exercício : ex10
-# Data      : 2026-09-28 09:47:39 -0400
 # Commit    : 57e1ca8 (ex10)
 # Comando   : echo '--- procura por allow-origin ecoando a origem maliciosa:'; curl -s -i -X OPTIONS localhost:8000/consultas -H 'Origin: https://evil.example' -H 'Access-Control-Request-Method: GET' | grep -i 'access-control-allow-origin' && echo 'ATENCAO: origem aceita' || echo 'OK: nenhum Access-Control-Allow-Origin para evil.example — origem rejeitada'
 # ------------------------------------------------------------------

@@ -1,6 +1,5 @@
 # Evidência : uvicorn subindo a aplicação
 # Exercício : ex01
-# Data      : 2026-09-28 08:42:59 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : scripts/servidor.sh restart && cat /tmp/uvicorn.log
 # ------------------------------------------------------------------

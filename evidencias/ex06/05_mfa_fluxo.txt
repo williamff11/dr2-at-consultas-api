@@ -1,6 +1,5 @@
 # Evidência : Fluxo MFA do admin: senha→mfa_required→(mfa_token barrado 403)→verify TOTP→access→/admin/usuarios 200
 # Exercício : ex06
-# Data      : 2026-09-28 09:17:15 -0400
 # Commit    : a8c5c32 (ex06)
 # Comando   : source scripts/dev_env.sh; set -x; R=$(curl -s -X POST localhost:8000/auth/token -d "username=admin&password=$SEED_SENHA_ADMIN"); echo "$R"; MT=$(echo "$R" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"mfa_token\"])"); curl -s -o /dev/null -w "mfa_token em /admin/usuarios -> %{http_code} (esperado 403)\n" localhost:8000/admin/usuarios -H "Authorization: Bearer $MT"; COD=$(consultas-api/.venv/bin/python -c "import pyotp,os;print(pyotp.TOTP(os.environ[\"SEED_TOTP_ADMIN\"]).now())"); AC=$(curl -s -X POST localhost:8000/auth/mfa/verify -H "content-type: application/json" -d "{\"mfa_token\":\"$MT\",\"codigo\":\"$COD\"}" | consultas-api/.venv/bin/python -c "import sys,json;print(json.load(sys.stdin)[\"access_token\"])"); curl -s -o /dev/null -w "access com mfa em /admin/usuarios -> %{http_code} (esperado 200)\n" localhost:8000/admin/usuarios -H "Authorization: Bearer $AC"
 # ------------------------------------------------------------------

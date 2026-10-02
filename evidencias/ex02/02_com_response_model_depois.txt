@@ -1,6 +1,5 @@
 # Evidência : DEPOIS (main, response_model=ConsultaPublic): mesmo POST/GET, só os campos públicos
 # Exercício : ex02
-# Data      : 2026-09-28 08:44:48 -0400
 # Commit    : 19a8ad9 (main)
 # Comando   : set -x; curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'; echo; curl -s -i localhost:8000/consultas/1; echo
 # ------------------------------------------------------------------

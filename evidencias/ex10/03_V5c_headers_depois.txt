@@ -1,6 +1,5 @@
 # Evidência : V5c Headers (DEPOIS): HSTS/XFO/XCTO em todas as respostas; CSP no GET das páginas HTML
 # Exercício : ex10
-# Data      : 2026-09-28 09:47:39 -0400
 # Commit    : 57e1ca8 (ex10)
 # Comando   : echo '--- GET /health:'; curl -s -D - -o /dev/null localhost:8000/health | grep -iE 'strict-transport|x-frame|x-content-type'; echo '--- GET /recepcao/login (HTML → inclui CSP):'; curl -s -D - -o /dev/null localhost:8000/recepcao/login | grep -iE 'strict-transport|x-frame|x-content-type|content-security'
 # ------------------------------------------------------------------

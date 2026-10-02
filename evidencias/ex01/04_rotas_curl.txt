@@ -1,6 +1,5 @@
 # Evidência : Respostas reais das rotas: health, POST, GET por id, GET lista, PATCH, 404, DELETE e página HTML
 # Exercício : ex01
-# Data      : 2026-09-28 08:43:49 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : set -x; curl -s -i localhost:8000/health; echo; curl -s -i -X POST localhost:8000/consultas -H 'content-type: application/json' -d '{"paciente_id":1,"profissional_id":1,"data_hora":"2026-09-28T14:30:00","observacoes":"Retorno pós-exame"}'; echo; curl -s -i localhost:8000/consultas/1; echo; curl -s -i localhost:8000/consultas; echo; curl -s -i -X PATCH localhost:8000/consultas/1 -H 'content-type: application/json' -d '{"status":"confirmada"}'; echo; curl -s -i localhost:8000/consultas/999; echo; curl -s -o /dev/null -w 'GET /recepcao/agenda -> HTTP %{http_code} %{content_type}\n' localhost:8000/recepcao/agenda; curl -s -i -X DELETE localhost:8000/consultas/1; echo; curl -s -o /dev/null -w 'GET /consultas/1 após DELETE -> HTTP %{http_code}\n' localhost:8000/consultas/1
 # ------------------------------------------------------------------

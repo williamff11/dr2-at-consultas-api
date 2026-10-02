@@ -1,6 +1,5 @@
 # Evidência : pytest: caminho de sucesso do Ex. 1 (+ testes do Ex. 2)
 # Exercício : ex01
-# Data      : 2026-09-28 08:43:12 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : cd consultas-api && .venv/bin/pytest -v
 # ------------------------------------------------------------------

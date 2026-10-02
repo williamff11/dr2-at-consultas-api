@@ -1,6 +1,5 @@
 # Evidência : pytest: testes de hardening (headers, CORS, rate limit)
 # Exercício : ex10
-# Data      : 2026-09-28 09:49:25 -0400
 # Commit    : 57e1ca8 (ex10)
 # Comando   : cd consultas-api && .venv/bin/pytest tests/test_hardening.py -v
 # ------------------------------------------------------------------

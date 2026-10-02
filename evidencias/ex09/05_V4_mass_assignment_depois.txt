@@ -1,6 +1,5 @@
 # Evidência : V4 Mass assignment (DEPOIS): PATCH com profissional_id/criado_por extras → 422 extra_forbidden
 # Exercício : ex09
-# Data      : 2026-09-28 09:42:42 -0400
 # Commit    : 313e28c (ex09)
 # Comando   : TC=$(scripts/token.sh dra_carla); CID=$(curl -s -X POST localhost:8000/consultas -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"paciente_id":1,"data_hora":"2026-09-28T16:00:00","observacoes":"minha"}' | consultas-api/.venv/bin/python -c 'import sys,json;print(json.load(sys.stdin)["id"])'); echo 'PATCH com campos extras:'; curl -s -i -X PATCH localhost:8000/consultas/$CID -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"observacoes":"editada","profissional_id":2,"criado_por":"hacker"}' | tail -4
 # ------------------------------------------------------------------

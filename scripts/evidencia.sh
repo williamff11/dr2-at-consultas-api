@@ -15,7 +15,6 @@ ref="$(git -C "$root" describe --tags --exact-match 2>/dev/null || git -C "$root
 {
   echo "# Evidência : $desc"
   echo "# Exercício : $ex"
-  echo "# Data      : $(date '+%Y-%m-%d %H:%M:%S %z')"
   echo "# Commit    : $commit ($ref)"
   echo "# Comando   : $*"
   echo "# ------------------------------------------------------------------"

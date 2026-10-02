@@ -1,6 +1,5 @@
 # Evidência : Usuários do seed: apenas hashes bcrypt $2b$12$… (nenhuma senha em texto)
 # Exercício : ex06
-# Data      : 2026-09-28 09:16:57 -0400
 # Commit    : a8c5c32 (ex06)
 # Comando   : consultas-api/.venv/bin/python -c "import sys; sys.path.insert(0,\"consultas-api\"); import os; [os.environ.setdefault(k,v) for k,v in {\"SEED_SENHA_ADMIN\":\"x\",\"SEED_SENHA_RECEPCAO\":\"x\",\"SEED_SENHA_CARLA\":\"x\",\"SEED_SENHA_DIEGO\":\"x\"}.items()]; from app.seed import semear; from app import database as db; semear(); [print(u[\"username\"].ljust(10), u[\"papel\"].ljust(13), u[\"senha_hash\"][:32]+\"...\") for u in db.usuarios.values()]"
 # ------------------------------------------------------------------

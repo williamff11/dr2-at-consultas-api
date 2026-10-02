@@ -1,6 +1,5 @@
 # Evidência : pip-audit (SCA): sem vulnerabilidades após pyjwt 2.14.0 (o SCA pegou CVEs em 2.10.1 e depois em 2.13.0)
 # Exercício : ex12
-# Data      : 2026-09-30 09:23:17 -0400
 # Commit    : e6cc2bd (main)
 # Comando   : cd consultas-api && ../scripts/.venv-tools/bin/pip install -q pyjwt==2.14.0 >/dev/null 2>&1; ../scripts/.venv-tools/bin/pip-audit -r requirements.txt 2>&1 | tail -3
 # ------------------------------------------------------------------

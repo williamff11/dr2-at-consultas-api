@@ -1,6 +1,5 @@
 # Evidência : Ambiente virtual isolado (python3.12 -m venv) + dependências instaladas
 # Exercício : ex01
-# Data      : 2026-09-28 08:42:50 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : cd consultas-api && /opt/homebrew/bin/python3.12 -m venv .venv && .venv/bin/python -c "import sys; print(\"prefix:\", sys.prefix); print(\"base_prefix:\", sys.base_prefix); print(\"isolado:\", sys.prefix != sys.base_prefix)" && .venv/bin/pip install -q --disable-pip-version-check -r requirements.txt && .venv/bin/pip list --disable-pip-version-check
 # ------------------------------------------------------------------

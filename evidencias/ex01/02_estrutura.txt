@@ -1,6 +1,5 @@
 # Evidência : Estrutura modular: routes / models / database / templates / tests
 # Exercício : ex01
-# Data      : 2026-09-28 08:42:59 -0400
 # Commit    : d996e30 (ex00)
 # Comando   : find consultas-api -path '*/.venv' -prune -o -path '*/__pycache__' -prune -o -path '*/.pytest_cache' -prune -o -type f -print | sort
 # ------------------------------------------------------------------

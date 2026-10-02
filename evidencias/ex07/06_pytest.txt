@@ -1,6 +1,5 @@
 # Evidência : pytest completo (20 testes, inclui 7 de M2M)
 # Exercício : ex07
-# Data      : 2026-09-28 09:21:54 -0400
 # Commit    : 521c3d1 (ex07)
 # Comando   : cd consultas-api && .venv/bin/pytest tests/test_m2m.py -v
 # ------------------------------------------------------------------

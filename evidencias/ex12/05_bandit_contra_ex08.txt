@@ -1,6 +1,5 @@
 # Evidência : Prova de que o gate teria BLOQUEADO a V2: Bandit -ll no worktree da tag ex08-vulneravel acha a SQLi (B608) e falha
 # Exercício : ex12
-# Data      : 2026-09-28 09:54:26 -0400
 # Commit    : d05ddd1 (ex12)
 # Comando   : cd /tmp/ex08-worktree/consultas-api && '/Users/williamfreire/workspace/college/Desenvolvimento Seguro de Aplicações Web/William_Felicio_Freire_DR2_AT/scripts/.venv-tools/bin/bandit' -r app -ll 2>&1 | grep -E 'B608|SQL injection|Severity|Location|issues \(by sev'; echo '---'; '/Users/williamfreire/workspace/college/Desenvolvimento Seguro de Aplicações Web/William_Felicio_Freire_DR2_AT/scripts/.venv-tools/bin/bandit' -r app -ll >/dev/null 2>&1; echo "exit code do gate bandit = $? (nao-zero => merge BLOQUEADO)"
 # ------------------------------------------------------------------

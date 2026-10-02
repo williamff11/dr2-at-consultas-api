@@ -1,6 +1,5 @@
 # Evidência : Bandit (SAST) no código atual: 0 achados de severidade Medium+ (gate passa)
 # Exercício : ex12
-# Data      : 2026-09-28 09:54:06 -0400
 # Commit    : d05ddd1 (ex12)
 # Comando   : cd consultas-api && ../scripts/.venv-tools/bin/bandit -r app -ll 2>&1 | tail -14
 # ------------------------------------------------------------------
