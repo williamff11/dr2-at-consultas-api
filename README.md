@@ -256,20 +256,21 @@ A BOLA sobe acima do seu CVSS porque o score não sabe que o `C:H` aqui é dado 
 | DAST | OWASP ZAP baseline | com a API no ar                     | headers, cookies              |
 | IAST | não implementado   | exigiria ambiente instrumentado     | V1 (lógica de negócio)        |
 
-### ⚠️ DECISÃO DO WILLIAM — critério de bloqueio do gate
+### Critério de bloqueio do security gate
 
-> **Proposta (a validar e reescrever por você, e explicar no vídeo).** O `security-gate` **bloqueia o merge** se:
->
-> - (a) **qualquer teste** falhar (`tests`, inclui `tests/security`);
-> - (b) **Bandit** reportar achado de **severidade ≥ MEDIUM em qualquer confiança** (`bandit -r app -ll`);
-> - (c) **pip-audit** encontrar **qualquer CVE com correção disponível**;
-> - **ZAP (DAST) é advisory:** roda como `continue-on-error` e **não** entra na decisão do `security-gate`. Um alerta **High** é triado a partir do artefato e vira correção priorizada; Medium/Low são ruído esperado num baseline passivo.
->
-> **Justificativa amarrada ao histórico deste Assessment:**
->
-> 1. **Por que Bandit sem filtro de confiança.** Descobri, medindo, que esta versão do Bandit reporta a nossa SQLi (V2, `B608`) como **severidade Medium mas confiança Low**. Um gate "Medium severidade **e** Medium confiança" (o `-ll -ii` que eu havia proposto no início) **teria deixado passar a V2**, que é a falha mais grave do Assessment (CVSS 8.8). Por isso o gate usa `-ll` (severidade Medium+, qualquer confiança). Evidência: `ex12/05_bandit_contra_ex08.txt` — Bandit no worktree da tag `ex08-vulneravel` acha o B608 e o gate sai com código ≠ 0. No código corrigido (`ex10`+), Bandit acha 0 Medium+ e o gate passa (`ex12/02`).
-> 2. **Por que SCA bloqueia qualquer CVE com fix.** Se existe correção, o custo de aplicá-la é baixo e o risco de não aplicá-la é conhecido. Foi o caso de `pyjwt`/`python-multipart`: o SCA apontou, eu atualizei, e o `pip-audit` ficou limpo (`ex12/03`).
-> 3. **Por que ZAP é advisory (não bloqueia).** Num baseline passivo de API, os Medium/Low típicos são headers extras (COEP/COOP/CORP, Permissions-Policy) e anti-CSRF — que já temos teste cobrindo (`tests/security/test_T10_T12_rede.py`). Além disso, o alcance de rede do container do ZAP no runner é frágil. Bloquear o merge por isso geraria falso-negativo de produtividade sem ganho de segurança, então o ZAP informa (artefato) e um eventual **High** é triado manualmente. Os bloqueios determinísticos ficam com `tests`, `sast` e `sca`.
+O `security-gate` bloqueia o merge quando **qualquer um** destes três jobs falha:
+
+1. **`tests`:** qualquer teste vermelho, incluindo `tests/security/`. Um teste de segurança que falha é uma ameaça do threat model que voltou a ficar aberta.
+2. **`sast`:** Bandit com achado de **severidade Medium ou maior, em qualquer confiança** (`bandit -r app -ll`).
+3. **`sca`:** pip-audit com **qualquer CVE que já tenha correção publicada**.
+
+O **ZAP não bloqueia**: roda em paralelo, publica o relatório como artefato e um alerta High vira correção priorizada por triagem manual.
+
+**Por que esse critério:**
+
+- **Bandit sem filtro de confiança.** Medindo, vi que esta versão do Bandit classifica a SQLi da V2 (B608) como severidade Medium com confiança **Low**. Se o gate exigisse também confiança Medium (`-ll -ii`), a falha mais grave do trabalho (CVSS 8.8) passaria. Com `-ll`, o Bandit barra a tag `ex08-vulneravel` (`ex12/05`) e passa no código corrigido, que tem zero achados Medium+ (`ex12/02`). Prefiro algum falso positivo a deixar uma injeção chegar na `main`.
+- **CVE com correção bloqueia sempre.** Se a correção existe, atualizar custa uma linha no `requirements.txt`, e o risco de não atualizar é conhecido e público. Foi o que aconteceu durante o trabalho: o SCA barrou versões do `pyjwt` (2.10.1 → 2.15.0) e do `python-multipart`, e cada bloqueio foi resolvido com um bump. CVE sem correção não bloqueia, porque não há ação possível além de registrar o risco.
+- **ZAP como advisory.** O baseline é passivo: os alertas típicos são headers complementares e anti-CSRF, já tratados ou registrados como risco residual, e ele não detecta as falhas que mais importam aqui (BOLA, SQLi, mass assignment), que dependem de lógica de negócio. Somando isso à instabilidade de rede do container no runner, bloquear por ele travaria entregas sem ganho de segurança. Os bloqueios ficam com os três jobs determinísticos.
 
 **Demonstração no GitHub:** o ruleset `protect-main` só aceita merge por PR com o `security-gate` verde (`ex12/08,09`); a `main` está verde (`ex12/10`). O PR #1 (`demo/gate-bloqueio`) reintroduz a V2 e fica bloqueado com `sast`, `tests` e `security-gate` vermelhos (`ex12/07,11`); o log do Bandit mostra o B608 (`ex12/12`). Duas camadas independentes barram a mesma falha: o SAST e o teste de regressão da T02.
 
