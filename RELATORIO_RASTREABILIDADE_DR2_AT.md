@@ -95,18 +95,16 @@ Nenhum alerta **High**; nenhum corresponde às vulnerabilidades críticas (V1–
 
 ---
 
-## 5. ⚠️ DECISÃO DO WILLIAM — bloquear ou liberar o deploy
+## 5. Decisão: bloquear ou liberar o deploy
 
-> **Proposta do agente (a validar, reescrever com suas palavras e explicar no vídeo).**
->
-> **Recomendação: liberar o deploy do MVP interno, condicionado a duas correções antes de qualquer exposição pública.**
->
-> **Justificativa.** Todas as vulnerabilidades **críticas e altas** (V1–V5, T11) foram corrigidas, têm teste automatizado no pipeline e evidência antes/depois. O scan ZAP não achou nenhum alerta **High**. Os riscos residuais são, na maioria, endurecimentos de baixa severidade (RR3, RR6, RR7, RR8) ou limitações operacionais aceitáveis num primeiro deploy **interno** de nó único (RR1, RR2).
->
-> **Condicionantes antes de liberar (bloqueiam a exposição pública, não o piloto interno):**
-> 1. **RR4 (trilha de auditoria):** para dado de saúde sob LGPD, um incidente precisa ser reconstruível. Adicionar logging estruturado das operações sensíveis antes de expor a pacientes reais.
-> 2. **RR1 (rate limit distribuído):** obrigatório antes de escalar para múltiplas réplicas, senão a proteção contra força bruta se degrada.
->
-> Os demais (RR2, RR3, RR5, RR6, RR7, RR8) entram no backlog priorizado, sem bloquear o piloto.
+**Libero o deploy para um piloto interno, de nó único, usado pela equipe das clínicas. A exposição em produção para pacientes reais fica bloqueada até três condições serem cumpridas.**
 
-*(William: revise cada linha, decida se concorda, e reescreva esta seção 5 com as suas próprias palavras.)*
+**Por que liberar o piloto.** Todas as falhas críticas e altas que encontrei foram corrigidas e têm teste no pipeline: V1–V5 e o segredo no código (T11), mais os quatro achados do code review (CR1–CR4). O caso mais sério do code review, o bypass do MFA pelo login HTML, só apareceu porque revisei o código depois do ZAP. Isso me deixa mais confiante de que a superfície de autorização foi olhada rota por rota, e não só pela ferramenta. O ZAP não achou nenhum alerta High, e o `security-gate` impede que uma regressão dessas falhas chegue na `main`. O que sobrou é, em sua maioria, endurecimento de baixa severidade (RR3, RR6–RR10) ou limitação operacional aceitável enquanto o sistema roda num único nó e com usuários internos (RR1, RR2, RR5).
+
+**Condições para liberar a produção:**
+
+1. **Trilha de auditoria (RR4).** Com dado de saúde sob a LGPD, um incidente precisa ser reconstruível: quem leu ou alterou qual prontuário, e quando. Hoje só existe `criado_por`/`atualizado_em` na própria linha. Sem log estruturado das operações sensíveis, eu não conseguiria responder à ANPD nem aos titulares, e por isso isto bloqueia.
+2. **Cookie `Secure` vindo das settings (CR6).** É uma linha de código, mas em produção um cookie de sessão sem `Secure` pode trafegar fora do HTTPS se a configuração vier só do `.env`. Correção barata para um risco que não quero assumir com dado real.
+3. **Rate limit distribuído (RR1), antes de qualquer segunda réplica.** Com o contador em memória, cada réplica multiplica o limite de tentativas de login, e a proteção contra força bruta se degrada sem ninguém perceber.
+
+**Fica no backlog, sem bloquear:** CR5 (o erro 500 no `PATCH` com data nula só é alcançável pelo dono da consulta e não expõe dado), MFA com enrollment real (RR2), revogação de JWT (RR5, mitigada pela expiração de 15 min) e os endurecimentos de headers e CSP apontados pelo ZAP (RR7).
