@@ -7,4 +7,3 @@ __pycache__/
 /tmp/
 .DS_Store
 .coverage
-.venv-tools/
