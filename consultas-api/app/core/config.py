@@ -1,8 +1,4 @@
-"""Configuração central via BaseSettings (Ex. 11).
-
-Todos os segredos e parâmetros vêm do ambiente / arquivo .env. NÃO há default para
-segredos: se JWT_SECRET_KEY ou as senhas de seed faltarem, a aplicação não sobe —
-falhar cedo é melhor do que rodar com um segredo previsível.
+"""Configuração central via BaseSettings
 """
 from functools import lru_cache
 
@@ -21,15 +17,14 @@ class Settings(BaseSettings):
     database_url: str = Field(default="sqlite:///./consultas.db", alias="DATABASE_URL")
     db_echo: bool = Field(default=False, alias="DB_ECHO")
 
-    # JWT — SEM default (segredo obrigatório)
+    # JWT
     jwt_secret_key: str = Field(alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
     access_token_expire_minutes: int = Field(default=15, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
 
-    # CORS (Ex. 10) — string separada por vírgulas (ex.: "http://a,http://b")
     cors_origins: str = Field(default="", alias="CORS_ORIGINS")
 
-    # Seed — SEM default (senhas obrigatórias)
+    # Seed 
     seed_senha_admin: str = Field(alias="SEED_SENHA_ADMIN")
     seed_senha_recepcao: str = Field(alias="SEED_SENHA_RECEPCAO")
     seed_senha_carla: str = Field(alias="SEED_SENHA_CARLA")

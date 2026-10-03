@@ -12,7 +12,6 @@ base=localhost:8000
 log="$out/regressao.txt"
 {
   echo "# Regressão final — código na tag/commit: $(git rev-parse --short HEAD)"
-  echo "# Data: $(date '+%Y-%m-%d %H:%M:%S %z')"
   echo "# ------------------------------------------------------------------"
 
   cid=$(curl -s -X POST $base/consultas -H "Authorization: Bearer $TC" -H 'content-type: application/json' \

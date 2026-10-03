@@ -1,6 +1,5 @@
 # Evidência : OWASP ZAP baseline passivo (estado final): 0 FAIL, 6 WARN (Medium/Low), 61 PASS. Relatórios em 02_zap_baseline_depois.{html,json,md}
-# Exercício : ex13   Rubrica(s): R23
-# Data      : 2026-09-28 10:00:09 -0400
+# Exercício : ex13
 # Commit    : 79a5313 (main)
 # Comando   : echo 'Resumo do scan ZAP (ver 02_zap_baseline_depois.html/json/md):'; consultas-api/.venv/bin/python -c "import json; d=json.load(open('evidencias/ex13/02_zap_baseline_depois.json')); s=d['site'][0]; print('total de alertas:', len(s['alerts'])); [print(f\"  [{a['riskdesc']}] {a['alert']} (x{a['count']})\") for a in s['alerts']]"
 # ------------------------------------------------------------------

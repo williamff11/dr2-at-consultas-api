@@ -1,10 +1,4 @@
-"""Rotas de autenticação: login (senha), verificação de MFA e sessão da recepção.
-
-Fluxo humano:
-  POST /auth/token           (form OAuth2)  -> access token, OU desafio de MFA (admin)
-  POST /auth/mfa/verify      {mfa_token, codigo} -> access token com mfa=true
-O fluxo M2M (client credentials) fica em routes/m2m.py (Ex. 7).
-"""
+"""Rotas de autenticação"""
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -21,8 +15,6 @@ from app.models.tables import ClienteM2M, Usuario
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# Erro deliberadamente genérico: não distingue "usuário inexistente" de "senha
-# errada", para não permitir enumeração de usuários (T05).
 _LOGIN_INVALIDO = HTTPException(
     status.HTTP_401_UNAUTHORIZED,
     "Usuário ou senha inválidos",
@@ -47,7 +39,6 @@ def login(
     form: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
 ):
-    # Um client_id de máquina nunca faz login humano (Ex. 7 / T07).
     if session.get(ClienteM2M, form.username) is not None:
         raise _LOGIN_INVALIDO
 
@@ -55,7 +46,7 @@ def login(
     if usuario is None or not security.verificar_senha(form.password, usuario.senha_hash):
         raise _LOGIN_INVALIDO
 
-    # Contas com MFA (admin): a senha só libera um token intermediário.
+    # Contas com MFA (admin)
     if usuario.totp_secret:
         mfa_token = security.criar_access_token(
             sub=usuario.username,

@@ -1,7 +1,4 @@
-"""Middleware de cabeçalhos de segurança (Ex. 10).
-
-Aplica os headers padrão da empresa a todas as respostas. CSP e Referrer-Policy
-são reforços; HSTS/XFO/XCTO são os exigidos pela rubrica.
+"""Middleware de cabeçalhos de segurança
 """
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -19,8 +16,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         h.setdefault("X-Content-Type-Options", "nosniff")
         # Não vaza a URL interna como referer para terceiros.
         h.setdefault("Referrer-Policy", "no-referrer")
-        # CSP nas páginas HTML: sem scripts inline/externos (defesa extra contra XSS).
-        if response.headers.get("content-type", "").startswith("text/html"):
+        # CSP nas páginas HTML da aplicação: sem scripts inline/externos (defesa extra
+        # contra XSS). O Swagger UI (/docs, /redoc) é isento: precisa carregar JS de CDN
+        # e só existe em DEV (docs_url=None quando ENV=prod). HSTS/XFO/XCTO seguem valendo.
+        eh_swagger = request.url.path.startswith(("/docs", "/redoc"))
+        if response.headers.get("content-type", "").startswith("text/html") and not eh_swagger:
             h.setdefault(
                 "Content-Security-Policy",
                 "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; "

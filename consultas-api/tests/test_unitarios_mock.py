@@ -1,10 +1,10 @@
-"""Testes unitários com mocking (Ex. 13, R24).
+"""Testes unitários com mocking 
 
 Isolam a lógica de autorização/entrada de suas dependências externas:
 - dependency_overrides[get_current_user] simula papéis sem gerar JWT;
 - patch em verificar_senha / pyotp.TOTP.verify / relógio;
 - mock da sessão para testar ownership isoladamente.
-Inclui o teste de sucesso do Ex. 1 (R24 cita o teste inicial explicitamente).
+Inclui o teste de sucesso do Ex. 1
 """
 from datetime import timedelta
 from unittest.mock import patch
@@ -17,7 +17,6 @@ from app.main import app
 from tests.test_consultas import _payload
 
 
-# ---------- teste de sucesso do Ex. 1 (preservado, R24) ----------
 def test_ex1_criar_e_obter_sucesso(client, auth):
     r = client.post("/consultas", json=_payload(), headers=auth("dra_carla"))
     assert r.status_code == 201

@@ -2,7 +2,7 @@
 """Calcula os scores CVSS 3.1 das vulnerabilidades do Assessment (Ex. 12).
 
 Usa a biblioteca `cvss` (PyPI). Os vetores foram revisados e justificados no
-docs/12_pipeline_devsecops.md. Uso:
+README.md, Ex. 12. Uso:
     scripts/.venv-tools/bin/pip install cvss
     scripts/.venv-tools/bin/python scripts/cvss_scores.py
 """

@@ -1,6 +1,5 @@
 # Evidência : Rate limit diferenciado: 15 GETs numa rota comum (limite global 120/min) → todos 200/OK, sem 429
-# Exercício : ex10   Rubrica(s): R17
-# Data      : 2026-09-28 09:47:40 -0400
+# Exercício : ex10
 # Commit    : 57e1ca8 (ex10)
 # Comando   : source scripts/dev_env.sh; sleep 61; TC=$(scripts/token.sh dra_carla); for i in $(seq 1 15); do curl -s -o /dev/null -w "GET /consultas #$i -> %{http_code}\n" localhost:8000/consultas -H "Authorization: Bearer $TC"; done
 # ------------------------------------------------------------------

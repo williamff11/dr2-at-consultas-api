@@ -1,6 +1,5 @@
 # Evidência : GET /consultas sem Authorization → 401
-# Exercício : ex06   Rubrica(s): R10
-# Data      : 2026-09-28 09:17:15 -0400
+# Exercício : ex06
 # Commit    : a8c5c32 (ex06)
 # Comando   : curl -s -i localhost:8000/consultas | head -1; curl -s -o /dev/null -w "status=%{http_code}\n" localhost:8000/consultas
 # ------------------------------------------------------------------

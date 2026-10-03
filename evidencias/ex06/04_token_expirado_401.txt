@@ -1,6 +1,5 @@
 # Evidência : Token com exp no passado → 401 (validação de expiração)
-# Exercício : ex06   Rubrica(s): R11
-# Data      : 2026-09-28 09:17:15 -0400
+# Exercício : ex06
 # Commit    : a8c5c32 (ex06)
 # Comando   : source scripts/dev_env.sh; TE=$(consultas-api/.venv/bin/python -c "import sys;sys.path.insert(0,\"consultas-api\");from datetime import timedelta;from app.auth import security;print(security.criar_access_token(\"dra_carla\",{\"papel\":\"profissional\",\"profissional_id\":1},expira_em=timedelta(minutes=-1)))"); echo "usando token expirado:"; curl -s -o /dev/null -w "status=%{http_code}\n" localhost:8000/consultas -H "Authorization: Bearer $TE"; curl -s localhost:8000/consultas -H "Authorization: Bearer $TE"
 # ------------------------------------------------------------------

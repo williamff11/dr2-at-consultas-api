@@ -1,6 +1,5 @@
 # Evidência : Scores CVSS 3.1 (lib cvss) e prioridade por impacto de negócio
-# Exercício : ex12   Rubrica(s): R20
-# Data      : 2026-09-28 09:54:06 -0400
+# Exercício : ex12
 # Commit    : d05ddd1 (ex12)
 # Comando   : scripts/.venv-tools/bin/python scripts/cvss_scores.py
 # ------------------------------------------------------------------

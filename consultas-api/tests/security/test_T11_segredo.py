@@ -1,4 +1,4 @@
-"""Ameaça: T11 (segredo hardcoded) · docs/04_threat_model.md.
+"""Ameaça: T11 (segredo hardcoded) · README.md, Ex. 4.
 
 Garante que a aplicação exige o segredo do ambiente (não há default).
 """
