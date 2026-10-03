@@ -1,6 +1,5 @@
 # Evidência : V5a CORS (ANTES): preflight de origem maliciosa é aceito (allow-origin ecoa a origem / *)
-# Exercício : ex10   Rubrica(s): R17
-# Data      : 2026-09-28 09:36:27 -0400
+# Exercício : ex10
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : echo '--- preflight OPTIONS de https://evil.example:'; curl -s -i -X OPTIONS localhost:8000/consultas -H 'Origin: https://evil.example' -H 'Access-Control-Request-Method: GET' | grep -iE 'HTTP/|access-control-allow'
 # ------------------------------------------------------------------

@@ -1,6 +1,5 @@
 # Evidência : DEPOIS: nenhum segredo hardcoded em app/; segredo vem de Settings/.env
-# Exercício : ex11   Rubrica(s): R18
-# Data      : 2026-09-28 09:31:19 -0400
+# Exercício : ex11
 # Commit    : c6f97e2 (ex11)
 # Comando   : echo '=== grep por segredo hardcoded em app/ (esperado: vazio) ==='; grep -rn --include='*.py' -iE 'secret_key *= *"|password *= *"' consultas-api/app || echo '(vazio — nenhum segredo hardcoded)'; echo; echo '=== segredo vem de Settings ==='; grep -rn 'jwt_secret_key\|get_settings\|env_file' consultas-api/app/core/config.py consultas-api/app/auth/security.py
 # ------------------------------------------------------------------

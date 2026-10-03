@@ -1,6 +1,5 @@
 # Evidência : .env.example (só placeholders) versionado; .env ignorado pelo git
-# Exercício : ex11   Rubrica(s): R18
-# Data      : 2026-09-28 09:31:19 -0400
+# Exercício : ex11
 # Commit    : c6f97e2 (ex11)
 # Comando   : echo '=== .env.example ==='; cat consultas-api/.env.example; echo; echo '=== .env está no gitignore? ==='; git check-ignore -v consultas-api/.env || echo 'ATENCAO: .env NAO ignorado'; echo '=== .env versionado? (esperado: nada) ==='; git ls-files | grep -E '(^|/)\.env$' || echo '(nenhum .env versionado)'
 # ------------------------------------------------------------------

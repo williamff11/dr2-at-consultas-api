@@ -3,7 +3,7 @@
 Simulado porque o segredo TOTP fica no seed em vez de ser provisionado por um app
 autenticador real (Google Authenticator etc.). O algoritmo de verificação é o mesmo
 de produção; o que falta é o enrollment do dispositivo e o armazenamento por usuário
-num cofre. Ver docs/06 para o que separaria isto de um MFA de produção.
+num cofre. Ver README.md, Ex. 6 para o que separaria isto de um MFA de produção.
 """
 import pyotp
 

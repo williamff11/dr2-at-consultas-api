@@ -1,4 +1,4 @@
-"""Rotas administrativas. Exigem papel admin E MFA (dois fatores)."""
+"""Rotas administrativas. Exigem papel admin e MFA (dois fatores)."""
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 

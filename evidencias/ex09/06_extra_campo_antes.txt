@@ -1,6 +1,5 @@
 # Evidência : V4/extra (ANTES): POST com campo_inexistente e status='realizada' — campos extras aceitos/ignorados em silêncio (sem extra=forbid)
-# Exercício : ex09   Rubrica(s): R15
-# Data      : 2026-09-28 09:36:07 -0400
+# Exercício : ex09
 # Commit    : 104f916 (ex08-vulneravel)
 # Comando   : TC=$(scripts/token.sh dra_carla); echo '--- POST com campo_inexistente e status forçado:'; curl -s -i -X POST localhost:8000/consultas -H "Authorization: Bearer $TC" -H 'content-type: application/json' -d '{"paciente_id":1,"data_hora":"2026-09-28T17:00:00","campo_inexistente":123,"status":"realizada"}' | tail -3
 # ------------------------------------------------------------------

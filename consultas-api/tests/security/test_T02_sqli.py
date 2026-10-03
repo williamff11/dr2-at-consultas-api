@@ -1,4 +1,4 @@
-"""Ameaça: T02 (SQL injection) · Misuse case: MC02 · docs/04_threat_model.md."""
+"""Ameaça: T02 (SQL injection) · Misuse case: MC02 · README.md, Ex. 4."""
 from tests.security._helpers import payload  # noqa: F401
 
 

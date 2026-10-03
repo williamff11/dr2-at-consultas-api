@@ -1,9 +1,4 @@
-"""Integração máquina-a-máquina (Ex. 7): client credentials + escopo restrito.
-
-O laboratório parceiro obtém um token que só enxerga horários livres. Mesmo que
-esse token vaze, ele não alcança dados de paciente: as rotas de consulta exigem
-escopos `consultas:*` que nunca são emitidos para um cliente M2M (T07).
-"""
+"""Integração máquina-a-máquina"""
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Security, status
@@ -54,7 +49,6 @@ def horarios_disponiveis(
     session: Session = Depends(get_session),
     principal: dict = Security(require_scopes, scopes=["horarios:read"]),
 ):
-    """Slots livres de um profissional num dia. NÃO expõe paciente (só horários)."""
     if session.get(Profissional, profissional_id) is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Profissional inexistente")
 

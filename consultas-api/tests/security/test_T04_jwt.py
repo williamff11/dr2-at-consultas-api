@@ -1,4 +1,4 @@
-"""Ameaça: T04 (JWT forjado/expirado) · docs/04_threat_model.md."""
+"""Ameaça: T04 (JWT forjado/expirado) · README.md, Ex. 4."""
 from datetime import datetime, timedelta
 
 import jwt

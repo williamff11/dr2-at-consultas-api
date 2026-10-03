@@ -1,4 +1,4 @@
-"""Ameaça: T03 (XSS stored) · Misuse case: MC03 · docs/04_threat_model.md."""
+"""Ameaça: T03 (XSS stored) · Misuse case: MC03 · README.md, Ex. 4."""
 from tests.security._helpers import payload
 
 

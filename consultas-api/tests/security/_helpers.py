@@ -1,4 +1,4 @@
-"""Helpers da suíte de segurança (rastreável ao threat model, docs/04)."""
+"""Helpers da suíte de segurança (rastreável ao threat model, README.md, Ex. 4)."""
 from datetime import datetime, timedelta
 
 

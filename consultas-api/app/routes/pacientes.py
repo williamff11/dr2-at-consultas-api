@@ -1,8 +1,4 @@
-"""Busca de pacientes (Ex. 8/9) — corrigida no Ex. 9.
-
-A V2 (SQL injection) foi eliminada: a query é parametrizada via SQLModel e o
-parâmetro `nome` é validado por regex (whitelist de caracteres) na borda.
-"""
+"""Busca de pacientes"""
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import text
 from sqlmodel import Session, select
@@ -18,12 +14,17 @@ router = APIRouter(prefix="/pacientes", tags=["pacientes"],
 @router.get("")
 def buscar_pacientes(
     # Whitelist: letras (com acento), espaço e apóstrofo; 2 a 60 caracteres.
-    nome: str = Query(pattern=r"^[A-Za-zÀ-ÿ' ]{2,60}$", min_length=2, max_length=60),
+    nome: str = Query(pattern=r"^[A-Za-zÀ-ÿ' ]{2,60}$", min_length=2, max_length=60, examples=["Ana"]),
     session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     # DEMO: reintrodução da V2 (SQL por concatenação) para provar que o security-gate
     # bloqueia o merge. NÃO deve ser mesclado (branch demo/gate-bloqueio).
-    sql = text(f"SELECT id, nome, cpf, profissional_id FROM paciente WHERE nome LIKE '%{nome}%'")  # noqa: S608
-    linhas = session.execute(sql).fetchall()
-    return [list(linha) for linha in linhas]
+    sql = f"SELECT id, nome, cpf, profissional_id FROM paciente WHERE nome LIKE '%{nome}%'"  # noqa: S608
+    params = {}
+    # Profissional só encontra os próprios pacientes (CPF é dado pessoal).
+    if user.get("papel") == "profissional":
+        sql += " AND profissional_id = :pid"
+        params["pid"] = user.get("profissional_id")
+    linhas = session.execute(text(sql), params).mappings().all()
+    return [dict(linha) for linha in linhas]

@@ -1,6 +1,5 @@
 # Evidência : pytest tests/security: testes rastreáveis ao threat model (T0x visíveis)
-# Exercício : ex12   Rubrica(s): R22
-# Data      : 2026-09-28 09:54:12 -0400
+# Exercício : ex12
 # Commit    : d05ddd1 (ex12)
 # Comando   : cd consultas-api && .venv/bin/pytest tests/security -v 2>&1 | grep -E 'test_T|passed'
 # ------------------------------------------------------------------

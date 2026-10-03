@@ -1,21 +1,20 @@
 name: security
 
-# Pipeline DevSecOps (Ex. 12). O job security-gate consolida os resultados e
-# bloqueia o merge conforme o critério definido/justificado em docs/12.
+# Pipeline DevSecOps. job security-gate consolida os resultados e
+# bloqueia o merge conforme o critério definido.
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
   schedule:
-    - cron: "0 6 * * 1"   # SCA semanal (segunda 06:00 UTC): CVEs surgem sem mudança de código
+    - cron: "0 6 * * 1" # SCA semanal (segunda 06:00 UTC): CVEs surgem sem mudança de código
 
 defaults:
   run:
     working-directory: consultas-api
 
 env:
-  # Segredos de TESTE apenas (nunca reais). O gate não depende de segredo real.
   ENV: dev
   JWT_SECRET_KEY: ci-test-secret-nao-usar-em-producao
   DATABASE_URL: "sqlite:///./ci.db"
@@ -51,7 +50,7 @@ jobs:
       - name: Bandit gate — falha se achado de severidade >= MEDIUM (qualquer confiança)
         # -ll = severidade Medium+. NÃO filtramos por confiança de propósito: nesta
         # versão o Bandit reporta a SQLi (B608) como Medium/confiança-Low; um filtro
-        # de confiança deixaria passar a falha mais grave do Assessment (ver docs/12).
+        # de confiança deixaria passar a falha mais grave do Assessment (ver README.md, Ex. 12).
         run: bandit -r app -ll
       - uses: actions/upload-artifact@v4
         if: always()
@@ -74,11 +73,6 @@ jobs:
 
   dast:
     runs-on: ubuntu-latest
-    # DAST é ADVISORY: o security-gate NÃO bloqueia por ele (ver docs/12). Rodamos o
-    # ZAP direto via docker (a action zaproxy/action-baseline@v0.12.0 falha no upload
-    # por usar a API de artefatos v6.0-preview, descontinuada pelo GitHub). O upload
-    # é feito com actions/upload-artifact@v4. continue-on-error mantém o run verde
-    # mesmo se o ZAP achar um FAIL (que seria triado a partir do artefato).
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -108,17 +102,11 @@ jobs:
           if-no-files-found: warn
 
   security-gate:
-    # DAST é advisory e NÃO entra no needs (ver docs/12): o gate bloqueia só pelos
-    # três jobs determinísticos. O ZAP roda em paralelo como job informativo.
     needs: [tests, sast, sca]
     runs-on: ubuntu-latest
     if: always()
     steps:
-      # Passo único e determinístico. Os resultados chegam por env (sem interpolação
-      # dentro do bash, evita armadilhas de YAML/shell). Aprova só se os TRÊS passarem.
       - name: Consolidar e decidir
-        # Este job não faz checkout; o working-directory padrão (consultas-api) não
-        # existe aqui. Roda na raiz do workspace, que sempre existe.
         working-directory: ${{ github.workspace }}
         env:
           R_TESTS: ${{ needs.tests.result }}

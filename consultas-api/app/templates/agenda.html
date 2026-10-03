@@ -8,7 +8,7 @@
 {% if consultas %}
 <table>
   <thead>
-    <tr><th>Hora</th><th>Paciente</th><th>Profissional</th><th>Status</th><th>Observações</th></tr>
+    <tr><th>Hora</th><th>Paciente</th><th>Profissional</th><th>Status</th><th>Observações</th><th></th></tr>
   </thead>
   <tbody>
   {% for c in consultas %}
@@ -20,6 +20,9 @@
       {# Conteúdo livre digitado por usuário: auto-escape garante que <script> vire texto.
          Nunca usar |safe aqui. #}
       <td>{{ c.observacoes }}</td>
+      {# Link para o detalhe. A posse é verificada em get_consulta_autorizada:
+         abrir consulta de outro profissional retorna 404 (BOLA barrada). #}
+      <td><a href="/recepcao/consultas/{{ c.id }}">Ver detalhe →</a></td>
     </tr>
   {% endfor %}
   </tbody>

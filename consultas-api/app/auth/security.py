@@ -1,10 +1,6 @@
 """Primitivas de segurança: hashing de senha e emissão/validação de JWT.
 
-Centralizado aqui (nenhuma rota reimplementa hash ou decodificação de token).
-Usa `bcrypt` diretamente — o `passlib` está sem manutenção e quebra com bcrypt>=4.
-
-Ex. 11: o segredo vem de BaseSettings/.env (get_settings). Não há mais segredo
-hardcoded no código-fonte.
+Usa `bcrypt` diretamente
 """
 from __future__ import annotations
 

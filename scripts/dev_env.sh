@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Credenciais de DESENVOLVIMENTO/TESTE (valores fictícios — NÃO são segredos reais).
-# Ficam FORA do código da aplicação (app/ não contém senha em texto). Em produção,
-# estas variáveis viriam de um cofre / secret manager, nunca de um arquivo versionado.
+# Credenciais de DESENVOLVIMENTO/TESTE 
+# Em produção, estas variáveis viriam de um cofre / secret manager
 # Uso: source scripts/dev_env.sh
 export ENV="${ENV:-dev}"
 export DATABASE_URL="${DATABASE_URL:-sqlite:///./consultas.db}"

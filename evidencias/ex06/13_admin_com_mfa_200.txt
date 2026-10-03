@@ -1,6 +1,5 @@
 # Evidência : Print HTTP 200: admin com MFA verificado em /admin/usuarios → 13_admin_com_mfa_200.png
-# Exercício : ex06   Rubrica(s): R11
-# Data      : 2026-09-28 09:23:43 -0400
+# Exercício : ex06
 # Commit    : 521c3d1 (ex07)
 # Comando   : scripts/.venv-tools/bin/python scripts/print_tela.py http://localhost:8000/admin/usuarios evidencias/ex06/13_admin_com_mfa_200.png --cookie access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6ImNvbnN1bHRhcy1hcGkiLCJhdWQiOiJhcGktY29uc3VsdGFzIiwiaWF0IjoxNzkwNjAxODIzLCJleHAiOjE3OTA2MDI3MjMsInBhcGVsIjoiYWRtaW4iLCJzY29wZSI6ImNvbnN1bHRhczpyZWFkIGNvbnN1bHRhczp3cml0ZSBhZG1pbiIsIm1mYSI6dHJ1ZSwiYW1yIjpbInB3ZCIsIm90cCJdfQ.YX9CqCCCz0ncctxx0YG9WjubzN6WIh-996aenApH668
 # ------------------------------------------------------------------

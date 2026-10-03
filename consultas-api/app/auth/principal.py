@@ -1,9 +1,4 @@
-"""Autorização por escopo OAuth2 (Ex. 7), para principals humanos OU M2M.
-
-Complementa dependencies.py: enquanto get_current_user exige um usuário humano,
-require_scopes aceita qualquer principal com os escopos necessários — é o que as
-rotas M2M usam via Security(require_scopes, scopes=[...]).
-"""
+"""Autorização por escopo OAuth2"""
 from __future__ import annotations
 
 import jwt
