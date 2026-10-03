@@ -1,5 +1,6 @@
 """Busca de pacientes"""
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import text
 from sqlmodel import Session, select
 
 from app.auth.dependencies import get_current_user
@@ -17,12 +18,13 @@ def buscar_pacientes(
     session: Session = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
-    stmt = select(Paciente).where(Paciente.nome.contains(nome))
+    # DEMO: reintrodução da V2 (SQL por concatenação) para provar que o security-gate
+    # bloqueia o merge. NÃO deve ser mesclado (branch demo/gate-bloqueio).
+    sql = f"SELECT id, nome, cpf, profissional_id FROM paciente WHERE nome LIKE '%{nome}%'"  # noqa: S608
+    params = {}
     # Profissional só encontra os próprios pacientes (CPF é dado pessoal).
     if user.get("papel") == "profissional":
-        stmt = stmt.where(Paciente.profissional_id == user.get("profissional_id"))
-    pacientes = session.exec(stmt).all()
-    return [
-        {"id": p.id, "nome": p.nome, "cpf": p.cpf, "profissional_id": p.profissional_id}
-        for p in pacientes
-    ]
+        sql += " AND profissional_id = :pid"
+        params["pid"] = user.get("profissional_id")
+    linhas = session.execute(text(sql), params).mappings().all()
+    return [dict(linha) for linha in linhas]
