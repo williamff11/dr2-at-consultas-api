@@ -13,15 +13,15 @@ O scan foi rodado duas vezes contra a API em `localhost:8000`: na tag `ex13` (`e
 
 ```bash
 # na raiz do repositório, com a API rodando em localhost:8000
-docker run --rm -v "$PWD/evidencias/ex13:/zap/wrk:rw" -t \
-  ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-  -t http://host.docker.internal:8000/openapi.json -c ../../.zap/rules.tsv \
-  -r 11_zap_codigo_final.html -J 11_zap_codigo_final.json \
-  -w 11_zap_codigo_final.md -I \
+mkdir -p /tmp/zap && cp .zap/rules.tsv /tmp/zap/ && chmod 777 /tmp/zap
+docker run --rm -v /tmp/zap:/zap/wrk:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+  -t http://host.docker.internal:8000/openapi.json -c rules.tsv \
+  -r report.html -J report.json -w report.md -I \
   -z "-silent -addoninstall pscanrulesBeta"
+# relatórios copiados para evidencias/ex13/11_zap_codigo_final.{html,json,md}
 ```
 
-O `-z "-silent -addoninstall pscanrulesBeta"` evita que o ZAP trave baixando atualizações de add-ons na inicialização, mas mantém o pacote de regras beta. Sem ele, o scan perde as regras de COEP/COOP/CORP, Permissions-Policy e cache (58 PASS em vez de 61) e aparenta um resultado melhor do que o real.
+O `-z "-silent -addoninstall pscanrulesBeta"` evita que o ZAP trave baixando atualizações de add-ons na inicialização, mas mantém o pacote de regras beta. Usando só `-silent`, o scan perde as regras de COEP/COOP/CORP, Permissions-Policy e cache (58 PASS em vez de 61) e aparenta um resultado melhor do que o real.
 
 **Resultado (as duas execuções):** `FAIL-NEW: 0 · WARN-NEW: 6 · PASS: 61`, com os mesmos 10 alertas (3 Medium, 4 Low, 3 Informational). Nenhum alerta de risco **High**. As correções do code review não mudaram a superfície vista pelo ZAP, o que é esperado: eram falhas de autorização, que um scan passivo não enxerga.
 
