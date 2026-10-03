@@ -55,11 +55,7 @@ Autenticação, autorização, ownership, configuração e headers vivem em `app
 | SQLModel/BaseSettings | `ex11/*` |
 | fase SDLC no pipeline | [README, Ex. 12](README.md#ex12), `security.yml` |
 | CVSS + negócio | `ex12/01`, [README, Ex. 12](README.md#ex12) |
-| security gate (critério de bloqueio) | `security.yml`, `ex12/05`, 👤 prints do PR |
+| security gate (critério de bloqueio) | `security.yml`, `ex12/05`, `ex12/07,11,12` (PR bloqueado) |
 | testes rastreáveis ao threat model | `tests/security/`, `ex12/04` |
 | ZAP + rastreabilidade + risco residual + decisão | `ex13/02`, `RELATORIO_RASTREABILIDADE` |
 | mocking + OpenAPI | `tests/test_unitarios_mock.py`, `ex13/04,05` |
-
-## Pendências manuais (William)
-
-Ver `evidencias/PRINTS_PENDENTES.md`: criação do repositório GitHub e prints do gate bloqueando o merge, validação do critério do gate, decisão sobre o deploy e o vídeo (≤5 min, YouTube não listado).
