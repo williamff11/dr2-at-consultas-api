@@ -77,3 +77,4 @@
 | `ex13/08_code_review_antes.txt` | ex13 | `9aaa3d9` | Code review (ANTES): 4 testes dos achados CR1-CR4 falham no código sem correção (MFA contornável no login HTML, login HTML sem rate limit, agenda HTML e busca de pacientes sem ownership) |
 | `ex13/09_code_review_depois.txt` | ex13 | `f47f33a` | Code review (DEPOIS): os mesmos 4 testes dos achados CR1-CR4 passam após a correção |
 | `ex13/10_pytest_pos_code_review.txt` | ex13 | `f47f33a` | pytest completo após as correções do code review |
+| `ex13/11_zap_resumo_codigo_final.txt` | ex13 | `f8476f8` | OWASP ZAP baseline passivo repetido sobre o código final (após o code review): 0 FAIL, 6 WARN, 61 PASS — mesmos alertas do scan anterior. Relatórios e print em 11_zap_codigo_final.{html,json,md,png} |

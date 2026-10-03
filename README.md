@@ -280,7 +280,7 @@ O **ZAP não bloqueia**: roda em paralelo, publica o relatório como artefato e 
 
 - **Mocking** (`tests/test_unitarios_mock.py`): `dependency_overrides` para simular papéis sem JWT, `patch` em `verificar_senha` e no TOTP, relógio controlado para expiração e sessão falsa para testar o ownership sem banco. O teste de sucesso do Ex. 1 continua na suíte.
 - **Auditoria da OpenAPI** (`scripts/auditar_openapi.py`, `ex13/04`): Swagger e `openapi.json` desligados em produção; 401/403/404 documentados nos routers; IDs sequenciais ficam como risco residual aceito (o ownership já barra o acesso).
-- **OWASP ZAP baseline:** 0 FAIL, 6 WARN (Medium/Low), 61 PASS, nenhum High (`ex13/02`). Cada alerta é interpretado no relatório de rastreabilidade.
+- **OWASP ZAP baseline:** 0 FAIL, 6 WARN (Medium/Low), 61 PASS, nenhum High, na tag `ex13` (`ex13/02`) e de novo no código final (`ex13/11`, com print). Cada alerta é interpretado no relatório de rastreabilidade.
 - **Regressão:** `scripts/regerar_evidencias_finais.sh` repete os ataques dos Ex. 9–10 contra o código final (`ex13/regressao/regressao.txt`).
 - **Code review do estado final:** achou falhas de lógica que nem o ZAP nem os testes do Ex. 9 pegavam, todas do padrão "endpoint irmão": admin contornava o MFA pelo login HTML (CR1), login HTML sem rate limit (CR2), agenda HTML e busca de pacientes sem ownership (CR3, CR4). As quatro foram corrigidas com teste: os mesmos testes falham antes (`ex13/08`) e passam depois (`ex13/09`); suíte com 67 testes (`ex13/10`).
 
