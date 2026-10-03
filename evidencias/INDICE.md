@@ -6,13 +6,13 @@
 | `ex01/02_estrutura.txt` | ex01 | `d996e30` | Estrutura modular: routes / models / database / templates / tests |
 | `ex01/03_uvicorn_startup.txt` | ex01 | `d996e30` | uvicorn subindo a aplicação |
 | `ex01/05_pytest.txt` | ex01 | `d996e30` | pytest: caminho de sucesso do Ex. 1 (+ testes do Ex. 2) |
-| `ex01/06_swagger.txt` | ex01 | `d996e30` | Print do Swagger (/docs) com as rotas documentadas → 06_swagger.png |
+| `ex01/06_swagger.png` | ex01 | `d996e30` | Print do Swagger (/docs) com as rotas documentadas |
 | `ex01/04_rotas_curl.txt` | ex01 | `d996e30` | Respostas reais das rotas: health, POST, GET por id, GET lista, PATCH, 404, DELETE e página HTML |
 | `ex02/01_sem_response_model_antes.txt` | ex02 | `f3b26ec` | ANTES (branch demo, sem response_model): POST e GET vazam criado_por, ip_origem, criado_em, atualizado_em |
 | `ex02/02_com_response_model_depois.txt` | ex02 | `19a8ad9` | DEPOIS (main, response_model=ConsultaPublic): mesmo POST/GET, só os campos públicos |
 | `ex02/03_xss_post_payload.txt` | ex02 | `19a8ad9` | Payloads XSS gravados em observacoes (JSON devolve o texto cru, o que é correto para JSON) |
 | `ex02/04_agenda_html_escapada.txt` | ex02 | `19a8ad9` | HTML da agenda: payloads aparecem codificados (&lt;script&gt;), nenhuma tag <script>/<img> ativa |
-| `ex02/05_agenda_escapada.txt` | ex02 | `19a8ad9` | Print da agenda: payload XSS exibido como texto, sem alert (dialogs=0) → 05_agenda_escapada.png |
+| `ex02/05_agenda_escapada.png` | ex02 | `19a8ad9` | Print da agenda: payload XSS exibido como texto, sem alert (dialogs=0) |
 | `ex02/06_pytest.txt` | ex02 | `19a8ad9` | pytest com o teste que demonstra o vazamento sem response_model |
 | `ex06/01_senhas_bcrypt.txt` | ex06 | `a8c5c32` | Usuários do seed: apenas hashes bcrypt $2b$12$… (nenhuma senha em texto) |
 | `ex06/02_login_e_claims.txt` | ex06 | `a8c5c32` | Login da Dra. Carla + claims decodificadas (sub, papel, aud, iss, exp-iat=900s) |
@@ -22,7 +22,7 @@
 | `ex06/06_ownership_403.txt` | ex06 | `a8c5c32` | Ownership: Dr. Diego tenta GET/PATCH consulta da Dra. Carla → 404 (não confirma existência); a dona acessa 200 |
 | `ex06/07_rbac_recepcao_admin_403.txt` | ex06 | `a8c5c32` | RBAC: recepção em /admin/usuarios → 403 (teste obrigatório do enunciado) |
 | `ex06/08_pytest.txt` | ex06 | `a8c5c32` | pytest: 13 testes (autenticação, expiração, MFA, ownership, RBAC) |
-| `ex06/09_agenda_autenticada.txt` | ex06 | `a8c5c32` | Agenda da recepção acessível só com sessão (cookie); print → 09_agenda_autenticada.png |
+| `ex06/09_agenda_autenticada.png` | ex06 | `a8c5c32` | Agenda da recepção acessível só com sessão (cookie); print |
 | `ex11/01_segredo_hardcoded_antes.txt` | ex11 | `a8c5c32` | ANTES (Ex.11): segredo hardcoded no código da aplicação (tag ex06) |
 | `ex07/01_client_credentials.txt` | ex07 | `521c3d1` | Laboratório obtém token via client_credentials (scope horarios:read) |
 | `ex07/02_claims_humano_vs_m2m.txt` | ex07 | `521c3d1` | Claims lado a lado: humano (papel, profissional_id, scope consultas:*) × M2M (client_type m2m, scope horarios:read, sem papel) |
@@ -30,10 +30,10 @@
 | `ex07/04_lab_consultas_403.txt` | ex07 | `521c3d1` | Token do laboratório NÃO alcança dados de paciente: GET e POST /consultas → 403 |
 | `ex07/05_lab_password_grant_rejeitado.txt` | ex07 | `521c3d1` | Cliente M2M rejeitado no login humano e grant_type inválido rejeitado |
 | `ex07/06_pytest.txt` | ex07 | `521c3d1` | pytest completo (20 testes, inclui 7 de M2M) |
-| `ex06/10_sem_token_401.txt` | ex06 | `521c3d1` | Print HTTP 401: GET /consultas sem sessão → 10_sem_token_401.png |
-| `ex06/11_rbac_recepcao_403.txt` | ex06 | `521c3d1` | Print HTTP 403: recepção em /admin/usuarios (RBAC) → 11_rbac_recepcao_403.png |
-| `ex06/12_admin_sem_mfa_403.txt` | ex06 | `521c3d1` | Print HTTP 403: admin autenticado SEM MFA em /admin/usuarios → 12_admin_sem_mfa_403.png |
-| `ex06/13_admin_com_mfa_200.txt` | ex06 | `521c3d1` | Print HTTP 200: admin com MFA verificado em /admin/usuarios → 13_admin_com_mfa_200.png |
+| `ex06/10_sem_token_401.png` | ex06 | `521c3d1` | Print HTTP 401: GET /consultas sem sessão |
+| `ex06/11_rbac_recepcao_403.png` | ex06 | `521c3d1` | Print HTTP 403: recepção em /admin/usuarios (RBAC) |
+| `ex06/12_admin_sem_mfa_403.png` | ex06 | `521c3d1` | Print HTTP 403: admin autenticado SEM MFA em /admin/usuarios |
+| `ex06/13_admin_com_mfa_200.png` | ex06 | `521c3d1` | Print HTTP 200: admin com MFA verificado em /admin/usuarios |
 | `ex11/02_sem_credenciais_depois.txt` | ex11 | `c6f97e2` | DEPOIS: nenhum segredo hardcoded em app/; segredo vem de Settings/.env |
 | `ex11/03_env_example.txt` | ex11 | `c6f97e2` | .env.example (só placeholders) versionado; .env ignorado pelo git |
 | `ex11/05_pytest.txt` | ex11 | `c6f97e2` | pytest com banco SQLite em memória (StaticPool) e override de sessão |
@@ -42,7 +42,7 @@
 | `ex09/01_V1_bola_prontuario_antes.txt` | ex09 | `104f916` | V1 BOLA (ANTES): Dr. Diego lê o prontuário de paciente da Dra. Carla trocando o id → 200 com CPF e observações clínicas |
 | `ex09/02_V1irmao_detalhe_html_antes.txt` | ex09 | `104f916` | V1-irmão (ANTES): Dr. Diego abre /recepcao/consultas/1 (paciente da Carla) via cookie → 200 com dados |
 | `ex09/03_V2_sqli_antes.txt` | ex09 | `104f916` | V2 SQLi (ANTES): parâmetro nome concatenado altera a query — retorna pacientes fora do filtro e extrai hashes via UNION |
-| `ex09/04_V3_xss_antes.txt` | ex09 | `104f916` | V3 XSS stored (ANTES): página de detalhe renderiza <img onerror> sem escape (|safe); print captura o alert com document.cookie |
+| `ex09/04_V3_xss_antes.png` | ex09 | `104f916` | V3 XSS stored (ANTES): página de detalhe renderiza <img onerror> sem escape (|safe); print captura o alert com document.cookie |
 | `ex09/05_V4_mass_assignment_antes.txt` | ex09 | `104f916` | V4 Mass assignment (ANTES): Carla altera a PRÓPRIA consulta enviando profissional_id e criado_por extras → aceitos; a consulta troca de dono |
 | `ex09/06_extra_campo_antes.txt` | ex09 | `104f916` | V4/extra (ANTES): POST com campo_inexistente e status='realizada' — campos extras aceitos/ignorados em silêncio (sem extra=forbid) |
 | `ex10/01_V5a_cors_antes.txt` | ex10 | `104f916` | V5a CORS (ANTES): preflight de origem maliciosa é aceito (allow-origin ecoa a origem / *) |
@@ -51,7 +51,7 @@
 | `ex09/01_V1_bola_prontuario_depois.txt` | ex09 | `313e28c` | V1 BOLA (DEPOIS): Dr. Diego no prontuário de paciente da Carla → 404 (ownership no item_router) |
 | `ex09/02_V1irmao_detalhe_html_depois.txt` | ex09 | `313e28c` | V1-irmão (DEPOIS): Dr. Diego em /recepcao/consultas/1 → 404 (mesma dependência de ownership) |
 | `ex09/03_V2_sqli_depois.txt` | ex09 | `313e28c` | V2 SQLi (DEPOIS): mesmos vetores do antes agora bloqueados; apostrofo legitimo e tratado como literal pela query parametrizada |
-| `ex09/04_V3_xss_depois.txt` | ex09 | `313e28c` | V3 XSS (DEPOIS): payload com <img onerror> rejeitado na entrada (422); página de detalhe sem alert (dialogs=0) |
+| `ex09/04_V3_xss_depois.png` | ex09 | `313e28c` | V3 XSS (DEPOIS): payload com <img onerror> rejeitado na entrada (422); página de detalhe sem alert (dialogs=0) |
 | `ex09/05_V4_mass_assignment_depois.txt` | ex09 | `313e28c` | V4 Mass assignment (DEPOIS): PATCH com profissional_id/criado_por extras → 422 extra_forbidden |
 | `ex09/06_extra_campo_depois.txt` | ex09 | `313e28c` | extra (DEPOIS): POST com campo_inexistente → 422 extra_forbidden |
 | `ex09/07_regex_whitelist.txt` | ex09 | `313e28c` | Whitelist/regex: entradas válidas × inválidas (nome com dígito, status inexistente, transição proibida) |
