@@ -3,8 +3,8 @@
 
 Usa a biblioteca `cvss` (PyPI). Os vetores foram revisados e justificados no
 README.md, Ex. 12. Uso:
-    scripts/.venv-tools/bin/pip install cvss
-    scripts/.venv-tools/bin/python scripts/cvss_scores.py
+    pip install cvss
+    python scripts/cvss_scores.py
 """
 from cvss import CVSS3
 

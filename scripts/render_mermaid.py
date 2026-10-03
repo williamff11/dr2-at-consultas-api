@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Renderiza um .mmd em PNG usando o Chrome local (Playwright) + mermaid.js (jsDelivr).
 
-uso: scripts/.venv-tools/bin/python scripts/render_mermaid.py docs/img/dfd.mmd docs/img/dfd.png
+uso (requer `pip install playwright`): python scripts/render_mermaid.py docs/img/dfd.mmd docs/img/dfd.png
 """
 import html
 import sys
