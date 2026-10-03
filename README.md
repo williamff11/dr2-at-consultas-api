@@ -2,7 +2,7 @@
 
 **Aluno:** William Felício Freire
 **Disciplina:** Desenvolvimento Seguro de Aplicações Web
-**Vídeo (YouTube, não listado):** `<!-- COLAR O LINK DO VÍDEO AQUI -->`
+**Vídeo (YouTube, não listado):** <https://youtu.be/U0t721Vu3Fo>
 
 API REST de agendamento de consultas médicas (dado de saúde, LGPD) em FastAPI + SQLModel: OAuth2/JWT com MFA, RBAC + ownership, integração M2M por escopos, correção de vulnerabilidades OWASP, hardening de rede, pipeline DevSecOps e auditoria final.
 
